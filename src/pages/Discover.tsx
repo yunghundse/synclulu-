@@ -826,10 +826,10 @@ const Discover = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--delulu-bg)] flex items-center justify-center theme-transition">
         <div className="text-center">
-          <Loader2 size={32} className="animate-spin text-delulu-violet mx-auto mb-4" />
-          <p className="text-delulu-muted text-sm">Lade Wölkchen...</p>
+          <Loader2 size={32} className="animate-spin text-[var(--delulu-accent)] mx-auto mb-4" />
+          <p className="text-[var(--delulu-muted)] text-sm">Lade Wölkchen...</p>
         </div>
       </div>
     );
@@ -853,7 +853,7 @@ const Discover = () => {
   })) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white safe-top pb-24">
+    <div className="min-h-screen bg-[var(--delulu-bg)] safe-top pb-24 theme-transition">
       {/* Active Room View - v16.0 Stable Grid Room (WhatsApp/Discord style) */}
       {activeRoom ? (
         <StableGridRoom
@@ -883,39 +883,41 @@ const Discover = () => {
         /* Room List View */
         <>
           {/* Header */}
-          <div className="px-6 pt-6 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="font-display text-2xl font-bold text-delulu-text">
-                  Entdecken
-                </h1>
-                <p className="text-sm text-delulu-muted">
-                  {totalUsersInRooms > 0
-                    ? `${totalUsersInRooms} User in ${rooms.length} Wölkchen`
-                    : 'Noch keine aktiven Wölkchen'
-                  }
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="w-10 h-10 rounded-xl bg-delulu-violet text-white shadow-sm flex items-center justify-center hover:bg-delulu-violet/90 transition-colors"
-                >
-                  <Plus size={20} />
-                </button>
-                <button
-                  onClick={handleRefresh}
-                  disabled={isRefreshing}
-                  className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-delulu-muted hover:text-delulu-violet transition-colors"
-                >
-                  <RefreshCw size={20} className={isRefreshing ? 'animate-spin' : ''} />
-                </button>
+          <div className="sticky top-0 z-20 glass-nav border-b border-[var(--delulu-border)]">
+            <div className="px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="font-display text-2xl font-bold text-[var(--delulu-text)]">
+                    Entdecken
+                  </h1>
+                  <p className="text-sm text-[var(--delulu-muted)]">
+                    {totalUsersInRooms > 0
+                      ? `${totalUsersInRooms} User in ${rooms.length} Wölkchen`
+                      : 'Noch keine aktiven Wölkchen'
+                    }
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="w-10 h-10 rounded-xl bg-[var(--delulu-accent)] text-white shadow-sm flex items-center justify-center hover:opacity-90 transition-opacity"
+                  >
+                    <Plus size={20} />
+                  </button>
+                  <button
+                    onClick={handleRefresh}
+                    disabled={isRefreshing}
+                    className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] shadow-sm flex items-center justify-center text-[var(--delulu-muted)] hover:text-[var(--delulu-accent)] transition-colors border border-[var(--delulu-border)]"
+                  >
+                    <RefreshCw size={20} className={isRefreshing ? 'animate-spin' : ''} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="px-6 mb-4">
+          <div className="px-6 py-4">
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
               {[
                 { id: 'all', label: 'Alle', icon: Users },
@@ -927,14 +929,14 @@ const Discover = () => {
                 <button
                   key={f.id}
                   onClick={() => setFilter(f.id as typeof filter)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
                     filter === f.id
                       ? f.special
                         ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                        : 'bg-delulu-violet text-white shadow-lg'
+                        : 'bg-[var(--delulu-accent)] text-white shadow-lg'
                       : f.special
-                        ? 'bg-purple-50 text-purple-600 hover:bg-purple-100'
-                        : 'bg-white text-delulu-muted hover:bg-gray-50'
+                        ? 'bg-purple-500/10 text-purple-500'
+                        : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] border border-[var(--delulu-border)]'
                   }`}
                 >
                   <f.icon size={16} />
@@ -1081,13 +1083,13 @@ const Discover = () => {
           {filter === 'stars' && starEvents.length === 0 && (
             <div className="px-6 py-12">
               <div className="text-center">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-purple-50 flex items-center justify-center mb-4">
-                  <Sparkles size={32} className="text-purple-400" />
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-purple-500/10 flex items-center justify-center mb-4">
+                  <Sparkles size={32} className="text-purple-500" />
                 </div>
-                <h3 className="font-semibold text-delulu-text mb-2">
+                <h3 className="font-semibold text-[var(--delulu-text)] mb-2">
                   Keine Star Events
                 </h3>
-                <p className="text-sm text-delulu-muted max-w-xs mx-auto">
+                <p className="text-sm text-[var(--delulu-muted)] max-w-xs mx-auto">
                   Aktuell sind keine Star Events live oder geplant. Schau später nochmal vorbei!
                 </p>
               </div>
@@ -1122,15 +1124,15 @@ const Discover = () => {
                 <FloatingMascot delay={0}>
                   <SailorMascot size={140} className="mx-auto mb-4" />
                 </FloatingMascot>
-                <h3 className="font-display font-bold text-xl text-delulu-text mb-3">
+                <h3 className="font-display font-bold text-xl text-[var(--delulu-text)] mb-3">
                   {UI_COPY.empty.lounges}
                 </h3>
-                <p className="text-sm text-delulu-muted mb-8 max-w-xs mx-auto leading-relaxed">
+                <p className="text-sm text-[var(--delulu-muted)] mb-8 max-w-xs mx-auto leading-relaxed">
                   Sei der Erste und erstelle ein Wölkchen, in dem sich deine Nachbarschaft treffen kann!
                 </p>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-delulu-violet to-purple-600 text-white rounded-2xl font-display font-bold shadow-lg hover:shadow-xl transition-all"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[var(--delulu-accent)] to-pink-500 text-white rounded-2xl font-display font-bold shadow-lg hover:shadow-xl transition-all"
                 >
                   <Plus size={20} />
                   Wölkchen erstellen
@@ -1142,13 +1144,13 @@ const Discover = () => {
                 <FloatingMascot delay={0.2}>
                   <PegasusMascot size={120} className="mx-auto mb-2" />
                 </FloatingMascot>
-                <p className="font-semibold text-delulu-text mb-2">Keine Wölkchen gefunden</p>
-                <p className="text-sm text-delulu-muted mb-4">
+                <p className="font-semibold text-[var(--delulu-text)] mb-2">Keine Wölkchen gefunden</p>
+                <p className="text-sm text-[var(--delulu-muted)] mb-4">
                   Ändere den Filter oder erstelle ein neues Wölkchen
                 </p>
                 <button
                   onClick={() => setFilter('all')}
-                  className="px-6 py-3 bg-delulu-violet text-white rounded-xl font-semibold"
+                  className="px-6 py-3 bg-[var(--delulu-accent)] text-white rounded-xl font-semibold"
                 >
                   Alle Wölkchen anzeigen
                 </button>
@@ -1158,17 +1160,17 @@ const Discover = () => {
               filteredRooms.map((room) => (
                 <div
                   key={room.id}
-                  className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-[var(--delulu-card)] rounded-2xl p-4 shadow-sm border border-[var(--delulu-border)] hover:border-[var(--delulu-accent)]/30 transition-all"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-delulu-text">{room.name}</h3>
+                        <h3 className="font-semibold text-[var(--delulu-text)]">{room.name}</h3>
                         {room.isAnonymous && (
                           <Lock size={14} className="text-purple-500" />
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-delulu-muted">
+                      <div className="flex items-center gap-3 text-xs text-[var(--delulu-muted)]">
                         <span className="flex items-center gap-1">
                           <Users size={12} />
                           {room.participants.length}/{room.maxParticipants}
@@ -1181,7 +1183,7 @@ const Discover = () => {
                     </div>
 
                     {room.xpMultiplier > 1 && (
-                      <div className="px-2 py-1 bg-amber-100 text-amber-600 rounded-lg text-xs font-bold flex items-center gap-1">
+                      <div className="px-2 py-1 bg-amber-500/10 text-amber-500 rounded-lg text-xs font-bold flex items-center gap-1">
                         <Zap size={12} />
                         {room.xpMultiplier}x XP
                       </div>
@@ -1196,15 +1198,15 @@ const Discover = () => {
                           {room.participants.slice(0, 4).map((p) => (
                             <div
                               key={p.id}
-                              className={`w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs ${
-                                p.isAnonymous ? 'bg-purple-100 text-purple-600' : 'bg-delulu-violet/10 text-delulu-violet'
+                              className={`w-8 h-8 rounded-full border-2 border-[var(--delulu-card)] flex items-center justify-center text-xs ${
+                                p.isAnonymous ? 'bg-purple-500/10 text-purple-500' : 'bg-[var(--delulu-accent)]/10 text-[var(--delulu-accent)]'
                               } ${p.isSpeaking ? 'ring-2 ring-green-400' : ''}`}
                             >
                               {p.isAnonymous ? '?' : p.displayName[0]}
                             </div>
                           ))}
                           {room.participants.length > 4 && (
-                            <div className="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs text-gray-500">
+                            <div className="w-8 h-8 rounded-full border-2 border-[var(--delulu-card)] bg-[var(--delulu-bg)] flex items-center justify-center text-xs text-[var(--delulu-muted)]">
                               +{room.participants.length - 4}
                             </div>
                           )}
@@ -1212,14 +1214,14 @@ const Discover = () => {
 
                         {/* Currently speaking indicator */}
                         {room.participants.some(p => p.isSpeaking) && (
-                          <div className="flex items-center gap-1 text-green-600 text-xs">
+                          <div className="flex items-center gap-1 text-green-500 text-xs">
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                             <span>Aktiv</span>
                           </div>
                         )}
                       </>
                     ) : (
-                      <p className="text-xs text-delulu-muted italic">Noch keine Teilnehmer</p>
+                      <p className="text-xs text-[var(--delulu-muted)] italic">Noch keine Teilnehmer</p>
                     )}
                   </div>
 
@@ -1227,7 +1229,7 @@ const Discover = () => {
                   <button
                     onClick={() => handleJoinRoom(room, room.isAnonymous)}
                     disabled={room.participants.length >= room.maxParticipants}
-                    className="w-full py-3 rounded-xl bg-delulu-violet text-white font-semibold hover:bg-delulu-violet/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl bg-[var(--delulu-accent)] text-white font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <UserPlus size={18} />
                     {room.isAnonymous ? 'Anonym beitreten' : 'Beitreten'}
@@ -1242,15 +1244,15 @@ const Discover = () => {
 
       {/* Create Room Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl">
-            <h2 className="font-display text-xl font-bold text-delulu-text mb-6 text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-[var(--delulu-card)] rounded-3xl p-6 shadow-2xl border border-[var(--delulu-border)]">
+            <h2 className="font-display text-xl font-bold text-[var(--delulu-text)] mb-6 text-center">
               Wölkchen erstellen
             </h2>
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-medium text-delulu-text mb-2">
+                <label className="block text-sm font-medium text-[var(--delulu-text)] mb-2">
                   Name
                 </label>
                 <input
@@ -1258,22 +1260,22 @@ const Discover = () => {
                   value={newRoomName}
                   onChange={(e) => setNewRoomName(e.target.value)}
                   placeholder="z.B. Chill Wölkchen"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-delulu-violet/30"
+                  className="w-full px-4 py-3 bg-[var(--delulu-bg)] border border-[var(--delulu-border)] rounded-xl text-[var(--delulu-text)] placeholder-[var(--delulu-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--delulu-accent)]/30"
                   maxLength={30}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-delulu-text mb-2">
+                <label className="block text-sm font-medium text-[var(--delulu-text)] mb-2">
                   Typ
                 </label>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setNewRoomType('public')}
-                    className={`flex-1 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 ${
+                    className={`flex-1 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
                       newRoomType === 'public'
-                        ? 'bg-delulu-violet text-white'
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-[var(--delulu-accent)] text-white'
+                        : 'bg-[var(--delulu-bg)] text-[var(--delulu-muted)] border border-[var(--delulu-border)]'
                     }`}
                   >
                     <Globe size={18} />
@@ -1281,10 +1283,10 @@ const Discover = () => {
                   </button>
                   <button
                     onClick={() => setNewRoomType('private')}
-                    className={`flex-1 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 ${
+                    className={`flex-1 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
                       newRoomType === 'private'
-                        ? 'bg-delulu-violet text-white'
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-[var(--delulu-accent)] text-white'
+                        : 'bg-[var(--delulu-bg)] text-[var(--delulu-muted)] border border-[var(--delulu-border)]'
                     }`}
                   >
                     <Lock size={18} />
@@ -1293,19 +1295,19 @@ const Discover = () => {
                 </div>
               </div>
 
-              <label className="flex items-center gap-3 p-4 bg-purple-50 rounded-xl cursor-pointer">
+              <label className="flex items-center gap-3 p-4 bg-purple-500/10 rounded-xl cursor-pointer border border-purple-500/20">
                 <input
                   type="checkbox"
                   checked={newRoomAnonymous}
                   onChange={(e) => setNewRoomAnonymous(e.target.checked)}
-                  className="w-5 h-5 rounded text-purple-500"
+                  className="w-5 h-5 rounded text-purple-500 bg-[var(--delulu-bg)] border-[var(--delulu-border)]"
                 />
                 <div>
-                  <p className="font-medium text-delulu-text flex items-center gap-2">
+                  <p className="font-medium text-[var(--delulu-text)] flex items-center gap-2">
                     <EyeOff size={16} className="text-purple-500" />
                     Anonymes Wölkchen
                   </p>
-                  <p className="text-xs text-delulu-muted">
+                  <p className="text-xs text-[var(--delulu-muted)]">
                     Alle Teilnehmer werden als "Wanderer" angezeigt
                   </p>
                 </div>
@@ -1314,8 +1316,8 @@ const Discover = () => {
 
             {/* Error Message */}
             {createError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl">
-                <p className="text-sm text-red-600">{createError}</p>
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <p className="text-sm text-red-500">{createError}</p>
               </div>
             )}
 
@@ -1326,14 +1328,14 @@ const Discover = () => {
                   setCreateError(null);
                 }}
                 disabled={isCreating}
-                className="flex-1 py-3 px-4 bg-gray-100 text-gray-600 rounded-xl font-semibold disabled:opacity-50"
+                className="flex-1 py-3 px-4 bg-[var(--delulu-bg)] text-[var(--delulu-muted)] rounded-xl font-semibold disabled:opacity-50 border border-[var(--delulu-border)]"
               >
                 Abbrechen
               </button>
               <button
                 onClick={handleCreateRoom}
                 disabled={!newRoomName.trim() || isCreating}
-                className="flex-1 py-3 px-4 bg-delulu-violet text-white rounded-xl font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 px-4 bg-[var(--delulu-accent)] text-white rounded-xl font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isCreating ? (
                   <>
@@ -1351,16 +1353,16 @@ const Discover = () => {
 
       {/* Vote Modal */}
       {showVoteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-[var(--delulu-card)] rounded-3xl p-6 shadow-2xl border border-[var(--delulu-border)]">
             <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <AlertTriangle size={32} className="text-red-600" />
+              <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle size={32} className="text-red-500" />
               </div>
-              <h2 className="font-display text-xl font-bold text-delulu-text mb-2">
+              <h2 className="font-display text-xl font-bold text-[var(--delulu-text)] mb-2">
                 User melden?
               </h2>
-              <p className="text-sm text-delulu-muted">
+              <p className="text-sm text-[var(--delulu-muted)]">
                 Bei mehreren Meldungen wird der User aus dem Wölkchen entfernt.
                 Missbrauch dieser Funktion wird geahndet.
               </p>
@@ -1369,7 +1371,7 @@ const Discover = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowVoteModal(null)}
-                className="flex-1 py-3 px-4 bg-gray-100 text-gray-600 rounded-xl font-semibold"
+                className="flex-1 py-3 px-4 bg-[var(--delulu-bg)] text-[var(--delulu-muted)] rounded-xl font-semibold border border-[var(--delulu-border)]"
               >
                 Abbrechen
               </button>
@@ -1387,21 +1389,21 @@ const Discover = () => {
 
       {/* AFK Warning Modal */}
       {(showAFKModal || afkWarning) && activeRoom && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl animate-pulse">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-[var(--delulu-card)] rounded-3xl p-6 shadow-2xl border border-[var(--delulu-border)] animate-pulse">
             <div className="text-center mb-6">
-              <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <AlertTriangle size={40} className="text-amber-600" />
+              <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <AlertTriangle size={40} className="text-amber-500" />
               </div>
-              <h2 className="font-display text-xl font-bold text-delulu-text mb-2">
+              <h2 className="font-display text-xl font-bold text-[var(--delulu-text)] mb-2">
                 Bist du noch da? 👋
               </h2>
-              <p className="text-sm text-delulu-muted mb-4">
+              <p className="text-sm text-[var(--delulu-muted)] mb-4">
                 Du hast schon länger nicht mehr gesprochen.
                 Bitte bestätige, dass du noch teilnimmst.
               </p>
               {afkTimeRemaining > 0 && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-600 rounded-full font-semibold">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 rounded-full font-semibold">
                   <Clock size={16} />
                   Auto-Kick in {afkTimeRemaining}s
                 </div>
@@ -1414,7 +1416,7 @@ const Discover = () => {
                   handleLeaveRoom();
                   setShowAFKModal(false);
                 }}
-                className="flex-1 py-3 px-4 bg-gray-100 text-gray-600 rounded-xl font-semibold"
+                className="flex-1 py-3 px-4 bg-[var(--delulu-bg)] text-[var(--delulu-muted)] rounded-xl font-semibold border border-[var(--delulu-border)]"
               >
                 Verlassen
               </button>

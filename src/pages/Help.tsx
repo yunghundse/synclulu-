@@ -1,5 +1,20 @@
+/**
+ * Help.tsx
+ * 💬 SOVEREIGN DISCOVERY v23.0 - Theme-Aware Help & FAQ Page
+ *
+ * Features:
+ * - Light/Dark mode support
+ * - Searchable FAQ
+ * - Category filters
+ * - Smooth animations
+ *
+ * @design Sovereign Discovery v23.0
+ * @version 23.0.0
+ */
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ChevronDown, ChevronRight, HelpCircle,
   MessageCircle, Shield, Star, Users, Mic,
@@ -128,127 +143,157 @@ const Help = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white safe-top safe-bottom pb-24">
+    <div className="min-h-screen bg-[var(--delulu-bg)] safe-top safe-bottom pb-24 theme-transition">
+      {/* Background Effect */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--delulu-accent)]/5 via-transparent to-transparent" />
+      </div>
+
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-gray-100">
+      <div className="sticky top-0 z-20 glass-nav border-b border-[var(--delulu-border)]">
         <div className="px-6 py-4 flex items-center gap-4">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-delulu-muted hover:bg-gray-200 transition-colors"
+            className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] flex items-center justify-center text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] transition-colors shadow-sm"
           >
             <ArrowLeft size={20} />
-          </button>
+          </motion.button>
           <div className="flex-1">
-            <h1 className="font-display text-xl font-bold text-delulu-text">
+            <h1 className="font-display text-xl font-bold text-[var(--delulu-text)]">
               Hilfe & FAQ
             </h1>
-            <p className="text-xs text-delulu-muted">Finde Antworten auf deine Fragen</p>
+            <p className="text-xs text-[var(--delulu-muted)]">Finde Antworten auf deine Fragen</p>
           </div>
         </div>
 
         {/* Search */}
         <div className="px-6 pb-4">
           <div className="relative">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-delulu-muted" />
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Suche in den FAQ..."
-              className="w-full pl-11 pr-4 py-3 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-delulu-violet/30"
+              className="w-full pl-11 pr-4 py-3 bg-[var(--delulu-card)] border border-[var(--delulu-border)] rounded-xl text-sm text-[var(--delulu-text)] placeholder-[var(--delulu-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--delulu-accent)]/30"
             />
           </div>
         </div>
       </div>
 
       {/* Categories */}
-      {!searchQuery && (
-        <div className="px-6 py-4">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-            <button
-              onClick={() => setActiveCategory(null)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
-                !activeCategory
-                  ? 'bg-delulu-violet text-white shadow-lg'
-                  : 'bg-gray-100 text-delulu-muted hover:bg-gray-200'
-              }`}
-            >
-              Alle
-            </button>
-            {categories.map((cat) => (
+      <AnimatePresence>
+        {!searchQuery && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="px-6 py-4"
+          >
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
               <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => setActiveCategory(null)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
-                  activeCategory === cat.id
-                    ? 'bg-delulu-violet text-white shadow-lg'
-                    : 'bg-gray-100 text-delulu-muted hover:bg-gray-200'
+                  !activeCategory
+                    ? 'bg-[var(--delulu-accent)] text-white shadow-lg'
+                    : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] border border-[var(--delulu-border)]'
                 }`}
               >
-                <cat.icon size={16} />
-                {cat.label}
+                Alle
               </button>
-            ))}
-          </div>
-        </div>
-      )}
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
+                    activeCategory === cat.id
+                      ? 'bg-[var(--delulu-accent)] text-white shadow-lg'
+                      : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] border border-[var(--delulu-border)]'
+                  }`}
+                >
+                  <cat.icon size={16} />
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* FAQ List */}
-      <div className="px-6 space-y-3">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="px-6 space-y-3"
+      >
         {filteredFAQ.length === 0 ? (
           <div className="text-center py-12">
-            <HelpCircle size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-delulu-muted">Keine Ergebnisse gefunden</p>
+            <HelpCircle size={48} className="mx-auto text-[var(--delulu-muted)] opacity-30 mb-4" />
+            <p className="text-[var(--delulu-muted)]">Keine Ergebnisse gefunden</p>
           </div>
         ) : (
           filteredFAQ.map((item, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-white rounded-2xl shadow-sm overflow-hidden"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.03 }}
+              className="bg-[var(--delulu-card)] rounded-2xl shadow-sm overflow-hidden border border-[var(--delulu-border)]"
             >
               <button
                 onClick={() => toggleQuestion(item.question)}
                 className="w-full flex items-center justify-between p-4 text-left"
               >
-                <span className="font-semibold text-delulu-text pr-4">
+                <span className="font-semibold text-[var(--delulu-text)] pr-4">
                   {item.question}
                 </span>
                 {expandedQuestion === item.question ? (
-                  <ChevronDown size={20} className="text-delulu-violet flex-shrink-0" />
+                  <ChevronDown size={20} className="text-[var(--delulu-accent)] flex-shrink-0" />
                 ) : (
-                  <ChevronRight size={20} className="text-delulu-muted flex-shrink-0" />
+                  <ChevronRight size={20} className="text-[var(--delulu-muted)] flex-shrink-0" />
                 )}
               </button>
 
-              {expandedQuestion === item.question && (
-                <div className="px-4 pb-4 pt-0">
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <p className="text-sm text-delulu-text leading-relaxed">
-                      {item.answer}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+              <AnimatePresence>
+                {expandedQuestion === item.question && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-4 pt-0">
+                      <div className="bg-[var(--delulu-bg)] rounded-xl p-4 border border-[var(--delulu-border)]">
+                        <p className="text-sm text-[var(--delulu-text)] leading-relaxed">
+                          {item.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))
         )}
-      </div>
+      </motion.div>
 
       {/* Contact Support */}
       <div className="px-6 py-8">
-        <div className="bg-gradient-to-br from-delulu-violet/10 to-purple-100 rounded-2xl p-6 text-center">
-          <MessageCircle size={32} className="mx-auto text-delulu-violet mb-3" />
-          <h3 className="font-display font-bold text-delulu-text mb-2">
+        <div className="bg-gradient-to-br from-[var(--delulu-accent)]/10 to-[var(--delulu-accent)]/5 rounded-2xl p-6 text-center border border-[var(--delulu-accent)]/20">
+          <MessageCircle size={32} className="mx-auto text-[var(--delulu-accent)] mb-3" />
+          <h3 className="font-display font-bold text-[var(--delulu-text)] mb-2">
             Noch Fragen?
           </h3>
-          <p className="text-sm text-delulu-muted mb-4">
+          <p className="text-sm text-[var(--delulu-muted)] mb-4">
             Unser Support-Team hilft dir gerne weiter
           </p>
 
           <div className="flex flex-col gap-3">
             <a
               href="mailto:support@delulu.app"
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-delulu-violet text-white rounded-xl font-semibold hover:bg-delulu-violet/90 transition-colors"
+              className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--delulu-accent)] text-white rounded-xl font-semibold hover:opacity-90 transition-opacity"
             >
               <Mail size={18} />
               E-Mail schreiben
@@ -257,7 +302,7 @@ const Help = () => {
               href="https://delulu.app/help"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-white text-delulu-text rounded-xl font-semibold hover:bg-gray-50 transition-colors border border-gray-200"
+              className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--delulu-card)] text-[var(--delulu-text)] rounded-xl font-semibold hover:opacity-90 transition-opacity border border-[var(--delulu-border)]"
             >
               <ExternalLink size={18} />
               Hilfe-Center besuchen
@@ -268,10 +313,16 @@ const Help = () => {
 
       {/* Legal Links */}
       <div className="px-6 pb-8">
-        <div className="flex justify-center gap-6 text-xs text-delulu-muted">
-          <a href="/privacy" className="hover:text-delulu-violet">Datenschutz</a>
-          <a href="/terms" className="hover:text-delulu-violet">AGB</a>
-          <a href="/imprint" className="hover:text-delulu-violet">Impressum</a>
+        <div className="flex justify-center gap-6 text-xs text-[var(--delulu-muted)]">
+          <button onClick={() => navigate('/privacy')} className="hover:text-[var(--delulu-accent)] transition-colors">
+            Datenschutz
+          </button>
+          <button onClick={() => navigate('/terms')} className="hover:text-[var(--delulu-accent)] transition-colors">
+            AGB
+          </button>
+          <button onClick={() => navigate('/imprint')} className="hover:text-[var(--delulu-accent)] transition-colors">
+            Impressum
+          </button>
         </div>
       </div>
     </div>

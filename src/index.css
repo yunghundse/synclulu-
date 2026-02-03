@@ -2733,3 +2733,393 @@ input[type="range"]::-moz-range-thumb {
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOVEREIGN DISCOVERY v23.0 - Final Design Finish
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* --- Legal Container (Minimalist Obsidian) --- */
+.legal-container {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  border-radius: 40px;
+  padding: 40px;
+  margin: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* --- Support Header (Gradient Text) --- */
+.support-header {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  background: linear-gradient(to right, #fff, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --- Sovereign Discovery Orb --- */
+.discovery-orb {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  box-shadow:
+    0 0 60px rgba(124, 58, 237, 0.4),
+    0 0 120px rgba(124, 58, 237, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.discovery-orb:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 80px rgba(124, 58, 237, 0.5),
+    0 0 160px rgba(124, 58, 237, 0.3),
+    inset 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+.discovery-orb:active {
+  transform: scale(0.95);
+}
+
+/* --- Trust Ring Animation --- */
+@keyframes trust-ring-pulse {
+  0%, 100% {
+    stroke-opacity: 0.8;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  50% {
+    stroke-opacity: 1;
+    filter: drop-shadow(0 0 16px currentColor);
+  }
+}
+
+.trust-ring-animated {
+  animation: trust-ring-pulse 2s ease-in-out infinite;
+}
+
+/* --- Glass Blade (Messenger Slide) --- */
+.glass-blade {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Cloud Sheet (Bottom Sheet) --- */
+.cloud-sheet {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(50px) saturate(200%);
+  -webkit-backdrop-filter: blur(50px) saturate(200%);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* --- Obsidian Card --- */
+.obsidian-card {
+  background: rgba(15, 15, 15, 0.9);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Sovereign Action Button --- */
+.sovereign-action-btn {
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+}
+
+.sovereign-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(124, 58, 237, 0.4);
+}
+
+.sovereign-action-btn:active {
+  transform: translateY(0);
+}
+
+/* --- Harmony Color Tokens --- */
+:root {
+  --sovereign-obsidian: #050505;
+  --sovereign-action: #7c3aed;
+  --sovereign-trust: #10b981;
+  --sovereign-warning: #f59e0b;
+  --sovereign-danger: #ef4444;
+}
+
+/* --- Safe Areas for iOS --- */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-left {
+  padding-left: env(safe-area-inset-left, 0);
+}
+
+.safe-right {
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+/* --- Error Boundary Styles --- */
+.error-boundary-container {
+  position: fixed;
+  inset: 0;
+  background: var(--sovereign-obsidian);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.error-boundary-card {
+  max-width: 400px;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AURA NETWORK ANIMATIONS v1.0
+   GPU-accelerated animations for the home screen Aura Node Network
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* --- Slow Pulse Animation (for ambient glow effects) --- */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* --- Aura Glow Animation (for node outer rings) --- */
+@keyframes aura-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    opacity: 0.6;
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+    opacity: 1;
+  }
+}
+
+.animate-aura-glow {
+  animation: aura-glow 3s ease-in-out infinite;
+  will-change: box-shadow, opacity;
+}
+
+/* --- Scan Ripple Effect --- */
+@keyframes scan-ripple {
+  0% {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-scan-ripple {
+  animation: scan-ripple 1.5s ease-out infinite;
+  will-change: transform, opacity;
+}
+
+/* --- Node Float Animation (subtle floating movement) --- */
+@keyframes node-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-3px) translateX(2px);
+  }
+  50% {
+    transform: translateY(-1px) translateX(-2px);
+  }
+  75% {
+    transform: translateY(-4px) translateX(1px);
+  }
+}
+
+.animate-node-float {
+  animation: node-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* --- Connection Line Pulse --- */
+@keyframes connection-pulse {
+  0%, 100% {
+    stroke-opacity: 0.2;
+    stroke-width: 0.5;
+  }
+  50% {
+    stroke-opacity: 0.5;
+    stroke-width: 1;
+  }
+}
+
+.animate-connection-pulse {
+  animation: connection-pulse 2s ease-in-out infinite;
+  will-change: stroke-opacity, stroke-width;
+}
+
+/* --- Trust Ring Progress Animation --- */
+@keyframes trust-ring-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-trust-ring {
+  animation: trust-ring-spin 20s linear infinite;
+  will-change: transform;
+}
+
+/* --- Create Button Pulse --- */
+@keyframes create-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(139, 92, 246, 0);
+  }
+}
+
+.animate-create-pulse {
+  animation: create-pulse 2s ease-in-out infinite;
+  will-change: box-shadow;
+}
+
+/* --- Notification Badge Bounce --- */
+@keyframes badge-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-badge-bounce {
+  animation: badge-bounce 0.6s ease-in-out;
+  will-change: transform;
+}
+
+/* --- Network Shimmer Effect --- */
+@keyframes network-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-network-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 92, 246, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: network-shimmer 3s linear infinite;
+  will-change: background-position;
+}
+
+/* --- GPU Acceleration Helpers --- */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* --- Reduced Motion Preferences --- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-slow,
+  .animate-aura-glow,
+  .animate-scan-ripple,
+  .animate-node-float,
+  .animate-connection-pulse,
+  .animate-trust-ring,
+  .animate-create-pulse,
+  .animate-badge-bounce,
+  .animate-network-shimmer {
+    animation: none !important;
+  }
+}
+
+/* --- Aura Network Container --- */
+.aura-network-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Aura Node Base Styles --- */
+.aura-node {
+  position: absolute;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+.aura-node:active {
+  transform: scale(0.9);
+}
+
+/* --- Quick Preview Card --- */
+.aura-quick-preview {
+  position: fixed;
+  bottom: 6rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 50;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}

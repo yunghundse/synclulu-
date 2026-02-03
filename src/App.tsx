@@ -55,6 +55,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import NotificationToast from '@/components/NotificationToast';
 import MaintenanceOverlay from '@/components/MaintenanceOverlay';
 import { NebulaBackground } from '@/components/NebulaBackground';
+import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -189,15 +190,16 @@ function App() {
 
   // Fully authenticated and onboarded
   return (
-    <ThemeProvider>
-      <NotificationProvider>
-        <div className="min-h-screen min-h-[100dvh] bg-[var(--delulu-bg)] pb-24 theme-transition relative">
-          {/* 🌌 Nebula Animated Background */}
-          <NebulaBackground intensity={0.6} />
+    <GlobalErrorBoundary>
+      <ThemeProvider>
+        <NotificationProvider>
+          <div className="min-h-screen min-h-[100dvh] bg-[var(--delulu-bg)] pb-24 theme-transition relative">
+            {/* 🌌 Nebula Animated Background */}
+            <NebulaBackground intensity={0.6} />
 
-          <NotificationToast />
-          <XPToast />
-          <Routes>
+            <NotificationToast />
+            <XPToast />
+            <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/messages" element={<Messages />} />
@@ -233,10 +235,11 @@ function App() {
             <Route path="/onboarding" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <BottomNav />
-        </div>
-      </NotificationProvider>
-    </ThemeProvider>
+            <BottomNav />
+          </div>
+        </NotificationProvider>
+      </ThemeProvider>
+    </GlobalErrorBoundary>
   );
 }
 

@@ -1,16 +1,17 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * RADAR PAGE v2.0 - Elastic Proximity Engine Edition
+ * RADAR PAGE - Sovereign Discovery v23.0
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * Features:
- * - Patent-level Elastic Proximity Engine visualization
- * - Dynamic aura that breathes with network activity
+ * - Theme-aware design (light/dark mode)
+ * - Elastic Proximity Engine visualization
+ * - Dynamic aura with breathing animation
  * - Privacy-preserving user discovery
  * - Hotspot tunneling for sparse areas
  *
- * @design Apple Maps meets Social Discovery
- * @version 2.0.0 - Silicon Valley Edition
+ * @design Sovereign Discovery v23.0
+ * @version 23.0.0
  */
 
 import { useState, useEffect, useMemo } from 'react';
@@ -25,7 +26,7 @@ import {
   ChevronLeft, Settings, Filter, MapPin, Users,
   Sparkles, Crown, Star, Clock, ChevronRight,
   Zap, Heart, MessageCircle, Radar, RefreshCw,
-  Navigation, Compass, Shield, Eye, EyeOff
+  Navigation, Compass, Shield, Eye, EyeOff, User
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -134,25 +135,39 @@ const RadarPage: React.FC = () => {
   // Request location permission
   if (!location && !geoError) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-violet-950 via-purple-950 to-black flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-[var(--delulu-bg)] flex flex-col items-center justify-center p-6 theme-transition">
+        {/* Background gradient */}
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--delulu-accent)]/10 via-transparent to-transparent" />
+        </div>
+
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-center"
+          className="text-center relative z-10"
         >
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+          <motion.div
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--delulu-accent)] to-pink-500 flex items-center justify-center shadow-xl"
+            style={{ boxShadow: '0 0 40px var(--delulu-accent)' }}
+          >
             <Navigation className="w-12 h-12 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Standort aktivieren</h1>
-          <p className="text-violet-200 mb-6 max-w-xs mx-auto">
+          </motion.div>
+          <h1 className="text-2xl font-bold text-[var(--delulu-text)] mb-2">
+            Standort aktivieren
+          </h1>
+          <p className="text-[var(--delulu-muted)] mb-6 max-w-xs mx-auto">
             Um deine Aura zu entfalten und Menschen in der Nähe zu entdecken
           </p>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={requestPermission}
-            className="px-8 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl shadow-lg shadow-violet-500/30"
+            className="px-8 py-4 bg-gradient-to-r from-[var(--delulu-accent)] to-pink-500 text-white font-semibold rounded-2xl shadow-lg"
+            style={{ boxShadow: '0 4px 20px var(--delulu-accent)' }}
           >
             Standort freigeben
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     );
@@ -161,189 +176,296 @@ const RadarPage: React.FC = () => {
   // Error state
   if (geoError) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-violet-950 via-purple-950 to-black flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-[var(--delulu-bg)] flex flex-col items-center justify-center p-6 theme-transition">
         <div className="text-center">
-          <MapPin className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h1 className="text-xl font-bold text-white mb-2">Standort nicht verfügbar</h1>
-          <p className="text-violet-200">{geoError}</p>
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+            <MapPin className="w-10 h-10 text-red-400" />
+          </div>
+          <h1 className="text-xl font-bold text-[var(--delulu-text)] mb-2">
+            Standort nicht verfügbar
+          </h1>
+          <p className="text-[var(--delulu-muted)]">{geoError}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-6 px-6 py-3 bg-[var(--delulu-card)] text-[var(--delulu-text)] rounded-xl border border-[var(--delulu-border)]"
+          >
+            Zurück
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-950 via-purple-950 to-black">
+    <div className="min-h-screen bg-[var(--delulu-bg)] safe-top safe-bottom pb-24 theme-transition">
+      {/* Background Effect */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--delulu-accent)]/5 via-transparent to-transparent" />
+        {/* Animated glow */}
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full"
+          style={{ background: 'radial-gradient(circle, var(--delulu-accent) 0%, transparent 70%)' }}
+        />
+      </div>
+
       {/* Expansion Indicator */}
       <AuraExpansionIndicator aura={aura} />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between bg-black/20 backdrop-blur-lg">
-        <button onClick={() => navigate(-1)} className="p-2">
-          <ChevronLeft className="w-6 h-6 text-white" />
-        </button>
-
-        <div className="flex items-center gap-2">
-          <Radar className="w-5 h-5 text-violet-400" />
-          <span className="font-bold text-white">Elastic Aura</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowPrivacyInfo(true)}
-            className="p-2 rounded-full hover:bg-white/10"
+      <header className="sticky top-0 z-40 glass-nav border-b border-[var(--delulu-border)]">
+        <div className="px-4 py-3 flex items-center justify-between">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] flex items-center justify-center shadow-sm border border-[var(--delulu-border)]"
           >
-            <Shield className="w-5 h-5 text-green-400" />
-          </button>
-          <button
-            onClick={refreshAura}
-            className={`p-2 rounded-full hover:bg-white/10 ${auraLoading ? 'animate-spin' : ''}`}
-          >
-            <RefreshCw className="w-5 h-5 text-white" />
-          </button>
+            <ChevronLeft className="w-5 h-5 text-[var(--delulu-muted)]" />
+          </motion.button>
+
+          <div className="flex items-center gap-2">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+            >
+              <Radar className="w-5 h-5 text-[var(--delulu-accent)]" />
+            </motion.div>
+            <span className="font-display font-bold text-[var(--delulu-text)]">Elastic Aura</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowPrivacyInfo(true)}
+              className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center"
+            >
+              <Shield className="w-5 h-5 text-green-500" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={refreshAura}
+              className={`w-10 h-10 rounded-xl bg-[var(--delulu-card)] flex items-center justify-center shadow-sm border border-[var(--delulu-border)] ${auraLoading ? 'animate-spin' : ''}`}
+            >
+              <RefreshCw className="w-5 h-5 text-[var(--delulu-muted)]" />
+            </motion.button>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="relative z-10">
         {/* View Toggle */}
         <div className="flex justify-center gap-2 p-4">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={() => setViewMode('aura')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               viewMode === 'aura'
-                ? 'bg-violet-500 text-white'
-                : 'bg-white/10 text-white/60'
+                ? 'bg-[var(--delulu-accent)] text-white shadow-lg'
+                : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] border border-[var(--delulu-border)]'
             }`}
           >
             <Compass className="w-4 h-4 inline mr-2" />
             Aura
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={() => setViewMode('list')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               viewMode === 'list'
-                ? 'bg-violet-500 text-white'
-                : 'bg-white/10 text-white/60'
+                ? 'bg-[var(--delulu-accent)] text-white shadow-lg'
+                : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] border border-[var(--delulu-border)]'
             }`}
           >
             <Users className="w-4 h-4 inline mr-2" />
             Liste ({stats.totalNearby})
-          </button>
+          </motion.button>
         </div>
 
         {/* Aura View */}
-        {viewMode === 'aura' && (
-          <div className="px-4">
-            <div className="relative aspect-square max-w-md mx-auto">
-              <AuraVisualization
-                userLocation={userLocation}
-                userInterests={userInterests}
-                showMiniMap={true}
-                onUserTap={handleUserTap}
-                className="w-full h-full"
-              />
-            </div>
+        <AnimatePresence mode="wait">
+          {viewMode === 'aura' && (
+            <motion.div
+              key="aura"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="px-4"
+            >
+              <div className="relative aspect-square max-w-md mx-auto">
+                <AuraVisualization
+                  userLocation={userLocation}
+                  userInterests={userInterests}
+                  showMiniMap={true}
+                  onUserTap={handleUserTap}
+                  className="w-full h-full"
+                />
+              </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-3 mt-6">
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-white">{aura?.currentRadius.toFixed(0) || '-'}</div>
-                <div className="text-xs text-violet-300">km Radius</div>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-3 mt-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="bg-[var(--delulu-card)] backdrop-blur-sm rounded-2xl p-4 text-center shadow-sm border border-[var(--delulu-border)]"
+                >
+                  <div className="text-2xl font-bold text-[var(--delulu-text)]">
+                    {aura?.currentRadius.toFixed(0) || '-'}
+                  </div>
+                  <div className="text-xs text-[var(--delulu-muted)]">km Radius</div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-[var(--delulu-card)] backdrop-blur-sm rounded-2xl p-4 text-center shadow-sm border border-[var(--delulu-border)]"
+                >
+                  <div className="text-2xl font-bold text-green-500">{stats.activeNearby}</div>
+                  <div className="text-xs text-[var(--delulu-muted)]">Aktiv</div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="bg-[var(--delulu-card)] backdrop-blur-sm rounded-2xl p-4 text-center shadow-sm border border-[var(--delulu-border)]"
+                >
+                  <div className="text-2xl font-bold text-amber-500">
+                    {aura?.magicDensity.toFixed(1) || '-'}
+                  </div>
+                  <div className="text-xs text-[var(--delulu-muted)]">/km² Magie</div>
+                </motion.div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-green-400">{stats.activeNearby}</div>
-                <div className="text-xs text-violet-300">Aktiv</div>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-amber-400">{aura?.magicDensity.toFixed(1) || '-'}</div>
-                <div className="text-xs text-violet-300">/km² Magie</div>
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* List View */}
-        {viewMode === 'list' && (
-          <div className="px-4 pb-24">
-            {/* Filter */}
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => setFilterActive(!filterActive)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm ${
-                  filterActive
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                    : 'bg-white/10 text-white/60'
-                }`}
+              {/* Info Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-6 p-4 bg-[var(--delulu-accent)]/10 rounded-2xl border border-[var(--delulu-accent)]/20"
               >
-                {filterActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                {filterActive ? 'Nur Aktive' : 'Alle zeigen'}
-              </button>
-              <span className="text-white/40 text-sm">{nearbyUsers.length} gefunden</span>
-            </div>
-
-            {/* User List */}
-            <div className="space-y-3">
-              {nearbyUsers.length === 0 ? (
-                <div className="text-center py-12">
-                  <Sparkles className="w-12 h-12 text-violet-400 mx-auto mb-4 opacity-50" />
-                  <p className="text-white/60">Keine Nutzer in der Nähe</p>
-                  <p className="text-white/40 text-sm mt-1">Deine Aura weitet sich aus...</p>
+                <div className="flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-[var(--delulu-accent)] mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-[var(--delulu-text)] text-sm">
+                      Deine Aura passt sich an
+                    </p>
+                    <p className="text-xs text-[var(--delulu-muted)] mt-1">
+                      Je mehr Menschen in deiner Nähe sind, desto fokussierter wird dein Radius.
+                      In ruhigeren Gegenden dehnt sich deine Aura automatisch aus.
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                nearbyUsers.map((user, index) => (
-                  <motion.button
-                    key={user.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => handleUserTap(user.id)}
-                    className="w-full bg-white/5 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4 hover:bg-white/10 transition-all"
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* List View */}
+          {viewMode === 'list' && (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="px-4 pb-24"
+            >
+              {/* Filter */}
+              <div className="flex items-center justify-between mb-4">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setFilterActive(!filterActive)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    filterActive
+                      ? 'bg-green-500/10 text-green-500 border border-green-500/20'
+                      : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] border border-[var(--delulu-border)]'
+                  }`}
+                >
+                  {filterActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  {filterActive ? 'Nur Aktive' : 'Alle zeigen'}
+                </motion.button>
+                <span className="text-[var(--delulu-muted)] text-sm">
+                  {nearbyUsers.length} gefunden
+                </span>
+              </div>
+
+              {/* User List */}
+              <div className="space-y-3">
+                {nearbyUsers.length === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center py-16"
                   >
-                    {/* Avatar */}
-                    <div className="relative">
-                      <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                        {user.avatarUrl ? (
-                          <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-white font-bold text-lg">
-                            {user.displayName[0]}
-                          </span>
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--delulu-accent)]/10 flex items-center justify-center"
+                    >
+                      <Sparkles className="w-8 h-8 text-[var(--delulu-accent)]" />
+                    </motion.div>
+                    <p className="text-[var(--delulu-text)] font-semibold">Keine Nutzer in der Nähe</p>
+                    <p className="text-[var(--delulu-muted)] text-sm mt-1">
+                      Deine Aura weitet sich aus...
+                    </p>
+                  </motion.div>
+                ) : (
+                  nearbyUsers.map((nearbyUser, index) => (
+                    <motion.button
+                      key={nearbyUser.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleUserTap(nearbyUser.id)}
+                      className="w-full bg-[var(--delulu-card)] backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-[var(--delulu-border)] hover:border-[var(--delulu-accent)]/30 transition-all"
+                    >
+                      {/* Avatar */}
+                      <div className="relative">
+                        <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-[var(--delulu-accent)] to-pink-500 flex items-center justify-center">
+                          {nearbyUser.avatarUrl ? (
+                            <img src={nearbyUser.avatarUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <User className="w-6 h-6 text-white" />
+                          )}
+                        </div>
+                        {nearbyUser.isActive && (
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--delulu-card)]" />
                         )}
                       </div>
-                      {user.isActive && (
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-violet-950" />
-                      )}
-                    </div>
 
-                    {/* Info */}
-                    <div className="flex-1 text-left">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-white">{user.displayName}</span>
-                        {user.isPremium && <Crown className="w-4 h-4 text-amber-400" />}
-                        {user.isStar && <Star className="w-4 h-4 text-pink-400" fill="currentColor" />}
+                      {/* Info */}
+                      <div className="flex-1 text-left">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-[var(--delulu-text)]">
+                            {nearbyUser.displayName}
+                          </span>
+                          {nearbyUser.isPremium && <Crown className="w-4 h-4 text-amber-500" />}
+                          {nearbyUser.isStar && <Star className="w-4 h-4 text-pink-500" fill="currentColor" />}
+                        </div>
+                        <div className="text-sm text-[var(--delulu-muted)]">@{nearbyUser.username}</div>
                       </div>
-                      <div className="text-sm text-white/50">@{user.username}</div>
-                    </div>
 
-                    {/* Distance Badge */}
-                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.distance === 'same'
-                        ? 'bg-green-500/20 text-green-400'
-                        : user.distance === 'near'
-                        ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-white/10 text-white/50'
-                    }`}>
-                      {user.distance === 'same' ? 'Sehr nah' :
-                       user.distance === 'near' ? 'In der Nähe' : 'Weiter weg'}
-                    </div>
+                      {/* Distance Badge */}
+                      <div className={`px-3 py-1.5 rounded-xl text-xs font-semibold ${
+                        nearbyUser.distance === 'same'
+                          ? 'bg-green-500/10 text-green-500'
+                          : nearbyUser.distance === 'near'
+                          ? 'bg-amber-500/10 text-amber-500'
+                          : 'bg-[var(--delulu-bg)] text-[var(--delulu-muted)]'
+                      }`}>
+                        {nearbyUser.distance === 'same' ? 'Sehr nah' :
+                         nearbyUser.distance === 'near' ? 'In der Nähe' : 'Weiter weg'}
+                      </div>
 
-                    <ChevronRight className="w-5 h-5 text-white/30" />
-                  </motion.button>
-                ))
-              )}
-            </div>
-          </div>
-        )}
+                      <ChevronRight className="w-5 h-5 text-[var(--delulu-muted)]" />
+                    </motion.button>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Privacy Info Modal */}
@@ -353,47 +475,59 @@ const RadarPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end justify-center"
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center"
             onClick={() => setShowPrivacyInfo(false)}
           >
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={e => e.stopPropagation()}
-              className="w-full max-w-lg bg-gradient-to-b from-violet-900 to-purple-950 rounded-t-3xl p-6"
+              className="w-full max-w-lg bg-[var(--delulu-card)] rounded-t-3xl p-6 border-t border-x border-[var(--delulu-border)]"
             >
-              <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6" />
+              <div className="w-12 h-1 bg-[var(--delulu-border)] rounded-full mx-auto mb-6" />
 
               <div className="flex items-center gap-3 mb-4">
-                <Shield className="w-8 h-8 text-green-400" />
-                <h2 className="text-xl font-bold text-white">Privacy by Design</h2>
+                <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-green-500" />
+                </div>
+                <h2 className="text-xl font-bold text-[var(--delulu-text)]">Privacy by Design</h2>
               </div>
 
-              <div className="space-y-4 text-white/80 text-sm">
+              <div className="space-y-4 text-[var(--delulu-muted)] text-sm">
                 <p>
-                  <strong className="text-white">Deine exakten Koordinaten werden NIE gespeichert.</strong>
+                  <strong className="text-[var(--delulu-text)]">Deine exakten Koordinaten werden NIE gespeichert.</strong>
                 </p>
                 <p>
                   Wir verwenden ein Hexagonal-Cell-System (ähnlich H3 von Uber), das nur ungefähre Bereiche vergleicht.
                 </p>
-                <p>
-                  <strong className="text-green-400">Dein Geohash:</strong> {privacyLocation?.geohash || 'Lädt...'}
-                </p>
-                <p>
-                  <strong className="text-violet-400">Deine Hex-Cell:</strong> {privacyLocation?.hexCell || 'Lädt...'}
-                </p>
+                <div className="p-4 bg-[var(--delulu-bg)] rounded-xl space-y-2">
+                  <p className="flex items-center justify-between">
+                    <span className="text-green-500 font-medium">Dein Geohash:</span>
+                    <code className="text-[var(--delulu-text)] font-mono text-xs bg-[var(--delulu-card)] px-2 py-1 rounded">
+                      {privacyLocation?.geohash || 'Lädt...'}
+                    </code>
+                  </p>
+                  <p className="flex items-center justify-between">
+                    <span className="text-[var(--delulu-accent)] font-medium">Deine Hex-Cell:</span>
+                    <code className="text-[var(--delulu-text)] font-mono text-xs bg-[var(--delulu-card)] px-2 py-1 rounded">
+                      {privacyLocation?.hexCell || 'Lädt...'}
+                    </code>
+                  </p>
+                </div>
                 <p>
                   Andere User sehen nur, ob sie in derselben oder benachbarten Cell sind - nie deinen genauen Standort.
                 </p>
               </div>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setShowPrivacyInfo(false)}
-                className="w-full mt-6 py-4 bg-white/10 rounded-2xl text-white font-semibold"
+                className="w-full mt-6 py-4 bg-[var(--delulu-accent)] rounded-2xl text-white font-semibold"
               >
                 Verstanden
-              </button>
+              </motion.button>
             </motion.div>
           </motion.div>
         )}
