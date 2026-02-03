@@ -283,21 +283,56 @@ export const HotspotRadar = memo(function HotspotRadar({
         <LoadingSkeleton />
       ) : displayHotspots.length === 0 ? (
         <div className="px-4">
-          <div
-            className="rounded-2xl p-6 text-center"
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl p-6 text-center relative overflow-hidden"
             style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 5, 5, 0.9) 100%)',
+              border: '1px solid rgba(16, 185, 129, 0.15)',
             }}
           >
-            <Radio size={24} className="text-white/20 mx-auto mb-2" />
-            <p className="text-xs text-white/40">
-              Keine aktiven Hotspots in der Nähe
-            </p>
-            <p className="text-[10px] text-white/30 mt-1">
-              Erstelle selbst einen neuen Hotspot!
-            </p>
-          </div>
+            {/* Animated Pulse */}
+            <motion.div
+              className="absolute inset-0 rounded-2xl"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+              }}
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            <div className="relative">
+              <motion.div
+                className="w-14 h-14 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 flex items-center justify-center mx-auto mb-3"
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                <Radio size={24} className="text-emerald-400" />
+              </motion.div>
+
+              <h4 className="text-sm font-bold text-white mb-1">Niemand in Reichweite</h4>
+              <p className="text-xs text-white/40">
+                Gerade sind keine Wölkchen aktiv in deiner Nähe.
+              </p>
+              <p className="text-[10px] text-emerald-400/60 mt-2">
+                Probier es später nochmal oder erweitere deinen Radius
+              </p>
+            </div>
+          </motion.div>
         </div>
       ) : (
         <AnimatePresence mode="popLayout">

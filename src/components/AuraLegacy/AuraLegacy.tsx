@@ -11,7 +11,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Clock, Cloud, Sparkles, TrendingUp } from 'lucide-react';
-import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -78,6 +78,26 @@ function formatTimeAgo(date: Date): string {
 export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }) => {
   const [recentRooms, setRecentRooms] = useState<RecentRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [liveStats, setLiveStats] = useState<UserStats>(userStats);
+
+  // Subscribe to realtime user stats
+  useEffect(() => {
+    if (!userId) return;
+
+    const userRef = doc(db, 'users', userId);
+    const unsubscribe = onSnapshot(userRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        setLiveStats({
+          voice_minutes: data.totalVoiceMinutes || data.voice_minutes || 0,
+          rooms_visited: data.roomsVisited || data.rooms_visited || 0,
+          total_sessions: data.totalSessions || data.total_sessions || 0,
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [userId]);
 
   // Fetch recent room visits
   useEffect(() => {
@@ -96,10 +116,10 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
         );
 
         const snapshot = await getDocs(roomVisitsQuery);
-        const rooms: RecentRoom[] = snapshot.docs.map((doc) => {
-          const data = doc.data();
+        const rooms: RecentRoom[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
           return {
-            id: doc.id,
+            id: docSnap.id,
             name: data.roomName || 'Unbenanntes Wölkchen',
             visitedAt: data.visitedAt?.toDate() || new Date(),
             duration: data.duration || 0,
@@ -117,9 +137,10 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
     fetchRecentRooms();
   }, [userId]);
 
-  const voiceMinutes = userStats.voice_minutes || 0;
-  const roomsVisited = userStats.rooms_visited || 0;
-  const totalSessions = userStats.total_sessions || 0;
+  // Use live stats if available, fallback to props
+  const voiceMinutes = liveStats.voice_minutes || userStats.voice_minutes || 0;
+  const roomsVisited = liveStats.rooms_visited || userStats.rooms_visited || 0;
+  const totalSessions = liveStats.total_sessions || userStats.total_sessions || 0;
 
   return (
     <div className="w-full mb-4">

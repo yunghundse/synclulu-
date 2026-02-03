@@ -314,28 +314,24 @@ const Settings = () => {
             </button>
           )}
 
-          {/* Creator werden */}
+          {/* Creator werden - Coming Soon */}
           {!isVerifiedStar && (
             <button
               onClick={() => setActiveSection('creator')}
-              className="w-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-4 text-left"
+              className="w-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-4 text-left relative overflow-hidden"
             >
+              {/* Coming Soon Badge */}
+              <div className="absolute top-2 right-2 px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-full">
+                Coming Soon
+              </div>
+
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                   <Sparkles size={24} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-delulu-text">Creator werden</h3>
-                    {isCreatorEligible && (
-                      <span className="px-1.5 py-0.5 bg-green-100 rounded text-[10px] font-bold text-green-600">
-                        ✓ Berechtigt
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-delulu-muted">
-                    {isCreatorEligible ? 'Jetzt bewerben!' : 'Dein Fortschritt zum Stars Programm'}
-                  </p>
+                  <h3 className="font-semibold text-delulu-text">Creator werden</h3>
+                  <p className="text-xs text-delulu-muted">Bald verfügbar</p>
                 </div>
                 <ChevronRight size={20} className="text-delulu-muted" />
               </div>
@@ -623,140 +619,91 @@ const Settings = () => {
         </div>
       )}
 
-      {/* Creator Section */}
+      {/* Creator Section - Coming Soon */}
       {activeSection === 'creator' && (
         <div className="px-6 py-4 space-y-4">
-          {isCreatorEligible ? (
-            <>
-              <div className="p-4 bg-green-50 rounded-2xl flex items-start gap-3">
-                <CheckCircle2 size={24} className="text-green-600 flex-shrink-0" />
+          {/* Coming Soon Banner */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-100 via-pink-50 to-amber-50 p-6">
+            {/* Decorative Background */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-300/30 to-pink-300/30 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-amber-300/30 to-orange-300/30 rounded-full blur-3xl" />
+
+            {/* Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full mb-4">
+              <Clock size={12} />
+              Bald verfügbar
+            </div>
+
+            {/* Content */}
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                  <Sparkles size={28} className="text-white" />
+                </div>
                 <div>
-                  <p className="font-semibold text-green-800">Du bist berechtigt!</p>
-                  <p className="text-sm text-green-700 mt-1">
-                    Du erfüllst alle Anforderungen und kannst dich jetzt als Creator bewerben.
-                  </p>
+                  <h2 className="text-xl font-bold text-gray-800">Creator Programm</h2>
+                  <p className="text-sm text-gray-500">Coming Soon</p>
                 </div>
               </div>
 
-              <button
-                onClick={() => navigate('/stars/apply')}
-                className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold flex items-center justify-center gap-2"
-              >
-                <Sparkles size={20} />
-                Jetzt als Creator bewerben
-              </button>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-delulu-muted">
-                Erfülle die folgenden Anforderungen, um dich als Creator zu bewerben:
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Wir arbeiten gerade an einem aufregenden Creator-Programm für dich!
+                Bald kannst du verifizierter Star werden, Live-Events hosten und deine eigene Community aufbauen.
               </p>
 
-              <div className="bg-white rounded-2xl shadow-sm p-4 space-y-4">
-                {/* Stars Progress */}
-                <div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="flex items-center gap-2 text-delulu-muted">
-                      <Star size={16} className="text-amber-500" />
-                      Sterne erhalten
-                    </span>
-                    <span className={totalStarsReceived >= CREATOR_REQUIREMENTS.starsRequired ? 'text-green-500 font-medium' : 'text-delulu-muted'}>
-                      {totalStarsReceived} / {CREATOR_REQUIREMENTS.starsRequired}
-                    </span>
+              {/* Features Preview */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-white/60 rounded-xl p-3">
+                  <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mb-2">
+                    <Radio size={16} className="text-purple-600" />
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        totalStarsReceived >= CREATOR_REQUIREMENTS.starsRequired ? 'bg-green-500' : 'bg-amber-400'
-                      }`}
-                      style={{ width: `${creatorProgress.stars}%` }}
-                    />
-                  </div>
+                  <p className="text-xs font-semibold text-gray-700">Live Events</p>
+                  <p className="text-[10px] text-gray-500">Hoste eigene Sessions</p>
                 </div>
-
-                {/* Level Progress */}
-                <div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="flex items-center gap-2 text-delulu-muted">
-                      <TrendingUp size={16} className="text-purple-500" />
-                      Level
-                    </span>
-                    <span className={level >= CREATOR_REQUIREMENTS.levelRequired ? 'text-green-500 font-medium' : 'text-delulu-muted'}>
-                      {level} / {CREATOR_REQUIREMENTS.levelRequired}
-                    </span>
+                <div className="bg-white/60 rounded-xl p-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center mb-2">
+                    <Star size={16} className="text-amber-600" />
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        level >= CREATOR_REQUIREMENTS.levelRequired ? 'bg-green-500' : 'bg-purple-400'
-                      }`}
-                      style={{ width: `${creatorProgress.level}%` }}
-                    />
-                  </div>
+                  <p className="text-xs font-semibold text-gray-700">Verifizierung</p>
+                  <p className="text-[10px] text-gray-500">Offizieller Star-Status</p>
                 </div>
-
-                {/* Voice Minutes Progress */}
-                <div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="flex items-center gap-2 text-delulu-muted">
-                      <Clock size={16} className="text-blue-500" />
-                      Voice-Minuten
-                    </span>
-                    <span className={totalVoiceMinutes >= CREATOR_REQUIREMENTS.voiceMinutesRequired ? 'text-green-500 font-medium' : 'text-delulu-muted'}>
-                      {totalVoiceMinutes} / {CREATOR_REQUIREMENTS.voiceMinutesRequired}
-                    </span>
+                <div className="bg-white/60 rounded-xl p-3">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center mb-2">
+                    <Users size={16} className="text-emerald-600" />
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        totalVoiceMinutes >= CREATOR_REQUIREMENTS.voiceMinutesRequired ? 'bg-green-500' : 'bg-blue-400'
-                      }`}
-                      style={{ width: `${creatorProgress.voice}%` }}
-                    />
-                  </div>
+                  <p className="text-xs font-semibold text-gray-700">Community</p>
+                  <p className="text-[10px] text-gray-500">Baue deine Fanbase</p>
                 </div>
-
-                {/* Positive Ratings Progress */}
-                <div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="flex items-center gap-2 text-delulu-muted">
-                      <Users size={16} className="text-green-500" />
-                      Positive Bewertungen
-                    </span>
-                    <span className={positiveRatingsPercentage >= CREATOR_REQUIREMENTS.minPositiveRatings ? 'text-green-500 font-medium' : 'text-delulu-muted'}>
-                      {positiveRatingsPercentage}% / {CREATOR_REQUIREMENTS.minPositiveRatings}%
-                    </span>
+                <div className="bg-white/60 rounded-xl p-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mb-2">
+                    <TrendingUp size={16} className="text-blue-600" />
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        positiveRatingsPercentage >= CREATOR_REQUIREMENTS.minPositiveRatings ? 'bg-green-500' : 'bg-green-400'
-                      }`}
-                      style={{ width: `${creatorProgress.ratings}%` }}
-                    />
-                  </div>
+                  <p className="text-xs font-semibold text-gray-700">Analytics</p>
+                  <p className="text-[10px] text-gray-500">Verfolge dein Wachstum</p>
                 </div>
               </div>
 
-              <div className="p-4 bg-purple-50 rounded-2xl">
-                <p className="text-sm text-purple-800">
-                  <strong>Tipp:</strong> Sei aktiv in Voice-Räumen, sammle Sterne von anderen Nutzern und erreiche ein hohes Level durch regelmäßige Nutzung!
-                </p>
-              </div>
-            </>
-          )}
+              {/* Disabled Button */}
+              <button
+                disabled
+                className="w-full py-4 rounded-xl bg-gray-200 text-gray-400 font-semibold cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Clock size={18} />
+                Demnächst verfügbar
+              </button>
+            </div>
+          </div>
 
-          {/* Alternative: Apply as Influencer */}
-          <div className="pt-4 border-t border-gray-200">
-            <p className="text-sm text-delulu-muted mb-3">
-              Oder bewerbe dich als Influencer/VIP, wenn du bereits eine Fangemeinde hast:
-            </p>
-            <button
-              onClick={() => navigate('/stars/apply')}
-              className="w-full py-3 border-2 border-purple-300 text-purple-600 rounded-xl font-semibold"
-            >
-              Als Influencer bewerben →
-            </button>
+          {/* Info Box */}
+          <div className="p-4 bg-blue-50 rounded-2xl flex items-start gap-3">
+            <Info size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm text-blue-800 font-medium">Bleib dran!</p>
+              <p className="text-xs text-blue-600 mt-1">
+                Wir benachrichtigen dich, sobald das Creator-Programm verfügbar ist.
+                In der Zwischenzeit: Sammle XP und baue deinen Trust-Score auf!
+              </p>
+            </div>
           </div>
         </div>
       )}

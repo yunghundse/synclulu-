@@ -709,21 +709,13 @@ export default function SovereignHomeV3() {
           isLoading={isLoadingHotspots}
         />
 
-        {/* Hotspot Radar */}
-        {!isLoadingHotspots && hotspots.length === 0 ? (
-          <div className="px-4">
-            <PioneerState
-              type="no_hotspots"
-              onAction={handleCreateCloud}
-            />
-          </div>
-        ) : (
-          <HotspotRadar
-            hotspots={hotspots}
-            isLoading={isLoadingHotspots}
-            maxItems={5}
-          />
-        )}
+        {/* Hotspot Radar - Always show, handles empty state internally */}
+        <HotspotRadar
+          hotspots={hotspots}
+          isLoading={isLoadingHotspots}
+          maxItems={5}
+          onHotspotClick={(id) => navigate(`/room/${id}`)}
+        />
       </div>
 
       {/* Note: Quick Action now in BottomNav Central Button */}

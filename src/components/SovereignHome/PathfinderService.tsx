@@ -277,8 +277,59 @@ export const PathfinderService = memo(function PathfinderService({
     );
   }
 
+  // Show empty state when no suggestions
   if (visibleSuggestions.length === 0) {
-    return null;
+    return (
+      <div className="px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl p-5 text-center relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(5, 5, 5, 0.9) 100%)',
+            border: '1px solid rgba(59, 130, 246, 0.15)',
+          }}
+        >
+          {/* Subtle Background Animation */}
+          <motion.div
+            className="absolute inset-0 rounded-2xl"
+            style={{
+              background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.08) 0%, transparent 70%)',
+            }}
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          <div className="relative">
+            <motion.div
+              className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-3"
+              animate={{
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              <Compass size={22} className="text-blue-400" />
+            </motion.div>
+
+            <h4 className="text-sm font-bold text-white mb-1">Kein Vibe gerade</h4>
+            <p className="text-xs text-white/40 max-w-[200px] mx-auto">
+              Gerade gibt es keine besonderen Aktivitäten in deiner Nähe.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    );
   }
 
   return (
