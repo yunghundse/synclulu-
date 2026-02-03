@@ -649,20 +649,33 @@ export default function SovereignHomeV3() {
       />
 
       {/* ═══════════════════════════════════════ */}
-      {/* AURA HEADER OVERLAY - Floating over content */}
+      {/* COMMAND HEADER - Profile, Location, Notifications */}
+      {/* ═══════════════════════════════════════ */}
+      <CommandHeader
+        userProfile={userProfile}
+        unreadNotifications={unreadNotifications}
+        unreadMessages={unreadMessages}
+        pendingFriendRequests={pendingFriendRequests}
+        currentLocation={currentLocation}
+        vibeLevel={vibeLevel}
+        nearestHotspot={nearestHotspot}
+        isLocationWeak={locationWeak || locationDenied}
+        onProfileClick={() => navigate('/profile')}
+        onNotificationsClick={() => navigate('/notifications')}
+        onMessagesClick={() => navigate('/messages')}
+      />
+
+      {/* ═══════════════════════════════════════ */}
+      {/* AURA PROGRESS MODULE - XP Bar & Streak */}
       {/* ═══════════════════════════════════════ */}
       {user?.uid && (
-        <AuraHeaderOverlay
-          userId={user.uid}
-          user={{
-            displayName: userProfile?.displayName,
-            photoURL: userProfile?.photoURL,
-          }}
-        />
+        <div className="px-4 pt-2">
+          <HomeProgressAura userId={user.uid} />
+        </div>
       )}
 
-      {/* Main Content - Extra padding top for AuraHeaderOverlay */}
-      <div className="space-y-6 pt-32">
+      {/* Main Content */}
+      <div className="space-y-6 pt-4">
         {/* Rising Stars Module */}
         {!isLoadingStars && risingStars.length === 0 ? (
           <div className="px-4">
