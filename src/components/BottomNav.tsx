@@ -1,156 +1,131 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * BOTTOM NAVIGATION - Sovereign Discovery v23.0
+ * BOTTOM NAVIGATION - Sovereign Discovery v24.0
  * ═══════════════════════════════════════════════════════════════════════════
  *
- * Clean 4-Item Navigation with Floating Cloud Banner
+ * Clean 4-Item Navigation with Central Action Button (+)
  * - Index 0: Home/Radar
  * - Index 1: Discover/Wölkchen
+ * - CENTRAL: + Button (CloudActionMenu)
  * - Index 2: Messages
  * - Index 3: Profil
  *
- * + Floating "Surfe auf neuen Wolken" Banner above navigation
- *
- * @version 23.0.0
+ * @version 24.0.0
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Compass, MessageCircle, User, Cloud, Sparkles, X } from 'lucide-react';
+import { Home, Compass, MessageCircle, User, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CloudActionMenu } from './CloudActionMenu';
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
 
-  // Don't show banner on discover page
-  const isOnDiscoverPage = location.pathname === '/discover';
-  const showBanner = !bannerDismissed && !isOnDiscoverPage;
-
-  const handleBannerClick = () => {
-    // Haptic feedback
+  // Haptic feedback helper
+  const triggerHaptic = useCallback(() => {
     if ('vibrate' in navigator) {
       navigator.vibrate([10, 5, 10]);
     }
-    navigate('/discover');
-  };
+  }, []);
 
-  const navItems = [
+  // Central Action Button handlers
+  const handleActionClick = useCallback(() => {
+    triggerHaptic();
+    setIsActionMenuOpen(true);
+  }, [triggerHaptic]);
+
+  const handleSearchClick = useCallback(() => {
+    navigate('/discover');
+  }, [navigate]);
+
+  const handleCreateClick = useCallback(() => {
+    navigate('/create-room');
+  }, [navigate]);
+
+  // Navigation items (split for central button)
+  const leftNavItems = [
     { to: '/', icon: Home, label: 'Home' },
     { to: '/discover', icon: Compass, label: 'Entdecken' },
+  ];
+
+  const rightNavItems = [
     { to: '/messages', icon: MessageCircle, label: 'Chat' },
     { to: '/profile', icon: User, label: 'Profil' },
   ];
 
   return (
     <>
-      {/* Floating Cloud Banner */}
-      <AnimatePresence>
-        {showBanner && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-24 left-4 right-4 z-[55]"
-          >
-            <motion.button
-              onClick={handleBannerClick}
-              whileTap={{ scale: 0.98 }}
-              className="relative w-full overflow-hidden rounded-2xl shadow-xl"
-              style={{
-                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.95) 0%, rgba(236, 72, 153, 0.95) 100%)',
-                backdropFilter: 'blur(10px)',
-              }}
-            >
-              {/* Animated background sparkles */}
-              <motion.div
-                className="absolute inset-0 opacity-30"
-                animate={{
-                  backgroundPosition: ['0% 0%', '100% 100%'],
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  repeatType: 'reverse',
-                }}
-                style={{
-                  backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px), radial-gradient(circle at 50% 20%, white 1px, transparent 1px)',
-                  backgroundSize: '100px 100px',
-                }}
-              />
+      {/* Cloud Action Menu */}
+      <CloudActionMenu
+        isOpen={isActionMenuOpen}
+        onClose={() => setIsActionMenuOpen(false)}
+        onSearch={handleSearchClick}
+        onCreate={handleCreateClick}
+      />
 
-              {/* Content */}
-              <div className="relative flex items-center justify-between px-5 py-3.5">
-                <div className="flex items-center gap-3">
-                  <motion.div
-                    animate={{ y: [0, -2, 0], rotate: [0, 5, 0] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm"
-                  >
-                    <Cloud size={22} className="text-white" />
-                  </motion.div>
-                  <div className="text-left">
-                    <p className="text-white font-bold text-sm tracking-wide">
-                      Surfe jetzt auf neuen Wolken
-                    </p>
-                    <p className="text-white/70 text-xs">
-                      Entdecke Voice Räume in deiner Nähe
-                    </p>
-                  </div>
-                </div>
+      {/* Central Action Button (+) - Floating above nav */}
+      <motion.button
+        onClick={handleActionClick}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-[52px] left-1/2 -translate-x-1/2 z-[100]"
+        style={{
+          width: 56,
+          height: 56,
+        }}
+      >
+        {/* Pulse Effect */}
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+          }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 0, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
 
-                <div className="flex items-center gap-2">
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <Sparkles size={18} className="text-white/80" />
-                  </motion.div>
-                </div>
-              </div>
-
-              {/* Shimmer effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                }}
-              />
-            </motion.button>
-
-            {/* Dismiss button */}
-            <motion.button
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                setBannerDismissed(true);
-              }}
-              className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[var(--delulu-card)] border border-[var(--delulu-border)] flex items-center justify-center shadow-lg"
-            >
-              <X size={14} className="text-[var(--delulu-muted)]" />
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Button */}
+        <div
+          className="relative w-full h-full rounded-full flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+            boxShadow: '0 4px 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.2)',
+          }}
+        >
+          <Plus size={28} className="text-white" strokeWidth={2.5} />
+        </div>
+      </motion.button>
 
       {/* Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 glass-nav safe-bottom z-50 theme-transition">
+      <nav
+        className="fixed bottom-0 left-0 right-0 safe-bottom z-50 theme-transition"
+        style={{
+          background: 'rgba(5, 5, 5, 0.85)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+        }}
+      >
         <div className="flex items-center justify-around h-20 max-w-lg mx-auto px-4">
-          {navItems.map(({ to, icon: Icon, label }) => (
+          {/* Left Nav Items */}
+          {leftNavItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 ${
                   isActive
-                    ? 'text-[var(--delulu-accent)]'
-                    : 'text-[var(--delulu-muted)] hover:text-[var(--delulu-text)]'
+                    ? 'text-violet-400'
+                    : 'text-white/40 hover:text-white/60'
                 }`
               }
             >
@@ -161,15 +136,58 @@ const BottomNav = () => {
                     className="relative"
                     style={{
                       filter: isActive
-                        ? 'drop-shadow(0 0 8px var(--delulu-accent)) drop-shadow(0 0 3px var(--delulu-accent))'
+                        ? 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))'
                         : 'none',
                     }}
                   >
                     <Icon size={22} strokeWidth={isActive ? 2.5 : 2} stroke="currentColor" />
                     {isActive && (
                       <motion.div
-                        layoutId="nav-indicator"
-                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[var(--delulu-accent)] rounded-full shadow-[0_0_6px_var(--delulu-accent)]"
+                        layoutId="nav-indicator-left"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-violet-400 rounded-full"
+                        style={{ boxShadow: '0 0 6px rgba(139, 92, 246, 0.6)' }}
+                      />
+                    )}
+                  </motion.div>
+                  <span className="text-[10px] font-medium">{label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
+
+          {/* Central Spacer for the + button */}
+          <div className="w-16" />
+
+          {/* Right Nav Items */}
+          {rightNavItems.map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 ${
+                  isActive
+                    ? 'text-violet-400'
+                    : 'text-white/40 hover:text-white/60'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <motion.div
+                    animate={isActive ? { scale: 1.1 } : { scale: 1 }}
+                    className="relative"
+                    style={{
+                      filter: isActive
+                        ? 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))'
+                        : 'none',
+                    }}
+                  >
+                    <Icon size={22} strokeWidth={isActive ? 2.5 : 2} stroke="currentColor" />
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-indicator-right"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-violet-400 rounded-full"
+                        style={{ boxShadow: '0 0 6px rgba(139, 92, 246, 0.6)' }}
                       />
                     )}
                   </motion.div>

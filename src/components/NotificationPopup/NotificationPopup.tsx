@@ -127,19 +127,19 @@ export const NotificationPopup = memo(function NotificationPopup({
         >
           {/* Glow Effect */}
           <div
-            className="absolute inset-0 rounded-2xl blur-xl opacity-50"
+            className="absolute inset-0 rounded-[32px] blur-xl opacity-50"
             style={{ background: config.glowColor }}
           />
 
-          {/* Main Container - DARKMODE SAFE */}
+          {/* Main Container - OBSIDIAN GLASS STANDARD */}
           <div
-            className="relative overflow-hidden rounded-2xl"
+            className="relative overflow-hidden rounded-[32px]"
             style={{
-              background: 'rgba(5, 5, 5, 0.85)', // Midnight Obsidian
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              background: 'rgba(5, 5, 5, 0.92)', // Midnight Obsidian
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
               border: `1px solid ${config.borderColor}`,
-              boxShadow: `0 0 30px ${config.glowColor}, 0 4px 20px rgba(0, 0, 0, 0.3)`,
+              boxShadow: `0 0 40px ${config.glowColor}, 0 8px 32px rgba(0, 0, 0, 0.4)`,
             }}
           >
             {/* Gradient Border Accent */}

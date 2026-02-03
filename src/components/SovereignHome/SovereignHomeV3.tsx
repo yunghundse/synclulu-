@@ -17,8 +17,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Bell,
   MessageCircle,
-  Settings,
-  Plus,
   Sparkles,
   Shield,
 } from 'lucide-react';
@@ -277,44 +275,7 @@ const CommandHeader = memo(function CommandHeader({
   );
 });
 
-// Quick Action Button
-const QuickActionOrb = memo(function QuickActionOrb({
-  onClick,
-}: {
-  onClick: () => void;
-}) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      onClick={onClick}
-      className="fixed bottom-24 right-4 z-40"
-    >
-      {/* Pulse Effect */}
-      <motion.div
-        className="absolute inset-0 rounded-full bg-violet-500"
-        animate={{
-          scale: [1, 1.4, 1],
-          opacity: [0.4, 0, 0.4],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-
-      {/* Button */}
-      <div
-        className="relative w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 flex items-center justify-center"
-        style={{
-          boxShadow: '0 4px 30px rgba(139, 92, 246, 0.5)',
-        }}
-      >
-        <Plus size={24} className="text-white" />
-      </div>
-    </motion.button>
-  );
-});
+// Note: QuickActionOrb removed - Central Action Button now in BottomNav
 
 // Main Component
 export default function SovereignHomeV3() {
@@ -691,8 +652,7 @@ export default function SovereignHomeV3() {
         )}
       </div>
 
-      {/* Quick Action Orb */}
-      <QuickActionOrb onClick={handleCreateCloud} />
+      {/* Note: Quick Action now in BottomNav Central Button */}
 
       {/* Orbital Menu */}
       <OrbitalMenu

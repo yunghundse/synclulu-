@@ -33,6 +33,7 @@ import {
 import ReferralSection from '@/components/ReferralSection';
 import DreamPassButton from '@/components/DreamPassButton';
 import { useDreamPass } from '@/hooks/useDreamPass';
+import { AuraLegacy } from '@/components/AuraLegacy';
 import {
   getLevelTitle,
   getStreakMultiplier,
@@ -300,6 +301,20 @@ const Profile = () => {
           </p>
         </div>
       </div>
+
+      {/* ═══════════════════════════════════════ */}
+      {/* AURA-LEGACY - Voice History & Stats */}
+      {/* ═══════════════════════════════════════ */}
+      {user?.id && (
+        <AuraLegacy
+          userId={user.id}
+          userStats={{
+            voice_minutes: totalVoiceMinutes,
+            rooms_visited: (user as any)?.roomsVisited || 0,
+            total_sessions: (user as any)?.totalSessions || 0,
+          }}
+        />
+      )}
 
       {/* ═══════════════════════════════════════ */}
       {/* DREAM PASS - Beta Battle Pass */}

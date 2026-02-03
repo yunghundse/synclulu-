@@ -16,6 +16,7 @@ import {
 import { CREATOR_REQUIREMENTS } from '@/types';
 import PrivacySettings from '@/components/PrivacySettings';
 import WhatsNewModal from '@/components/WhatsNewModal';
+import { CatalystTeaser } from '@/components/CatalystTeaser';
 
 type SettingsSection = 'account' | 'privacy' | 'notifications' | 'blocked' | 'danger' | 'language' | 'creator' | 'legal';
 
@@ -359,6 +360,11 @@ const Settings = () => {
               </div>
             </button>
           )}
+
+          {/* ═══════════════════════════════════════ */}
+          {/* CATALYST-MODUS - Golden Teaser */}
+          {/* ═══════════════════════════════════════ */}
+          <CatalystTeaser />
 
           {/* Support */}
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden divide-y divide-gray-100">
