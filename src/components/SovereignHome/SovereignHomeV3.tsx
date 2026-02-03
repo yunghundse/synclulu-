@@ -36,6 +36,9 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../hooks/useAuth';
+import { useRealtimeNotifications, RealtimeNotification } from '../../hooks/useRealtimeNotifications';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { usePreciseLocation } from '../../hooks/usePreciseLocation';
 
 // Components
 import { SmartLocationBadge } from './SmartLocationBadge';
@@ -43,6 +46,10 @@ import { RisingStars, RisingStar } from './RisingStars';
 import { HotspotRadar, Hotspot } from './HotspotRadar';
 import { PathfinderService, PathfinderSuggestion } from './PathfinderService';
 import { OrbitalMenu } from './OrbitalMenu';
+import { StarParticles } from '../StarParticles';
+import { NotificationPopup } from '../NotificationPopup';
+import { PermissionOverlay } from '../PermissionOverlay';
+import { PioneerState } from '../EmptyStates';
 
 // Types
 interface UserProfile {
@@ -113,9 +120,11 @@ const CommandHeader = memo(function CommandHeader({
   userProfile,
   unreadNotifications,
   unreadMessages,
+  pendingFriendRequests,
   currentLocation,
   vibeLevel,
   nearestHotspot,
+  isLocationWeak,
   onProfileClick,
   onNotificationsClick,
   onMessagesClick,
@@ -123,9 +132,11 @@ const CommandHeader = memo(function CommandHeader({
   userProfile: UserProfile | null;
   unreadNotifications: number;
   unreadMessages: number;
+  pendingFriendRequests: number;
   currentLocation?: string;
   vibeLevel: 'niedrig' | 'mittel' | 'hoch' | 'extrem';
   nearestHotspot?: { name: string; distance: number };
+  isLocationWeak?: boolean;
   onProfileClick: () => void;
   onNotificationsClick: () => void;
   onMessagesClick: () => void;
@@ -196,11 +207,24 @@ const CommandHeader = memo(function CommandHeader({
                 <Shield size={10} className="text-white" />
               </div>
             )}
+
+            {/* Friend Request Badge */}
+            {pendingFriendRequests > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -left-1 min-w-[18px] h-[18px] rounded-full bg-red-500 flex items-center justify-center px-1"
+              >
+                <span className="text-[9px] font-bold text-white">
+                  {pendingFriendRequests > 9 ? '9+' : pendingFriendRequests}
+                </span>
+              </motion.div>
+            )}
           </motion.button>
 
           {/* Smart Location Badge */}
           <SmartLocationBadge
-            currentLocation={currentLocation}
+            currentLocation={isLocationWeak ? 'Standort-Vakuum' : currentLocation}
             vibeLevel={vibeLevel}
             nearestHotspot={nearestHotspot}
           />
@@ -305,8 +329,83 @@ export default function SovereignHomeV3() {
   const [suggestions, setSuggestions] = useState<PathfinderSuggestion[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
-  const [currentLocation, setCurrentLocation] = useState<string>('Berlin');
-  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [pendingFriendRequests, setPendingFriendRequests] = useState(0);
+
+  // Realtime notification state
+  const [showStarParticles, setShowStarParticles] = useState(false);
+  const [notificationPopup, setNotificationPopup] = useState<{
+    isVisible: boolean;
+    variant: 'star' | 'friend_request' | 'friend_accepted' | 'message' | 'default';
+    title: string;
+    message: string;
+    avatarUrl?: string;
+  }>({ isVisible: false, variant: 'default', title: '', message: '' });
+
+  // Permission Guard
+  const {
+    permissions,
+    isBlocked: permissionBlocked,
+    missingPermissions,
+    requestGeolocation,
+    requestMicrophone,
+    requestNotifications,
+    openSystemSettings,
+  } = usePermissionGuard();
+
+  // Precise Location with Reverse Geocoding
+  const {
+    location: preciseLocation,
+    geocoded,
+    isLoading: locationLoading,
+    isWeak: locationWeak,
+    isDenied: locationDenied,
+  } = usePreciseLocation();
+
+  // Computed location values
+  const currentLocation = geocoded?.formatted || (locationWeak ? 'Standort-Vakuum' : 'Standort ermitteln...');
+  const userCoords = preciseLocation ? { lat: preciseLocation.latitude, lng: preciseLocation.longitude } : null;
+
+  // Realtime Notifications Handler
+  const handleStarReceived = useCallback((notification: RealtimeNotification) => {
+    setShowStarParticles(true);
+    setNotificationPopup({
+      isVisible: true,
+      variant: 'star',
+      title: '⭐ Stern erhalten!',
+      message: `${notification.senderName || 'Jemand'} hat dir einen Stern geschenkt!`,
+      avatarUrl: notification.senderAvatar,
+    });
+  }, []);
+
+  const handleFriendRequest = useCallback((notification: RealtimeNotification) => {
+    setPendingFriendRequests((prev) => prev + 1);
+    setNotificationPopup({
+      isVisible: true,
+      variant: 'friend_request',
+      title: '👥 Freundschaftsanfrage',
+      message: `${notification.senderName || 'Jemand'} möchte dein Freund sein`,
+      avatarUrl: notification.senderAvatar,
+    });
+  }, []);
+
+  const handleFriendAccepted = useCallback((notification: RealtimeNotification) => {
+    setNotificationPopup({
+      isVisible: true,
+      variant: 'friend_accepted',
+      title: '🎉 Freund hinzugefügt!',
+      message: `${notification.senderName || 'Jemand'} hat deine Anfrage angenommen`,
+      avatarUrl: notification.senderAvatar,
+    });
+  }, []);
+
+  // Subscribe to realtime notifications
+  useRealtimeNotifications(user?.uid, {
+    onStar: handleStarReceived,
+    onFriendRequest: handleFriendRequest,
+    onFriendAccepted: handleFriendAccepted,
+    enableSounds: true,
+    enableHaptics: true,
+  });
 
   // Calculate vibe level based on hotspots
   const vibeLevel = useMemo(() => {
@@ -349,22 +448,7 @@ export default function SovereignHomeV3() {
     fetchProfile();
   }, [user?.uid]);
 
-  // Get user location
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserCoords({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-        }
-      );
-    }
-  }, []);
+  // Location is now handled by usePreciseLocation hook above
 
   // Subscribe to active rooms (hotspots)
   useEffect(() => {
@@ -557,9 +641,11 @@ export default function SovereignHomeV3() {
         userProfile={userProfile}
         unreadNotifications={unreadNotifications}
         unreadMessages={unreadMessages}
+        pendingFriendRequests={pendingFriendRequests}
         currentLocation={currentLocation}
         vibeLevel={vibeLevel}
         nearestHotspot={nearestHotspot}
+        isLocationWeak={locationWeak || locationDenied}
         onProfileClick={() => navigate('/profile')}
         onNotificationsClick={() => navigate('/notifications')}
         onMessagesClick={() => navigate('/messages')}
@@ -568,10 +654,19 @@ export default function SovereignHomeV3() {
       {/* Main Content */}
       <div className="space-y-6 pt-4">
         {/* Rising Stars Module */}
-        <RisingStars
-          stars={risingStars}
-          isLoading={isLoading}
-        />
+        {risingStars.length === 0 && !isLoading ? (
+          <div className="px-4">
+            <PioneerState
+              type="no_creators"
+              onAction={() => navigate('/discover')}
+            />
+          </div>
+        ) : (
+          <RisingStars
+            stars={risingStars}
+            isLoading={isLoading}
+          />
+        )}
 
         {/* Pathfinder Service */}
         <PathfinderService
@@ -580,11 +675,20 @@ export default function SovereignHomeV3() {
         />
 
         {/* Hotspot Radar */}
-        <HotspotRadar
-          hotspots={hotspots}
-          isLoading={isLoading}
-          maxItems={5}
-        />
+        {hotspots.length === 0 && !isLoading ? (
+          <div className="px-4">
+            <PioneerState
+              type="no_hotspots"
+              onAction={handleCreateCloud}
+            />
+          </div>
+        ) : (
+          <HotspotRadar
+            hotspots={hotspots}
+            isLoading={isLoading}
+            maxItems={5}
+          />
+        )}
       </div>
 
       {/* Quick Action Orb */}
@@ -595,6 +699,33 @@ export default function SovereignHomeV3() {
         unreadMessages={unreadMessages}
         newDiscoveries={hotspots.filter(h => h.isNew).length}
         onCreateClick={handleCreateCloud}
+      />
+
+      {/* Star Particles Effect */}
+      <StarParticles
+        isActive={showStarParticles}
+        onComplete={() => setShowStarParticles(false)}
+      />
+
+      {/* Notification Popup */}
+      <NotificationPopup
+        isVisible={notificationPopup.isVisible}
+        variant={notificationPopup.variant}
+        title={notificationPopup.title}
+        message={notificationPopup.message}
+        avatarUrl={notificationPopup.avatarUrl}
+        onClose={() => setNotificationPopup((prev) => ({ ...prev, isVisible: false }))}
+        duration={5000}
+      />
+
+      {/* Permission Overlay */}
+      <PermissionOverlay
+        isVisible={permissionBlocked || locationDenied}
+        missingPermissions={missingPermissions}
+        onRequestGeolocation={requestGeolocation}
+        onRequestMicrophone={requestMicrophone}
+        onRequestNotifications={requestNotifications}
+        onOpenSettings={openSystemSettings}
       />
     </div>
   );
