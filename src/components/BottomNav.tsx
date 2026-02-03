@@ -66,17 +66,36 @@ const BottomNav = () => {
         onCreate={handleCreateClick}
       />
 
-      {/* Central Action Button (+) - Floating above nav */}
+      {/* Central Action Button (+) - Floating above nav - MAXIMUM Z-INDEX */}
       <motion.button
         onClick={handleActionClick}
         whileTap={{ scale: 0.9 }}
-        className="fixed bottom-[52px] left-1/2 -translate-x-1/2 z-[100]"
+        className="fixed left-1/2 -translate-x-1/2"
         style={{
-          width: 56,
-          height: 56,
+          bottom: 56,
+          width: 64,
+          height: 64,
+          zIndex: 99999, // Maximum z-index
         }}
       >
-        {/* Pulse Effect */}
+        {/* Outer Glow Ring */}
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%)',
+          }}
+          animate={{
+            scale: [1, 1.6, 1],
+            opacity: [0.7, 0, 0.7],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Inner Pulse Effect */}
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{
@@ -87,21 +106,22 @@ const BottomNav = () => {
             opacity: [0.5, 0, 0.5],
           }}
           transition={{
-            duration: 2,
+            duration: 1.5,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
         />
 
-        {/* Button */}
+        {/* Button Core */}
         <div
           className="relative w-full h-full rounded-full flex items-center justify-center"
           style={{
             background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-            boxShadow: '0 4px 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.2)',
+            boxShadow: '0 8px 32px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
+            border: '3px solid rgba(255, 255, 255, 0.2)',
           }}
         >
-          <Plus size={28} className="text-white" strokeWidth={2.5} />
+          <Plus size={32} className="text-white" strokeWidth={2.5} />
         </div>
       </motion.button>
 

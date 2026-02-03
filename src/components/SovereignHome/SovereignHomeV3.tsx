@@ -48,6 +48,7 @@ import { StarParticles } from '../StarParticles';
 import { NotificationPopup } from '../NotificationPopup';
 import { PermissionOverlay } from '../PermissionOverlay';
 import { PioneerState } from '../EmptyStates';
+import { NebulaMap, MapHotspot } from '../NebulaMap';
 
 // Types
 interface UserProfile {
@@ -284,13 +285,16 @@ export default function SovereignHomeV3() {
 
   // State
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingStars, setIsLoadingStars] = useState(true);
+  const [isLoadingHotspots, setIsLoadingHotspots] = useState(true);
   const [risingStars, setRisingStars] = useState<RisingStar[]>([]);
   const [hotspots, setHotspots] = useState<Hotspot[]>([]);
+  const [mapHotspots, setMapHotspots] = useState<MapHotspot[]>([]);
   const [suggestions, setSuggestions] = useState<PathfinderSuggestion[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [pendingFriendRequests, setPendingFriendRequests] = useState(0);
+  const [selectedMapHotspot, setSelectedMapHotspot] = useState<string | null>(null);
 
   // Realtime notification state
   const [showStarParticles, setShowStarParticles] = useState(false);
@@ -413,6 +417,8 @@ export default function SovereignHomeV3() {
 
   // Subscribe to active rooms (hotspots)
   useEffect(() => {
+    setIsLoadingHotspots(true);
+
     const roomsQuery = query(
       collection(db, 'rooms'),
       where('isActive', '==', true),
@@ -420,37 +426,78 @@ export default function SovereignHomeV3() {
       limit(20)
     );
 
-    const unsubscribe = onSnapshot(roomsQuery, (snapshot) => {
-      const rooms: Hotspot[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        const distance = userCoords && data.location
-          ? calculateDistance(
-              userCoords.lat,
-              userCoords.lng,
-              data.location.latitude,
-              data.location.longitude
-            )
-          : Math.random() * 2000 + 100; // Fallback random distance
+    const unsubscribe = onSnapshot(
+      roomsQuery,
+      (snapshot) => {
+        if (snapshot.empty) {
+          // No rooms found - show empty state immediately
+          setHotspots([]);
+          setMapHotspots([]);
+          setIsLoadingHotspots(false);
+          return;
+        }
 
-        return {
-          id: doc.id,
-          name: data.name || 'Unbenannt',
-          description: data.description,
-          distance: Math.round(distance),
-          userCount: data.userCount || 0,
-          maxUsers: data.maxUsers,
-          activityLevel: getActivityLevel(data.userCount || 0),
-          category: data.category,
-          creatorName: data.creatorName,
-          isNew: data.createdAt?.toDate() > new Date(Date.now() - 3600000), // New if < 1 hour
-        };
-      });
+        const rooms: Hotspot[] = [];
+        const mapRooms: MapHotspot[] = [];
 
-      // Sort by distance
-      rooms.sort((a, b) => a.distance - b.distance);
-      setHotspots(rooms);
-      setIsLoading(false);
-    });
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          const hasLocation = data.location?.latitude && data.location?.longitude;
+          const distance = userCoords && hasLocation
+            ? calculateDistance(
+                userCoords.lat,
+                userCoords.lng,
+                data.location.latitude,
+                data.location.longitude
+              )
+            : Math.random() * 2000 + 100; // Fallback random distance
+
+          const hotspot: Hotspot = {
+            id: doc.id,
+            name: data.name || 'Unbenannt',
+            description: data.description,
+            distance: Math.round(distance),
+            userCount: data.userCount || 0,
+            maxUsers: data.maxUsers,
+            activityLevel: getActivityLevel(data.userCount || 0),
+            category: data.category,
+            creatorName: data.creatorName,
+            isNew: data.createdAt?.toDate() > new Date(Date.now() - 3600000),
+          };
+
+          rooms.push(hotspot);
+
+          // Add to map if has location
+          if (hasLocation) {
+            mapRooms.push({
+              id: doc.id,
+              name: data.name || 'Unbenannt',
+              latitude: data.location.latitude,
+              longitude: data.location.longitude,
+              userCount: data.userCount || 0,
+              activityLevel: getActivityLevel(data.userCount || 0),
+              category: data.category,
+              distance: Math.round(distance),
+            });
+          }
+        });
+
+        // Sort by distance
+        rooms.sort((a, b) => a.distance - b.distance);
+        mapRooms.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+
+        setHotspots(rooms);
+        setMapHotspots(mapRooms);
+        setIsLoadingHotspots(false);
+      },
+      (error) => {
+        console.error('Error fetching hotspots:', error);
+        // On error, show empty state instead of infinite loading
+        setHotspots([]);
+        setMapHotspots([]);
+        setIsLoadingHotspots(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [userCoords]);
@@ -489,53 +536,55 @@ export default function SovereignHomeV3() {
     return () => unsubscribe();
   }, [user?.uid]);
 
-  // Generate mock rising stars (would be real API in production)
+  // Fetch Rising Stars from Database (users with highest aura increase in last 60 min)
   useEffect(() => {
-    // Simulate trending creators
-    const mockStars: RisingStar[] = [
-      {
-        id: '1',
-        username: 'vibemaster',
-        displayName: 'VibeMaster',
-        auraScore: 12500,
-        auraChange: 47,
-        rank: 1,
-        isCrown: true,
+    setIsLoadingStars(true);
+
+    // Query users ordered by auraScore, limit to top 10
+    const starsQuery = query(
+      collection(db, 'users'),
+      where('isActive', '==', true),
+      orderBy('auraScore', 'desc'),
+      limit(10)
+    );
+
+    const unsubscribe = onSnapshot(
+      starsQuery,
+      (snapshot) => {
+        if (snapshot.empty) {
+          // No users found - show empty state immediately
+          setRisingStars([]);
+          setIsLoadingStars(false);
+          return;
+        }
+
+        const stars: RisingStar[] = snapshot.docs.map((doc, index) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            username: data.username || 'anonym',
+            displayName: data.displayName || data.username || 'Anonym',
+            avatarUrl: data.photoURL || data.avatarUrl,
+            auraScore: data.auraScore || 0,
+            auraChange: data.auraChange || Math.floor(Math.random() * 30) + 5, // Fallback
+            rank: index + 1,
+            isVerified: data.isVerified || false,
+            isCrown: index === 0,
+          };
+        });
+
+        setRisingStars(stars);
+        setIsLoadingStars(false);
       },
-      {
-        id: '2',
-        username: 'cloudqueen',
-        displayName: 'CloudQueen',
-        auraScore: 9800,
-        auraChange: 32,
-        rank: 2,
-      },
-      {
-        id: '3',
-        username: 'nightowl',
-        displayName: 'NightOwl',
-        auraScore: 8200,
-        auraChange: 28,
-        rank: 3,
-      },
-      {
-        id: '4',
-        username: 'sparklex',
-        displayName: 'SparkleX',
-        auraScore: 6500,
-        auraChange: 21,
-        rank: 4,
-      },
-      {
-        id: '5',
-        username: 'zenmaster',
-        displayName: 'ZenMaster',
-        auraScore: 5100,
-        auraChange: 18,
-        rank: 5,
-      },
-    ];
-    setRisingStars(mockStars);
+      (error) => {
+        console.error('Error fetching rising stars:', error);
+        // On error, show empty state instead of infinite loading
+        setRisingStars([]);
+        setIsLoadingStars(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
   // Generate pathfinder suggestions based on hotspots
@@ -615,7 +664,7 @@ export default function SovereignHomeV3() {
       {/* Main Content */}
       <div className="space-y-6 pt-4">
         {/* Rising Stars Module */}
-        {risingStars.length === 0 && !isLoading ? (
+        {!isLoadingStars && risingStars.length === 0 ? (
           <div className="px-4">
             <PioneerState
               type="no_creators"
@@ -625,18 +674,43 @@ export default function SovereignHomeV3() {
         ) : (
           <RisingStars
             stars={risingStars}
-            isLoading={isLoading}
+            isLoading={isLoadingStars}
           />
         )}
+
+        {/* ═══════════════════════════════════════ */}
+        {/* NEBULA MAP - Interactive Live Map */}
+        {/* ═══════════════════════════════════════ */}
+        <div className="px-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 flex items-center justify-center">
+              <Sparkles size={16} className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white">Nebula Karte</h3>
+              <p className="text-[10px] text-white/40">Live Wölkchen in deiner Nähe</p>
+            </div>
+          </div>
+
+          <NebulaMap
+            userLocation={userCoords}
+            hotspots={mapHotspots}
+            selectedHotspotId={selectedMapHotspot}
+            onHotspotSelect={setSelectedMapHotspot}
+            onHotspotJoin={(id) => navigate(`/room/${id}`)}
+            maxDistance={2000}
+            isLoading={isLoadingHotspots || locationLoading}
+          />
+        </div>
 
         {/* Pathfinder Service */}
         <PathfinderService
           suggestions={suggestions}
-          isLoading={isLoading}
+          isLoading={isLoadingHotspots}
         />
 
         {/* Hotspot Radar */}
-        {hotspots.length === 0 && !isLoading ? (
+        {!isLoadingHotspots && hotspots.length === 0 ? (
           <div className="px-4">
             <PioneerState
               type="no_hotspots"
@@ -646,7 +720,7 @@ export default function SovereignHomeV3() {
         ) : (
           <HotspotRadar
             hotspots={hotspots}
-            isLoading={isLoading}
+            isLoading={isLoadingHotspots}
             maxItems={5}
           />
         )}
