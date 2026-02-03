@@ -50,6 +50,7 @@ import { PermissionOverlay } from '../PermissionOverlay';
 import { PioneerState } from '../EmptyStates';
 import { NebulaMap, MapHotspot } from '../NebulaMap';
 import { HomeProgressAura } from '../HomeProgressAura';
+import { AuraHeaderOverlay } from '../AuraHeaderOverlay';
 
 // Types
 interface UserProfile {
@@ -634,7 +635,7 @@ export default function SovereignHomeV3() {
 
   return (
     <div
-      className="min-h-screen pb-32"
+      className="min-h-screen pb-32 relative"
       style={{
         background: 'linear-gradient(180deg, #050505 0%, #0a0a0a 50%, #050505 100%)',
       }}
@@ -646,6 +647,19 @@ export default function SovereignHomeV3() {
           background: 'radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 50%)',
         }}
       />
+
+      {/* ═══════════════════════════════════════ */}
+      {/* AURA HEADER OVERLAY - Floating over content */}
+      {/* ═══════════════════════════════════════ */}
+      {user?.uid && (
+        <AuraHeaderOverlay
+          userId={user.uid}
+          user={{
+            displayName: userProfile?.displayName,
+            photoURL: userProfile?.photoURL,
+          }}
+        />
+      )}
 
       {/* Header */}
       <CommandHeader
@@ -662,17 +676,8 @@ export default function SovereignHomeV3() {
         onMessagesClick={() => navigate('/messages')}
       />
 
-      {/* Main Content */}
-      <div className="space-y-6 pt-4">
-        {/* ═══════════════════════════════════════ */}
-        {/* AURA PROGRESS MODULE - Gamification Hub */}
-        {/* ═══════════════════════════════════════ */}
-        {user?.uid && (
-          <div className="px-4">
-            <HomeProgressAura userId={user.uid} />
-          </div>
-        )}
-
+      {/* Main Content - Extra padding top for AuraHeaderOverlay */}
+      <div className="space-y-6 pt-28">
         {/* Rising Stars Module */}
         {!isLoadingStars && risingStars.length === 0 ? (
           <div className="px-4">
