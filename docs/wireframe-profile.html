@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>delulu - Profile Wireframe v2.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            delulu: {
+              violet: '#8B5CF6',
+              'violet-dark': '#7C3AED',
+              soft: '#F3F0FF',
+              text: '#1F2937',
+              muted: '#9CA3AF'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+    body { font-family: 'Outfit', sans-serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-violet-100 via-white to-blue-100 min-h-screen">
+
+  <!-- Phone Frame -->
+  <div class="max-w-[390px] mx-auto my-8 bg-white rounded-[3rem] shadow-2xl overflow-hidden border-8 border-gray-900">
+
+    <!-- Status Bar -->
+    <div class="bg-gray-900 text-white text-xs py-2 px-6 flex justify-between items-center">
+      <span>9:41</span>
+      <div class="w-24 h-6 bg-gray-800 rounded-full"></div>
+      <div class="flex gap-1">
+        <span>📶</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- App Content -->
+    <div class="h-[780px] overflow-y-auto bg-gradient-to-b from-delulu-soft to-white">
+
+      <!-- Header -->
+      <div class="sticky top-0 bg-white/80 backdrop-blur-lg z-10 px-6 py-4 flex items-center justify-between border-b border-gray-100">
+        <button class="w-10 h-10 rounded-xl bg-delulu-soft flex items-center justify-center">
+          <span class="text-delulu-violet">←</span>
+        </button>
+        <h1 class="font-bold text-lg text-delulu-text">Profil</h1>
+        <button class="w-10 h-10 rounded-xl bg-delulu-soft flex items-center justify-center">
+          <span>⚙️</span>
+        </button>
+      </div>
+
+      <div class="px-6 py-6 space-y-4">
+
+        <!-- Avatar & Level Section -->
+        <div class="glass-card rounded-3xl p-6 text-center">
+          <!-- Avatar -->
+          <div class="relative inline-block mb-4">
+            <div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-delulu-soft to-white p-2 shadow-lg">
+              <img src="../public/avatars/pegasus.png" alt="Avatar" class="w-full h-full object-contain">
+            </div>
+            <button class="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
+              <span class="text-delulu-violet">✏️</span>
+            </button>
+            <!-- Online Indicator -->
+            <div class="absolute top-2 right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+          </div>
+
+          <!-- Level Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full text-white text-sm font-semibold mb-2">
+            <span>✨</span>
+            <span>Level 12</span>
+            <span class="opacity-75">•</span>
+            <span>Dreamer</span>
+          </div>
+
+          <!-- XP Progress -->
+          <div class="max-w-[200px] mx-auto mb-4">
+            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full w-[68%] bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"></div>
+            </div>
+            <p class="text-xs text-delulu-muted mt-1">340 / 500 XP</p>
+          </div>
+
+          <!-- Name & Bio -->
+          <h2 class="font-bold text-xl text-delulu-text">Jan</h2>
+          <p class="text-sm text-delulu-muted mb-2">@janhundsdorff</p>
+          <p class="text-sm text-delulu-text/80 italic">"Building the future of local connections ☁️"</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="glass-card rounded-2xl p-4 text-center">
+            <p class="text-2xl font-bold gradient-text">23</p>
+            <p class="text-[10px] text-delulu-muted uppercase tracking-wide">Friends</p>
+          </div>
+          <div class="glass-card rounded-2xl p-4 text-center">
+            <div class="flex items-center justify-center gap-1">
+              <span class="text-yellow-500">⭐</span>
+              <p class="text-2xl font-bold gradient-text">4.2</p>
+            </div>
+            <p class="text-[10px] text-delulu-muted uppercase tracking-wide">Rating</p>
+          </div>
+          <div class="glass-card rounded-2xl p-4 text-center">
+            <p class="text-2xl font-bold gradient-text">156</p>
+            <p class="text-[10px] text-delulu-muted uppercase tracking-wide">Voice Min</p>
+          </div>
+        </div>
+
+        <!-- Visibility Section -->
+        <div class="glass-card rounded-2xl p-4">
+          <p class="text-xs font-semibold text-delulu-muted uppercase tracking-wide mb-3">Sichtbarkeit</p>
+          <div class="space-y-2">
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-delulu-violet/10 border-2 border-delulu-violet cursor-pointer">
+              <div class="w-5 h-5 rounded-full bg-delulu-violet flex items-center justify-center">
+                <span class="text-white text-xs">✓</span>
+              </div>
+              <span class="font-medium text-delulu-text">Sichtbar für alle</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 cursor-pointer">
+              <div class="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+              <span class="font-medium text-delulu-muted">Nur für Freunde</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 cursor-pointer">
+              <div class="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+              <span class="font-medium text-delulu-muted">Ghost Mode 👻</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Friend Radar Toggle -->
+        <div class="glass-card rounded-2xl p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
+                <span class="text-xl">📍</span>
+              </div>
+              <div>
+                <p class="font-semibold text-delulu-text">Friend-Radar</p>
+                <p class="text-xs text-delulu-muted">Benachrichtigung im 10km Radius</p>
+              </div>
+            </div>
+            <div class="w-14 h-8 bg-delulu-violet rounded-full p-1 cursor-pointer">
+              <div class="w-6 h-6 bg-white rounded-full shadow translate-x-6"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Radius Slider -->
+        <div class="glass-card rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
+                <span class="text-xl">🎯</span>
+              </div>
+              <div>
+                <p class="font-semibold text-delulu-text">Suchradius</p>
+                <p class="text-xs text-delulu-muted">Wie weit siehst du andere?</p>
+              </div>
+            </div>
+            <span class="text-xl font-bold gradient-text">500m</span>
+          </div>
+          <div class="px-2">
+            <input type="range" min="100" max="5000" value="500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-delulu-violet">
+            <div class="flex justify-between text-xs text-delulu-muted mt-1">
+              <span>100m</span>
+              <span>5km</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Links -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <button class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <div class="flex items-center gap-3">
+              <span>🚫</span>
+              <span class="font-medium text-delulu-text">Blockierte Nutzer</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-delulu-muted">3</span>
+              <span class="text-delulu-muted">→</span>
+            </div>
+          </button>
+          <button class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <div class="flex items-center gap-3">
+              <span>📊</span>
+              <span class="font-medium text-delulu-text">Meine Statistiken</span>
+            </div>
+            <span class="text-delulu-muted">→</span>
+          </button>
+          <button class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <div class="flex items-center gap-3">
+              <span>❓</span>
+              <span class="font-medium text-delulu-text">Hilfe & Support</span>
+            </div>
+            <span class="text-delulu-muted">→</span>
+          </button>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="w-full p-4 flex items-center justify-center gap-3 text-red-500 font-semibold rounded-2xl border-2 border-red-100 hover:bg-red-50 transition-colors">
+          <span>🚪</span>
+          <span>Abmelden</span>
+        </button>
+
+        <!-- Version -->
+        <p class="text-center text-xs text-delulu-muted py-4">
+          delulu v2.0 • Ein butterbread Projekt ☁️
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="bg-white py-2 flex justify-center">
+      <div class="w-32 h-1 bg-gray-900 rounded-full"></div>
+    </div>
+
+  </div>
+
+  <!-- Legend -->
+  <div class="max-w-md mx-auto mt-8 p-6 bg-white rounded-2xl shadow-lg">
+    <h2 class="font-bold text-lg mb-4">🎨 Neue Features im Profil</h2>
+    <ul class="space-y-2 text-sm text-gray-600">
+      <li>✅ <strong>Level-System</strong> mit XP-Fortschritt</li>
+      <li>✅ <strong>Trust Rating</strong> (Sterne-Bewertung)</li>
+      <li>✅ <strong>Voice-Minuten</strong> Tracking</li>
+      <li>✅ <strong>3-stufige Sichtbarkeit</strong> (Alle / Freunde / Ghost)</li>
+      <li>✅ <strong>Friend-Radar Toggle</strong> für 10km Notifications</li>
+      <li>✅ <strong>Suchradius Slider</strong> (100m - 5km)</li>
+      <li>✅ <strong>Blockierte Nutzer</strong> Management</li>
+    </ul>
+  </div>
+
+</body>
+</html>

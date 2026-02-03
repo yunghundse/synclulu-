@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:App"
+      name = "App">
+      <FileRef
+         location = "group:Assets.xcassets">
+      </FileRef>
+      <Group
+         location = "group:Base.lproj"
+         name = "Base.lproj">
+         <FileRef
+            location = "group:LaunchScreen.storyboard">
+         </FileRef>
+         <FileRef
+            location = "group:Main.storyboard">
+         </FileRef>
+      </Group>
+      <FileRef
+         location = "group:config.xml">
+      </FileRef>
+      <Group
+         location = "group:public"
+         name = "public">
+         <FileRef
+            location = "group:index.html">
+         </FileRef>
+         <FileRef
+            location = "group:workbox-8c29f6e4.js">
+         </FileRef>
+         <FileRef
+            location = "group:cordova.js">
+         </FileRef>
+         <Group
+            location = "group:mascots"
+            name = "mascots">
+         </Group>
+         <FileRef
+            location = "group:_headers">
+         </FileRef>
+         <FileRef
+            location = "group:registerSW.js">
+         </FileRef>
+         <FileRef
+            location = "group:logo.jpg">
+         </FileRef>
+         <FileRef
+            location = "group:ai.txt">
+         </FileRef>
+         <FileRef
+            location = "group:cordova_plugins.js">
+         </FileRef>
+         <FileRef
+            location = "group:robots.txt">
+         </FileRef>
+         <FileRef
+            location = "group:manifest.webmanifest">
+         </FileRef>
+         <Group
+            location = "group:avatars"
+            name = "avatars">
+            <FileRef
+               location = "group:sailor-boy.png">
+            </FileRef>
+            <FileRef
+               location = "group:sailor-girl.png">
+            </FileRef>
+            <FileRef
+               location = "group:pegasus.png">
+            </FileRef>
+            <FileRef
+               location = "group:sailor-boy-2.png">
+            </FileRef>
+         </Group>
+         <Group
+            location = "group:assets"
+            name = "assets">
+            <FileRef
+               location = "group:index-BnuOlqms.js">
+            </FileRef>
+            <FileRef
+               location = "group:copyProtection-DMGEU1DQ.js">
+            </FileRef>
+            <FileRef
+               location = "group:index-4-yZAuzJ.css">
+            </FileRef>
+         </Group>
+         <FileRef
+            location = "group:sw.js">
+         </FileRef>
+      </Group>
+      <FileRef
+         location = "group:capacitor.config.json">
+      </FileRef>
+      <FileRef
+         location = "group:AppDelegate.swift">
+      </FileRef>
+      <FileRef
+         location = "group:Info.plist">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:.txt">
+   </FileRef>
+</Workspace>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    DELULU iOS INFO.PLIST
+    ═══════════════════════════════════════════════════════════════
+    Ghost Voice Engine Configuration
+
+    CRITICAL ENTRIES:
+    - UIBackgroundModes: audio, voip, fetch, remote-notification
+    - NSMicrophoneUsageDescription: Pflicht für Mikrofon-Zugriff
+-->
+<plist version="1.0">
+<dict>
+    <!-- ═══════════════════════════════════════ -->
+    <!-- APP IDENTITY -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+
+    <key>CFBundleDisplayName</key>
+    <string>Delulu</string>
+
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+
+    <key>CFBundleVersion</key>
+    <string>1</string>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- BACKGROUND MODES (CRITICAL!) -->
+    <!-- Ohne diese Einträge wird die App im Hintergrund gestoppt -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>UIBackgroundModes</key>
+    <array>
+        <!-- Audio: Erlaubt Audio-Playback im Hintergrund -->
+        <string>audio</string>
+
+        <!-- VoIP: Erlaubt eingehende Voice-Calls -->
+        <string>voip</string>
+
+        <!-- Fetch: Erlaubt Background-Sync -->
+        <string>fetch</string>
+
+        <!-- Remote Notifications: Push Notifications -->
+        <string>remote-notification</string>
+
+        <!-- Processing: Background Processing Tasks -->
+        <string>processing</string>
+    </array>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- PRIVACY USAGE DESCRIPTIONS (Pflicht!) -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Delulu benötigt Zugriff auf dein Mikrofon für Voice Chats mit anderen Nutzern.</string>
+
+    <key>NSCameraUsageDescription</key>
+    <string>Delulu benötigt Kamerazugriff für Profilbilder und Video-Calls.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Delulu benötigt Zugriff auf deine Fotos um Profilbilder hochzuladen.</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Delulu möchte Bilder in deiner Fotobibliothek speichern.</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Delulu nutzt deinen Standort um Nutzer in deiner Nähe zu finden.</string>
+
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Delulu nutzt deinen Standort auch im Hintergrund um dich mit Nutzern in deiner Nähe zu verbinden.</string>
+
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Delulu nutzt Bluetooth für die Verbindung mit Audio-Geräten wie AirPods.</string>
+
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Delulu nutzt Bluetooth für die Verbindung mit Audio-Geräten.</string>
+
+    <key>NSContactsUsageDescription</key>
+    <string>Delulu kann deine Kontakte nutzen um Freunde zu finden.</string>
+
+    <key>NSUserTrackingUsageDescription</key>
+    <string>Delulu nutzt diese Informationen um dir relevantere Inhalte zu zeigen.</string>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- APP TRANSPORT SECURITY -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true/>
+    </dict>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- URL SCHEMES (Deep Links) -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>app.delulu</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>delulu</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- ASSOCIATED DOMAINS (Universal Links) -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>com.apple.developer.associated-domains</key>
+    <array>
+        <string>applinks:delulu.app</string>
+        <string>webcredentials:delulu.app</string>
+    </array>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- UI CONFIGURATION -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+
+    <key>UIRequiresFullScreen</key>
+    <true/>
+
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+
+    <key>UIStatusBarStyle</key>
+    <string>UIStatusBarStyleDefault</string>
+
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <true/>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- VOIP PUSH NOTIFICATION -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>PKPushTypes</key>
+    <array>
+        <string>PKPushTypeVoIP</string>
+    </array>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- AUDIO SESSION -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>UIBackgroundAudioPlayback</key>
+    <true/>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- DEVICE CAPABILITIES -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>armv7</string>
+        <string>microphone</string>
+    </array>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- IOS VERSION -->
+    <!-- ═══════════════════════════════════════ -->
+
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+
+    <key>MinimumOSVersion</key>
+    <string>14.0</string>
+
+</dict>
+</plist>

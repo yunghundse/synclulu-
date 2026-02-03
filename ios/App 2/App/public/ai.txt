@@ -1,0 +1,83 @@
+# DELULU APP - AI.TXT
+# AI/ML Training Opt-Out Declaration
+# Copyright © 2025-2026 Butterbread UG. All Rights Reserved.
+# ====================================================
+
+# This file declares our opt-out from AI/ML training.
+# All content on this domain is protected by copyright.
+
+User-Agent: *
+Disallow-AI-Training: yes
+Disallow-AI-Scraping: yes
+Disallow-ML-Training: yes
+Disallow-Content-Analysis: yes
+Disallow-Image-Training: yes
+Disallow-Text-Training: yes
+Disallow-Audio-Training: yes
+Disallow-Video-Training: yes
+
+# Legal Notice
+# ====================================================
+#
+# By accessing this website, you agree to the following terms:
+#
+# 1. PROHIBITED USES
+#    - Training AI/ML models
+#    - Scraping content for datasets
+#    - Automated data collection
+#    - Creating derivative works
+#    - Reverse engineering
+#    - Cloning or replicating the application
+#
+# 2. COPYRIGHT
+#    All content, code, design, and functionality are
+#    the exclusive property of Butterbread UG.
+#    © 2025-2026 Butterbread UG. All rights reserved.
+#
+# 3. ENFORCEMENT
+#    Violations will be pursued under:
+#    - German Copyright Law (UrhG)
+#    - EU Digital Services Act
+#    - Computer Fraud and Abuse Act (where applicable)
+#    - DMCA (Digital Millennium Copyright Act)
+#
+# 4. CONTACT
+#    Legal inquiries: legal@butterbread.de
+#    DMCA Agent: dmca@butterbread.de
+#
+# 5. LICENSING
+#    This software is proprietary. No license is granted
+#    for reproduction, modification, or distribution.
+#
+# ====================================================
+
+# Specific AI Bot Restrictions
+GPTBot: Disallow
+ChatGPT-User: Disallow
+Google-Extended: Disallow
+anthropic-ai: Disallow
+ClaudeBot: Disallow
+Claude-Web: Disallow
+CCBot: Disallow
+FacebookBot: Disallow
+Meta-ExternalAgent: Disallow
+PerplexityBot: Disallow
+Bytespider: Disallow
+Amazonbot: Disallow
+Applebot-Extended: Disallow
+cohere-ai: Disallow
+Diffbot: Disallow
+YouBot: Disallow
+
+# Machine-readable declaration
+X-AI-Training-Opt-Out: true
+X-ML-Training-Opt-Out: true
+X-Content-Scraping-Opt-Out: true
+X-Data-Mining-Opt-Out: true
+
+# TDM (Text and Data Mining) Reservation
+TDM-Reservation: all-rights-reserved
+TDM-License: none
+
+# Do Not Train declaration
+Do-Not-Train: true

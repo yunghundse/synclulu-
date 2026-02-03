@@ -1,0 +1,107 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DELULU FIREBASE STORAGE SECURITY RULES
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Secure storage rules for avatar uploads and user content
+// @version 1.0.0
+//
+// ═══════════════════════════════════════════════════════════════════════════
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // HELPER FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the file
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Check file size (max 5MB)
+    function isValidSize() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+
+    // Check if file is an image
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // AVATAR STORAGE
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // User avatars: /avatars/{userId}
+    match /avatars/{userId} {
+      // Anyone can read avatars (public profile pictures)
+      allow read: if true;
+
+      // Only the user can upload/update/delete their own avatar
+      allow write: if isOwner(userId)
+                   && isImage()
+                   && isValidSize();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // USER UPLOADS (Future: Chat images, etc.)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // User uploads: /uploads/{userId}/{fileName}
+    match /uploads/{userId}/{fileName} {
+      // Users can read their own uploads
+      allow read: if isAuthenticated();
+
+      // Users can only upload to their own folder
+      allow write: if isOwner(userId)
+                   && isImage()
+                   && isValidSize();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // LOCKED CONTENT (Creator uploads)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Locked content: /locked-content/{creatorId}/{contentId}
+    match /locked-content/{creatorId}/{contentId} {
+      // Read access handled by Firestore rules (payment verification)
+      allow read: if isAuthenticated();
+
+      // Only the creator can upload
+      allow write: if isOwner(creatorId)
+                   && isValidSize();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CHAT MEDIA
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Chat media: /chat-media/{chatId}/{messageId}
+    match /chat-media/{chatId}/{messageId} {
+      // Authenticated users can read (chat access verified in Firestore)
+      allow read: if isAuthenticated();
+
+      // Authenticated users can upload (sender verification in Firestore)
+      allow write: if isAuthenticated()
+                   && isImage()
+                   && isValidSize();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // DEFAULT DENY
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Deny all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

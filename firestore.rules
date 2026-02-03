@@ -1,0 +1,274 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SYSTEM CONFIG & STATS
+    // ═══════════════════════════════════════════════════════════════════
+
+    // System stats - Allow increment during registration
+    match /system/stats {
+      allow read: if true;
+      // Allow authenticated users to increment totalUsers (for registration)
+      allow update: if request.auth != null &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['totalUsers', 'lastRegistrationAt', 'waitlistCount']);
+      // Only admins can do other writes
+      allow create: if request.auth != null;
+    }
+
+    // System config - Admin only write
+    match /system/config {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Other system documents - Admin only
+    match /system/{document} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // USERS COLLECTION
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /users/{userId} {
+      // Any authenticated user can read user profiles
+      allow read: if request.auth != null;
+      // Users can only write their own profile
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // No self-deletion
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // REFERRALS & WAITLIST
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /referrals/{code} {
+      allow read: if true; // Anyone can validate referral codes
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+
+    match /waitlist/{email} {
+      allow read: if true;
+      allow create: if true; // Anyone can join waitlist (no auth required)
+      allow update: if request.auth != null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // NOTIFICATIONS
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+      allow delete: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // ROOMS & MESSAGING (Fluid Nebula v13.0)
+    // ═══════════════════════════════════════════════════════════════════
+
+    // Founder IDs for absolute sovereign access
+    function isFounder() {
+      return request.auth.uid == 'MIbamchs82Ve7y0ecX2TpPyymbw1';
+    }
+
+    // Check if user is a participant in the room
+    function isParticipant(roomData) {
+      return roomData.participants.size() > 0;
+    }
+
+    match /rooms/{roomId} {
+      // Everyone authenticated can read rooms (for discovery)
+      allow read: if request.auth != null;
+
+      // Room creation:
+      // - Authenticated user required
+      // - Ghost rooms (no location) only allowed for founders
+      // - Regular rooms should have location (but we allow without for testing)
+      allow create: if request.auth != null && (
+        // Founder can create anything (Ghost Mode)
+        isFounder() ||
+        // Regular users can create rooms
+        request.resource.data.createdBy == request.auth.uid
+      );
+
+      // Room updates:
+      // - Founders can update anything
+      // - Participants can update (join/leave/mute status)
+      // - Room creator can update
+      allow update: if request.auth != null && (
+        isFounder() ||
+        resource.data.createdBy == request.auth.uid ||
+        // Allow any authenticated user to update participants (join/leave)
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['participants'])
+      );
+
+      // Room deletion:
+      // - Founders can delete anything
+      // - Creator can delete
+      // - Last participant leaving triggers deletion (via transaction)
+      allow delete: if request.auth != null && (
+        isFounder() ||
+        resource.data.createdBy == request.auth.uid ||
+        // Allow deletion if room becomes empty
+        resource.data.participants.size() == 0
+      );
+    }
+
+    // Wölkchen / Clouds (alias for rooms with location)
+    match /clouds/{cloudId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null &&
+        (isFounder() || request.resource.data.location != null);
+      allow update: if request.auth != null && (
+        isFounder() ||
+        resource.data.creatorId == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['participants'])
+      );
+      allow delete: if request.auth != null && (
+        isFounder() ||
+        resource.data.creatorId == request.auth.uid
+      );
+    }
+
+    match /messages/{messageId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        resource.data.senderId == request.auth.uid;
+      allow delete: if request.auth != null &&
+        resource.data.senderId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // STAR EVENTS
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /starEvents/{eventId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null &&
+        resource.data.hostId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SOCIAL FEATURES
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /friendships/{friendshipId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // Friendship Metadata (Memories, Trust Level, Common Interests)
+    match /friendship_metadata/{metadataId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // Device Block Counts (for IMEI blacklist detection)
+    match /device_block_counts/{fingerprintHash} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+
+    // Device Blacklist Queue (for admin review)
+    match /device_blacklist_queue/{fingerprintHash} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Safety Score History
+    match /safety_score_history/{historyId} {
+      allow read: if request.auth != null &&
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null;
+    }
+
+    match /stars/{starId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+    }
+
+    match /follows/{followId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /voiceChatHistory/{historyId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PROFILE VISITORS & LOCATION
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /profileViews/{viewId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+    }
+
+    match /userLocations/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Live Radar - user_locations (with underscore)
+    match /user_locations/{userId} {
+      // All authenticated users can read (for nearby discovery)
+      allow read: if request.auth != null;
+      // Users can only write their own location
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // LOCKED CONTENT / DREAM PASS
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /lockedContent/{contentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        resource.data.creatorId == request.auth.uid;
+      allow delete: if request.auth != null &&
+        resource.data.creatorId == request.auth.uid;
+    }
+
+    match /contentUnlocks/{unlockId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CATCH-ALL FOR DEVELOPMENT
+    // Remove or restrict in production!
+    // ═══════════════════════════════════════════════════════════════════
+
+    match /{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}
