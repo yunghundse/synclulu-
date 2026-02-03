@@ -144,15 +144,24 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
   const roomsVisited = liveStats.rooms_visited || userStats.rooms_visited || 0;
   const totalSessions = liveStats.total_sessions || userStats.total_sessions || 0;
 
+  const handleClick = () => {
+    console.log('AuraLegacy clicked - navigating to /voice-stats');
+    navigate('/voice-stats');
+  };
+
   return (
     <div className="w-full mb-4">
       {/* Main Stats Card - Light Theme for Profile - Clickable */}
-      <motion.button
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         whileTap={{ scale: 0.98 }}
-        onClick={() => navigate('/voice-stats')}
-        className="w-full glass-card rounded-2xl p-5 bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 text-left relative overflow-hidden group"
+        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && handleClick()}
+        className="w-full glass-card rounded-2xl p-5 bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 text-left relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
+        style={{ position: 'relative', zIndex: 10 }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
@@ -206,7 +215,7 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-violet-500/0 group-hover:bg-violet-500/5 transition-colors rounded-2xl pointer-events-none" />
-      </motion.button>
+      </motion.div>
 
       {/* Recent Rooms List */}
       {recentRooms.length > 0 && (
