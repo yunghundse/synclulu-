@@ -661,21 +661,6 @@ export default function SovereignHomeV3() {
         />
       )}
 
-      {/* Header */}
-      <CommandHeader
-        userProfile={userProfile}
-        unreadNotifications={unreadNotifications}
-        unreadMessages={unreadMessages}
-        pendingFriendRequests={pendingFriendRequests}
-        currentLocation={currentLocation}
-        vibeLevel={vibeLevel}
-        nearestHotspot={nearestHotspot}
-        isLocationWeak={locationWeak || locationDenied}
-        onProfileClick={() => navigate('/profile')}
-        onNotificationsClick={() => navigate('/notifications')}
-        onMessagesClick={() => navigate('/messages')}
-      />
-
       {/* Main Content - Extra padding top for AuraHeaderOverlay */}
       <div className="space-y-6 pt-28">
         {/* Rising Stars Module */}
