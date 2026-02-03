@@ -10,7 +10,8 @@
 
 import React, { memo, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic, Clock, Cloud, Sparkles, TrendingUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Mic, Clock, Cloud, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
 import { collection, query, where, orderBy, limit, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
@@ -76,6 +77,7 @@ function formatTimeAgo(date: Date): string {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }) => {
+  const navigate = useNavigate();
   const [recentRooms, setRecentRooms] = useState<RecentRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [liveStats, setLiveStats] = useState<UserStats>(userStats);
@@ -144,16 +146,24 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
 
   return (
     <div className="w-full mb-4">
-      {/* Main Stats Card - Light Theme for Profile */}
-      <motion.div
+      {/* Main Stats Card - Light Theme for Profile - Clickable */}
+      <motion.button
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-2xl p-5 bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200"
+        whileTap={{ scale: 0.98 }}
+        onClick={() => navigate('/voice-stats')}
+        className="w-full glass-card rounded-2xl p-5 bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 text-left relative overflow-hidden group"
       >
         {/* Header */}
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles size={16} className="text-violet-500" />
-          <h3 className="text-sm font-bold text-gray-800">Voice-Aktivität</h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Sparkles size={16} className="text-violet-500" />
+            <h3 className="text-sm font-bold text-gray-800">Voice-Aktivität</h3>
+          </div>
+          <div className="flex items-center gap-1 text-xs text-violet-500 font-medium">
+            <span>Details</span>
+            <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -193,7 +203,10 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
             </p>
           </div>
         </div>
-      </motion.div>
+
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-violet-500/0 group-hover:bg-violet-500/5 transition-colors rounded-2xl pointer-events-none" />
+      </motion.button>
 
       {/* Recent Rooms List */}
       {recentRooms.length > 0 && (

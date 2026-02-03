@@ -134,7 +134,7 @@ export const ProximityRadar: React.FC<ProximityRadarProps> = ({
   const { user } = useStore();
   const [nearbyFriends, setNearbyFriends] = useState<NearbyFriend[]>([]);
   const [nearbyRooms, setNearbyRooms] = useState<NearbyRoom[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start without loading state
 
   const isFounder = user?.id === FOUNDER_UID;
 
@@ -277,10 +277,22 @@ export const ProximityRadar: React.FC<ProximityRadarProps> = ({
   // RENDER
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Don't show if no location or no friends/rooms nearby
-  if (!userLocation || (nearbyFriends.length === 0 && nearbyRooms.length === 0 && !isLoading)) {
-    return null;
+  // Don't show if no location
+  if (!userLocation) {
+    return (
+      <div className="w-full border-b border-white/5 bg-gradient-to-b from-[#0a0a0a] to-transparent">
+        <div className="px-4 py-4">
+          <div className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5">
+            <MapPin size={14} className="text-white/30" />
+            <span className="text-xs text-white/40">Standort wird benötigt</span>
+          </div>
+        </div>
+      </div>
+    );
   }
+
+  // Empty state - show friendly message instead of nothing
+  const isEmpty = nearbyFriends.length === 0 && nearbyRooms.length === 0;
 
   return (
     <div className="w-full border-b border-white/5 bg-gradient-to-b from-[#0a0a0a] to-transparent">
@@ -289,7 +301,9 @@ export const ProximityRadar: React.FC<ProximityRadarProps> = ({
         <h3 className="text-white/50 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
           <div className="relative">
             <MapPin size={14} className="text-purple-400" />
-            <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            {!isEmpty && (
+              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            )}
           </div>
           Vibe Radar
         </h3>
@@ -301,8 +315,26 @@ export const ProximityRadar: React.FC<ProximityRadarProps> = ({
         )}
       </div>
 
-      {/* Horizontal scroll container */}
-      <div className="flex gap-3 overflow-x-auto pb-4 px-4 no-scrollbar">
+      {/* Empty State */}
+      {isEmpty ? (
+        <div className="px-4 pb-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-3 py-3 px-4 rounded-xl bg-white/5 border border-white/5"
+          >
+            <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+              <Radio size={18} className="text-purple-400/50" />
+            </div>
+            <div>
+              <p className="text-sm text-white/60">Niemand in der Nähe</p>
+              <p className="text-[10px] text-white/30">Freunde und Wölkchen werden hier angezeigt</p>
+            </div>
+          </motion.div>
+        </div>
+      ) : (
+        /* Horizontal scroll container */
+        <div className="flex gap-3 overflow-x-auto pb-4 px-4 no-scrollbar">
         {/* Nearby Voice Rooms */}
         <AnimatePresence mode="popLayout">
           {nearbyRooms.map((room) => (
@@ -494,13 +526,8 @@ export const ProximityRadar: React.FC<ProximityRadarProps> = ({
           })}
         </AnimatePresence>
 
-        {/* Empty state indicator */}
-        {isLoading && (
-          <div className="flex-shrink-0 flex items-center justify-center w-20 h-20">
-            <div className="w-6 h-6 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -49,6 +49,7 @@ import { NotificationPopup } from '../NotificationPopup';
 import { PermissionOverlay } from '../PermissionOverlay';
 import { PioneerState } from '../EmptyStates';
 import { NebulaMap, MapHotspot } from '../NebulaMap';
+import { HomeProgressAura } from '../HomeProgressAura';
 
 // Types
 interface UserProfile {
@@ -663,6 +664,15 @@ export default function SovereignHomeV3() {
 
       {/* Main Content */}
       <div className="space-y-6 pt-4">
+        {/* ═══════════════════════════════════════ */}
+        {/* AURA PROGRESS MODULE - Gamification Hub */}
+        {/* ═══════════════════════════════════════ */}
+        {user?.uid && (
+          <div className="px-4">
+            <HomeProgressAura userId={user.uid} />
+          </div>
+        )}
+
         {/* Rising Stars Module */}
         {!isLoadingStars && risingStars.length === 0 ? (
           <div className="px-4">
@@ -699,20 +709,20 @@ export default function SovereignHomeV3() {
             onHotspotSelect={setSelectedMapHotspot}
             onHotspotJoin={(id) => navigate(`/room/${id}`)}
             maxDistance={2000}
-            isLoading={isLoadingHotspots || locationLoading}
+            isLoading={locationLoading && !userCoords}
           />
         </div>
 
-        {/* Pathfinder Service */}
+        {/* Pathfinder Service - only show if there are suggestions */}
         <PathfinderService
           suggestions={suggestions}
-          isLoading={isLoadingHotspots}
+          isLoading={false}
         />
 
-        {/* Hotspot Radar - Always show, handles empty state internally */}
+        {/* Hotspot Radar - Never show loading state, only content or empty */}
         <HotspotRadar
           hotspots={hotspots}
-          isLoading={isLoadingHotspots}
+          isLoading={false}
           maxItems={5}
           onHotspotClick={(id) => navigate(`/room/${id}`)}
         />

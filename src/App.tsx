@@ -48,6 +48,7 @@ import OnboardingFlow from '@/pages/OnboardingFlow';
 import DevicesSettings from '@/pages/DevicesSettings';
 import TrustStats from '@/pages/TrustStats';
 import Friends from '@/pages/Friends';
+import VoiceStats from '@/pages/VoiceStats';
 
 // Components
 import BottomNav from '@/components/BottomNav';
@@ -206,6 +207,7 @@ function App() {
             <Route path="/profile" element={<ProfileMinimal />} />
             <Route path="/profile/full" element={<Profile />} />
             <Route path="/profile/trust-stats" element={<TrustStats />} />
+            <Route path="/voice-stats" element={<VoiceStats />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/statistics" element={<Statistics />} />
             <Route path="/notifications" element={<Notifications />} />

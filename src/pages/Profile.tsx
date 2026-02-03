@@ -34,6 +34,7 @@ import ReferralSection from '@/components/ReferralSection';
 import DreamPassButton from '@/components/DreamPassButton';
 import { useDreamPass } from '@/hooks/useDreamPass';
 import { AuraLegacy } from '@/components/AuraLegacy';
+import { AuraAnalytics } from '@/components/AuraAnalytics';
 import {
   getLevelTitle,
   getStreakMultiplier,
@@ -303,7 +304,30 @@ const Profile = () => {
       </div>
 
       {/* ═══════════════════════════════════════ */}
-      {/* AURA-LEGACY - Voice History & Stats */}
+      {/* AURA-LEGACY ANALYTICS - Premium Stats */}
+      {/* ═══════════════════════════════════════ */}
+      {user?.id && (
+        <div className="mb-4 p-4 rounded-2xl" style={{
+          background: 'linear-gradient(135deg, #050505 0%, #0a0a0a 100%)',
+          border: '1px solid rgba(139, 92, 246, 0.15)',
+        }}>
+          <AuraAnalytics
+            userId={user.id}
+            stats={{
+              voice_minutes: totalVoiceMinutes,
+              rooms_visited: (user as any)?.roomsVisited || 0,
+              rooms_created: (user as any)?.roomsCreated || 0,
+              weekly_change: 0,
+              daily_activity: [],
+              friends_count: friendCount,
+              stars_received: (user as any)?.starsReceived || 0,
+            }}
+          />
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════ */}
+      {/* AURA-LEGACY - Voice History Link */}
       {/* ═══════════════════════════════════════ */}
       {user?.id && (
         <AuraLegacy

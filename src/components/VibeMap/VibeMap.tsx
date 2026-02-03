@@ -405,7 +405,7 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
   const [rooms, setRooms] = useState<MapRoom[]>([]);
   const [heatPoints, setHeatPoints] = useState<HeatPoint[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<ClusterGroup | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start without loading state
 
   // Theme detection for map tiles (safe fallback)
   const { isDark } = useSafeTheme();
@@ -808,10 +808,20 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
         </button>
       )}
 
-      {/* Loading overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-[1001]">
-          <div className="w-8 h-8 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+      {/* Empty state overlay when no data */}
+      {!isLoading && friends.length === 0 && rooms.length === 0 && (
+        <div className="absolute bottom-4 left-4 right-4 z-[1000]">
+          <div
+            className="rounded-2xl p-4 text-center"
+            style={{
+              background: 'rgba(5, 5, 5, 0.9)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+            }}
+          >
+            <p className="text-sm text-white/60">Keine Aktivität in deiner Nähe</p>
+            <p className="text-xs text-white/40 mt-1">Freunde und Wölkchen werden hier angezeigt</p>
+          </div>
         </div>
       )}
     </div>
