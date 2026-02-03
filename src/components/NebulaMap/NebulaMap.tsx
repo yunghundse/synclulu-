@@ -367,7 +367,7 @@ export const NebulaMap = memo(function NebulaMap({
   if (!userLocation && !isLoading) {
     return (
       <div
-        className="relative w-full aspect-square rounded-[32px] overflow-hidden"
+        className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden"
         style={{
           background: 'rgba(5, 5, 5, 0.9)',
           border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -390,13 +390,13 @@ export const NebulaMap = memo(function NebulaMap({
 
   return (
     <div className="relative">
-      {/* Map Container */}
+      {/* Map Container - Compact size */}
       <div
-        className="relative w-full aspect-square rounded-[32px] overflow-hidden"
+        className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden"
         style={{
           background: 'radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, rgba(5, 5, 5, 0.95) 70%)',
           border: '1px solid rgba(139, 92, 246, 0.2)',
-          boxShadow: 'inset 0 0 60px rgba(139, 92, 246, 0.1)',
+          boxShadow: 'inset 0 0 40px rgba(139, 92, 246, 0.1)',
         }}
       >
         {/* Background Elements */}

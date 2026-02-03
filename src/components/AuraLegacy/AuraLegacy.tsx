@@ -122,93 +122,64 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
   const totalSessions = userStats.total_sessions || 0;
 
   return (
-    <div className="w-full mt-8 space-y-4">
-      {/* Section Header */}
-      <div className="flex items-center gap-2 px-4">
-        <Sparkles size={14} className="text-purple-400" />
-        <h3 className="text-[10px] font-black uppercase text-purple-400 tracking-[0.2em]">
-          Aura-Legacy
-        </h3>
-      </div>
-
-      {/* Main Stats Card */}
+    <div className="w-full mb-4">
+      {/* Main Stats Card - Light Theme for Profile */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-4 p-6 rounded-[24px]"
-        style={{
-          background: 'rgba(5, 5, 5, 0.85)',
-          backdropFilter: 'blur(40px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-          border: '1px solid rgba(168, 85, 247, 0.2)',
-          boxShadow: '0 0 30px rgba(168, 85, 247, 0.1)',
-        }}
+        className="glass-card rounded-2xl p-5 bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200"
       >
-        <div className="flex items-center justify-between">
-          {/* Voice Time */}
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2 mb-1">
-              <Mic size={16} className="text-purple-400" />
-              <span className="text-2xl font-black text-white">
-                {formatVoiceTime(voiceMinutes)}
-              </span>
-            </div>
-            <span className="text-[10px] text-white/40 uppercase font-bold tracking-wide">
-              Voice Zeit
-            </span>
-            {voiceMinutes > 60 && (
-              <span className="text-[9px] text-purple-400 mt-1">
-                In der Nebula verbracht
-              </span>
-            )}
-          </div>
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles size={16} className="text-violet-500" />
+          <h3 className="text-sm font-bold text-gray-800">Voice-Aktivität</h3>
+        </div>
 
-          {/* Divider */}
-          <div
-            className="h-12 w-[1px]"
-            style={{
-              background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
-            }}
-          />
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-3">
+          {/* Voice Time */}
+          <div className="bg-white/60 rounded-xl p-3 text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Mic size={14} className="text-violet-500" />
+            </div>
+            <p className="text-lg font-bold text-violet-600">
+              {formatVoiceTime(voiceMinutes)}
+            </p>
+            <p className="text-[9px] text-gray-500 uppercase font-medium">
+              Voice Zeit
+            </p>
+          </div>
 
           {/* Rooms Visited */}
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2 mb-1">
-              <Cloud size={16} className="text-violet-400" />
-              <span className="text-2xl font-black text-white">{roomsVisited}</span>
+          <div className="bg-white/60 rounded-xl p-3 text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Cloud size={14} className="text-purple-500" />
             </div>
-            <span className="text-[10px] text-white/40 uppercase font-bold tracking-wide">
-              Besuchte Wölkchen
-            </span>
+            <p className="text-lg font-bold text-purple-600">{roomsVisited}</p>
+            <p className="text-[9px] text-gray-500 uppercase font-medium">
+              Wölkchen
+            </p>
           </div>
 
-          {/* Divider */}
-          <div
-            className="h-12 w-[1px]"
-            style={{
-              background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
-            }}
-          />
-
           {/* Sessions */}
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2 mb-1">
-              <TrendingUp size={16} className="text-emerald-400" />
-              <span className="text-2xl font-black text-white">{totalSessions}</span>
+          <div className="bg-white/60 rounded-xl p-3 text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <TrendingUp size={14} className="text-emerald-500" />
             </div>
-            <span className="text-[10px] text-white/40 uppercase font-bold tracking-wide">
+            <p className="text-lg font-bold text-emerald-600">{totalSessions}</p>
+            <p className="text-[9px] text-gray-500 uppercase font-medium">
               Sessions
-            </span>
+            </p>
           </div>
         </div>
       </motion.div>
 
       {/* Recent Rooms List */}
       {recentRooms.length > 0 && (
-        <div className="mx-4 space-y-2">
-          <div className="flex items-center gap-2 px-2">
-            <Clock size={12} className="text-white/30" />
-            <span className="text-[10px] text-white/30 uppercase font-bold tracking-wide">
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center gap-2 px-1">
+            <Clock size={12} className="text-gray-400" />
+            <span className="text-[10px] text-gray-400 uppercase font-medium tracking-wide">
               Letzte Räume
             </span>
           </div>
@@ -219,24 +190,15 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="p-4 rounded-2xl flex items-center justify-between"
-              style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-              }}
+              className="glass-card rounded-xl p-3 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%)',
-                  }}
-                >
-                  <Cloud size={18} className="text-purple-400" />
+                <div className="w-9 h-9 rounded-lg bg-violet-100 flex items-center justify-center">
+                  <Cloud size={16} className="text-violet-500" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{room.name}</p>
-                  <p className="text-[10px] text-white/40">
+                  <p className="text-sm font-medium text-gray-800">{room.name}</p>
+                  <p className="text-[10px] text-gray-400">
                     {formatTimeAgo(room.visitedAt)} • {room.duration}m
                   </p>
                 </div>
@@ -251,15 +213,11 @@ export const AuraLegacy: React.FC<AuraLegacyProps> = memo(({ userId, userStats }
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mx-4 p-6 rounded-2xl text-center"
-          style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.04)',
-          }}
+          className="glass-card rounded-2xl p-6 text-center mt-3"
         >
-          <Mic size={32} className="text-white/20 mx-auto mb-3" />
-          <p className="text-sm text-white/40">Noch keine Voice-Aktivität</p>
-          <p className="text-[10px] text-white/20 mt-1">
+          <Mic size={28} className="text-gray-300 mx-auto mb-2" />
+          <p className="text-sm text-gray-500">Noch keine Voice-Aktivität</p>
+          <p className="text-[10px] text-gray-400 mt-1">
             Tritt einem Wölkchen bei, um deine Aura aufzubauen
           </p>
         </motion.div>

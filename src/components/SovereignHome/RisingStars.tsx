@@ -61,11 +61,11 @@ const StarCard = memo(function StarCard({
       onClick={handleClick}
       whileTap={{ scale: 0.95 }}
       className="flex-shrink-0 relative group"
-      style={{ width: '110px' }}
+      style={{ width: '85px' }}
     >
-      {/* Card Container */}
+      {/* Card Container - Compact */}
       <div
-        className="relative rounded-2xl p-3 overflow-hidden"
+        className="relative rounded-xl p-2 overflow-hidden"
         style={{
           background: 'rgba(255, 255, 255, 0.03)',
           backdropFilter: 'blur(20px)',
@@ -91,14 +91,14 @@ const StarCard = memo(function StarCard({
           </motion.div>
         )}
 
-        {/* Avatar with Aura Ring */}
-        <div className="relative mx-auto mb-2">
+        {/* Avatar with Aura Ring - Compact */}
+        <div className="relative mx-auto mb-1.5">
           <div
-            className={`absolute inset-0 rounded-full bg-gradient-to-r ${rankConfig.color} blur-md opacity-50`}
+            className={`absolute inset-0 rounded-full bg-gradient-to-r ${rankConfig.color} blur-md opacity-40`}
             style={{ transform: 'scale(1.1)' }}
           />
           <div
-            className={`relative w-14 h-14 rounded-full bg-gradient-to-r ${rankConfig.color} p-0.5`}
+            className={`relative w-11 h-11 rounded-full bg-gradient-to-r ${rankConfig.color} p-0.5`}
           >
             <div className="w-full h-full rounded-full bg-[#0a0a0a] flex items-center justify-center overflow-hidden">
               {star.avatarUrl ? (
@@ -108,7 +108,7 @@ const StarCard = memo(function StarCard({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-lg font-bold text-white/60">
+                <span className="text-sm font-bold text-white/60">
                   {star.displayName.charAt(0).toUpperCase()}
                 </span>
               )}
@@ -117,32 +117,27 @@ const StarCard = memo(function StarCard({
 
           {/* Rank Badge */}
           <div
-            className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-r ${rankConfig.color} flex items-center justify-center`}
+            className={`absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-gradient-to-r ${rankConfig.color} flex items-center justify-center`}
             style={{
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
             }}
           >
-            <span className="text-[10px] font-bold text-white">{rankConfig.text}</span>
+            <span className="text-[8px] font-bold text-white">{rankConfig.text}</span>
           </div>
         </div>
 
         {/* Username */}
-        <p className="text-xs text-white/90 font-medium text-center truncate mb-1">
+        <p className="text-[10px] text-white/90 font-medium text-center truncate mb-0.5">
           {star.displayName}
         </p>
 
         {/* Aura Change Indicator */}
-        <div className="flex items-center justify-center gap-1">
-          <TrendingUp size={10} className="text-emerald-400" />
-          <span className="text-[10px] font-bold text-emerald-400">
+        <div className="flex items-center justify-center gap-0.5">
+          <TrendingUp size={8} className="text-emerald-400" />
+          <span className="text-[9px] font-bold text-emerald-400">
             +{star.auraChange}%
           </span>
         </div>
-
-        {/* Aura Score */}
-        <p className="text-[9px] text-white/40 text-center mt-0.5">
-          {star.auraScore.toLocaleString()} Aura
-        </p>
 
         {/* Hover Glow Effect */}
         <motion.div
@@ -155,18 +150,18 @@ const StarCard = memo(function StarCard({
 
 const LoadingSkeleton = memo(function LoadingSkeleton() {
   return (
-    <div className="flex gap-3 overflow-hidden px-4">
-      {[1, 2, 3, 4].map((i) => (
+    <div className="flex gap-2 overflow-hidden px-4">
+      {[1, 2, 3, 4, 5].map((i) => (
         <div
           key={i}
-          className="flex-shrink-0 w-[110px] rounded-2xl p-3"
+          className="flex-shrink-0 w-[85px] rounded-xl p-2"
           style={{
             background: 'rgba(255, 255, 255, 0.03)',
           }}
         >
-          <div className="w-14 h-14 rounded-full bg-white/5 animate-pulse mx-auto mb-2" />
-          <div className="w-16 h-3 rounded bg-white/5 animate-pulse mx-auto mb-1" />
-          <div className="w-12 h-2 rounded bg-white/5 animate-pulse mx-auto" />
+          <div className="w-11 h-11 rounded-full bg-white/5 animate-pulse mx-auto mb-1.5" />
+          <div className="w-12 h-2 rounded bg-white/5 animate-pulse mx-auto mb-1" />
+          <div className="w-10 h-2 rounded bg-white/5 animate-pulse mx-auto" />
         </div>
       ))}
     </div>
@@ -231,7 +226,7 @@ export const RisingStars = memo(function RisingStars({
       ) : (
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide"
+          className="flex gap-2 overflow-x-auto px-4 pb-2 scrollbar-hide"
           style={{
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',

@@ -66,64 +66,68 @@ const BottomNav = () => {
         onCreate={handleCreateClick}
       />
 
-      {/* Central Action Button (+) - Floating above nav - MAXIMUM Z-INDEX */}
-      <motion.button
-        onClick={handleActionClick}
-        whileTap={{ scale: 0.9 }}
-        className="fixed left-1/2 -translate-x-1/2"
+      {/* Central Action Button (+) - Floating above nav */}
+      <div
+        className="fixed left-1/2 -translate-x-1/2 pointer-events-auto"
         style={{
           bottom: 56,
-          width: 64,
-          height: 64,
-          zIndex: 99999, // Maximum z-index
+          zIndex: 100,
         }}
       >
-        {/* Outer Glow Ring */}
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%)',
-          }}
-          animate={{
-            scale: [1, 1.6, 1],
-            opacity: [0.7, 0, 0.7],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-
-        {/* Inner Pulse Effect */}
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0, 0.5],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-
-        {/* Button Core */}
-        <div
-          className="relative w-full h-full rounded-full flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-            boxShadow: '0 8px 32px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
-            border: '3px solid rgba(255, 255, 255, 0.2)',
-          }}
+        <motion.button
+          onClick={handleActionClick}
+          whileTap={{ scale: 0.9 }}
+          className="relative w-16 h-16 cursor-pointer touch-manipulation"
+          type="button"
+          aria-label="Open action menu"
         >
-          <Plus size={32} className="text-white" strokeWidth={2.5} />
-        </div>
-      </motion.button>
+          {/* Outer Glow Ring */}
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%)',
+            }}
+            animate={{
+              scale: [1, 1.6, 1],
+              opacity: [0.7, 0, 0.7],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Inner Pulse Effect */}
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+            }}
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.5, 0, 0.5],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Button Core - Main clickable area */}
+          <div
+            className="relative w-full h-full rounded-full flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
+              border: '3px solid rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            <Plus size={32} className="text-white" strokeWidth={2.5} />
+          </div>
+        </motion.button>
+      </div>
 
       {/* Navigation Bar */}
       <nav
