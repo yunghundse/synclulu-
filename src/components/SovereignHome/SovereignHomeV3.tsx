@@ -662,7 +662,7 @@ export default function SovereignHomeV3() {
       )}
 
       {/* Main Content - Extra padding top for AuraHeaderOverlay */}
-      <div className="space-y-6 pt-28">
+      <div className="space-y-6 pt-32">
         {/* Rising Stars Module */}
         {!isLoadingStars && risingStars.length === 0 ? (
           <div className="px-4">
