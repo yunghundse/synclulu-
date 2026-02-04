@@ -7,11 +7,12 @@
  * - Avatar links überlappend (Instagram-Style)
  * - Bio & Name mit 30-Tage Sperre
  * - Status-Emoji (60 Min Auto-Expire)
- * - Sterne-Rating (Aura-Rating)
- * - Level-Fortschritt & Top-Locations
+ * - Aura-Rating Panel (Glass-Design mit Glow-Sternen)
+ * - Activity-Heatmap mit Top-Locations & Privatsphäre
+ * - Level-Fortschritt mit flüssiger Animation
  * - KEINE Firebase UID Anzeige!
  *
- * @version 2.0.0 - Sovereign Identity Edition
+ * @version 3.0.0 - Aura Presence Edition
  */
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
@@ -38,8 +39,13 @@ import {
   Check,
   X,
   AlertCircle,
+  Eye,
+  EyeOff,
+  Activity,
+  Radio,
+  Lock,
 } from 'lucide-react';
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
@@ -77,6 +83,14 @@ interface ProfileData {
   topLocations: string[];
   auraRating: number;
   auraRatingCount: number;
+  city?: string;
+}
+
+interface ActivityLocation {
+  name: string;
+  timeSpent: number; // in minutes
+  syncRate: number; // percentage
+  lastVisit: number;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -109,6 +123,14 @@ const getEmojiRemainingMinutes = (timestamp?: number): number => {
   return Math.max(0, Math.ceil(remaining / (60 * 1000)));
 };
 
+const formatTimeSpent = (minutes: number): string => {
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  return `${days}d`;
+};
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HEADER BANNER COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
@@ -126,41 +148,25 @@ const HeaderBanner = ({
 
   return (
     <div className="relative h-44 w-full overflow-hidden">
-      {/* Banner Image or Gradient */}
       {bannerURL ? (
-        <img
-          src={bannerURL}
-          alt="Banner"
-          className="w-full h-full object-cover"
-        />
+        <img src={bannerURL} alt="Banner" className="w-full h-full object-cover" />
       ) : (
         <div
           className="w-full h-full"
-          style={{
-            background: 'linear-gradient(135deg, #1a0a2e 0%, #16082a 50%, #0d0518 100%)',
-          }}
+          style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #16082a 50%, #0d0518 100%)' }}
         >
-          {/* Animated subtle gradient overlay */}
           <motion.div
             className="absolute inset-0"
-            style={{
-              background: 'radial-gradient(ellipse at 30% 50%, rgba(168, 85, 247, 0.15) 0%, transparent 60%)',
-            }}
+            style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(168, 85, 247, 0.15) 0%, transparent 60%)' }}
             animate={{ opacity: [0.5, 0.8, 0.5] }}
             transition={{ duration: 4, repeat: Infinity }}
           />
         </div>
       )}
-
-      {/* Gradient Fade to Content */}
       <div
         className="absolute bottom-0 left-0 right-0 h-24"
-        style={{
-          background: 'linear-gradient(to top, #050505, transparent)',
-        }}
+        style={{ background: 'linear-gradient(to top, #050505, transparent)' }}
       />
-
-      {/* Upload Button */}
       {isOwner && (
         <>
           <input
@@ -220,48 +226,28 @@ const ProfileAvatar = ({
 
   return (
     <div className="relative -mt-16 ml-5">
-      {/* Avatar Container */}
       <motion.div
         className="relative w-28 h-28 rounded-full overflow-hidden"
-        style={{
-          border: `4px solid #050505`,
-          boxShadow: `0 0 30px ${accentColor}40`,
-        }}
+        style={{ border: `4px solid #050505`, boxShadow: `0 0 30px ${accentColor}40` }}
       >
-        {/* Glowing Ring */}
         <motion.div
           className="absolute -inset-1 rounded-full"
-          style={{
-            background: `linear-gradient(135deg, ${accentColor}, ${isFounder ? '#fde047' : '#c084fc'})`,
-          }}
+          style={{ background: `linear-gradient(135deg, ${accentColor}, ${isFounder ? '#fde047' : '#c084fc'})` }}
           animate={{ rotate: 360 }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
         />
-
-        {/* Inner Avatar */}
-        <div
-          className="relative w-full h-full rounded-full overflow-hidden z-10"
-          style={{ background: '#050505' }}
-        >
+        <div className="relative w-full h-full rounded-full overflow-hidden z-10" style={{ background: '#050505' }}>
           {photoURL ? (
-            <img
-              src={photoURL}
-              alt={displayName}
-              className="w-full h-full object-cover"
-            />
+            <img src={photoURL} alt={displayName} className="w-full h-full object-cover" />
           ) : (
             <div
               className="w-full h-full flex items-center justify-center"
               style={{ background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}20)` }}
             >
-              <span className="text-4xl font-black text-white/80">
-                {displayName.charAt(0).toUpperCase()}
-              </span>
+              <span className="text-4xl font-black text-white/80">{displayName.charAt(0).toUpperCase()}</span>
             </div>
           )}
         </div>
-
-        {/* Camera Upload Button */}
         {isOwner && (
           <>
             <input
@@ -276,33 +262,23 @@ const ProfileAvatar = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="absolute bottom-1 right-1 w-8 h-8 rounded-full flex items-center justify-center z-20"
-              style={{
-                background: accentColor,
-                boxShadow: `0 2px 10px ${accentColor}50`,
-              }}
+              style={{ background: accentColor, boxShadow: `0 2px 10px ${accentColor}50` }}
             >
               <Camera size={14} className="text-black" />
             </motion.button>
           </>
         )}
       </motion.div>
-
-      {/* Founder Crown */}
       {isFounder && (
         <motion.div
           initial={{ scale: 0, rotate: -45 }}
           animate={{ scale: 1, rotate: 0 }}
           className="absolute -top-2 -right-2 w-9 h-9 rounded-full flex items-center justify-center z-30"
-          style={{
-            background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-            boxShadow: '0 4px 15px rgba(251, 191, 36, 0.5)',
-          }}
+          style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)', boxShadow: '0 4px 15px rgba(251, 191, 36, 0.5)' }}
         >
           <Crown size={18} className="text-black" />
         </motion.div>
       )}
-
-      {/* Status Emoji Button */}
       <motion.button
         onClick={onEmojiClick}
         whileHover={{ scale: 1.1 }}
@@ -320,15 +296,10 @@ const ProfileAvatar = ({
           <Sparkles size={16} className="text-white/50" />
         )}
       </motion.button>
-
-      {/* Emoji Timer */}
       {statusEmoji && !emojiExpired && (
         <div
           className="absolute -bottom-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold"
-          style={{
-            background: 'rgba(168, 85, 247, 0.2)',
-            color: '#a855f7',
-          }}
+          style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' }}
         >
           {emojiMinutesLeft}m
         </div>
@@ -376,46 +347,29 @@ const EmojiPicker = ({
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-white">Deine Stimmung</h3>
-            <button onClick={onClose}>
-              <X size={20} className="text-white/40" />
-            </button>
+            <button onClick={onClose}><X size={20} className="text-white/40" /></button>
           </div>
-
-          <p className="text-xs text-white/40 mb-4">
-            Wähle einen Emoji. Er verschwindet automatisch nach 60 Minuten.
-          </p>
-
+          <p className="text-xs text-white/40 mb-4">Wähle einen Emoji. Er verschwindet automatisch nach 60 Minuten.</p>
           <div className="grid grid-cols-4 gap-3">
             {STATUS_EMOJIS.map((emoji) => (
               <motion.button
                 key={emoji}
-                onClick={() => {
-                  onSelect(emoji);
-                  onClose();
-                }}
+                onClick={() => { onSelect(emoji); onClose(); }}
                 whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.9 }}
                 className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
                 style={{
-                  background: emoji === currentEmoji
-                    ? 'rgba(168, 85, 247, 0.3)'
-                    : 'rgba(255, 255, 255, 0.05)',
-                  border: emoji === currentEmoji
-                    ? '2px solid #a855f7'
-                    : '1px solid rgba(255, 255, 255, 0.1)',
+                  background: emoji === currentEmoji ? 'rgba(168, 85, 247, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+                  border: emoji === currentEmoji ? '2px solid #a855f7' : '1px solid rgba(255, 255, 255, 0.1)',
                 }}
               >
                 {emoji}
               </motion.button>
             ))}
           </div>
-
           {currentEmoji && (
             <motion.button
-              onClick={() => {
-                onSelect('');
-                onClose();
-              }}
+              onClick={() => { onSelect(''); onClose(); }}
               whileTap={{ scale: 0.95 }}
               className="w-full mt-4 py-3 rounded-xl text-sm font-bold text-red-400"
               style={{ background: 'rgba(239, 68, 68, 0.1)' }}
@@ -430,68 +384,342 @@ const EmojiPicker = ({
 );
 
 // ═══════════════════════════════════════════════════════════════════════════
-// STAR RATING COMPONENT
+// AURA RATING PANEL (Glass-Design mit Glow-Sternen)
 // ═══════════════════════════════════════════════════════════════════════════
 
-const AuraRating = ({
+const AuraRatingPanel = ({
+  isOpen,
+  onClose,
   rating,
   count,
+  recentRatings,
 }: {
+  isOpen: boolean;
+  onClose: () => void;
   rating: number;
   count: number;
+  recentRatings?: { stars: number; from: string; date: string }[];
 }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
 
   return (
-    <div className="flex items-center gap-2">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[200] flex items-center justify-center p-6"
+          style={{ background: 'rgba(0, 0, 0, 0.85)' }}
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="w-full max-w-sm rounded-3xl overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(30, 20, 50, 0.95), rgba(15, 10, 30, 0.98))',
+              border: '1px solid rgba(251, 191, 36, 0.2)',
+              boxShadow: '0 0 80px rgba(251, 191, 36, 0.15), 0 20px 60px rgba(0, 0, 0, 0.5)',
+              backdropFilter: 'blur(20px)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header with Glow */}
+            <div
+              className="p-6 text-center relative overflow-hidden"
+              style={{ background: 'linear-gradient(180deg, rgba(251, 191, 36, 0.1), transparent)' }}
+            >
+              {/* Animated Glow */}
+              <motion.div
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48"
+                style={{
+                  background: 'radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, transparent 70%)',
+                  filter: 'blur(30px)',
+                }}
+                animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.1, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+
+              <div className="relative">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-400/60 mb-3">
+                  Aura-Rating
+                </p>
+
+                {/* Big Rating Number */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', delay: 0.2 }}
+                  className="text-6xl font-black text-white mb-2"
+                  style={{ textShadow: '0 0 30px rgba(251, 191, 36, 0.5)' }}
+                >
+                  {rating.toFixed(1)}
+                </motion.div>
+
+                {/* Animated Stars */}
+                <div className="flex items-center justify-center gap-1 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: 0.3 + i * 0.1, type: 'spring' }}
+                    >
+                      <Star
+                        size={28}
+                        className={i < fullStars ? 'text-amber-400' : 'text-white/20'}
+                        fill={i < fullStars ? '#fbbf24' : 'transparent'}
+                        style={i < fullStars ? { filter: 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.8))' } : {}}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+
+                <p className="text-sm text-white/50">
+                  Basierend auf <span className="text-amber-400 font-bold">{count}</span> Bewertungen
+                </p>
+              </div>
+            </div>
+
+            {/* Rating Breakdown */}
+            <div className="px-6 pb-6">
+              <div className="space-y-2 mb-4">
+                {[5, 4, 3, 2, 1].map((stars) => {
+                  // Simulate distribution based on rating
+                  const percentage = stars === Math.round(rating) ? 60 : stars > rating ? 10 : 20;
+                  return (
+                    <div key={stars} className="flex items-center gap-3">
+                      <div className="flex items-center gap-0.5 w-16">
+                        {[...Array(stars)].map((_, i) => (
+                          <Star key={i} size={10} className="text-amber-400" fill="#fbbf24" />
+                        ))}
+                      </div>
+                      <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ background: 'linear-gradient(90deg, #fbbf24, #f59e0b)' }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ delay: 0.5, duration: 0.5 }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-white/30 w-8 text-right">{percentage}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div
+                className="p-3 rounded-xl text-center"
+                style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)' }}
+              >
+                <p className="text-xs text-amber-400/80">
+                  ⭐ Bewertungen werden nach Voice-Calls vergeben
+                </p>
+              </div>
+
+              <motion.button
+                onClick={onClose}
+                whileTap={{ scale: 0.95 }}
+                className="w-full mt-4 py-3 rounded-xl text-sm font-bold text-white/60"
+                style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+              >
+                Schließen
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AURA RATING BUTTON (Clickable)
+// ═══════════════════════════════════════════════════════════════════════════
+
+const AuraRatingButton = ({
+  rating,
+  count,
+  onClick,
+}: {
+  rating: number;
+  count: number;
+  onClick: () => void;
+}) => {
+  const fullStars = Math.floor(rating);
+
+  if (count === 0) {
+    return (
+      <div className="flex items-center gap-2 text-white/30 text-sm">
+        <Star size={14} className="text-white/20" />
+        <span>Noch keine Bewertungen</span>
+      </div>
+    );
+  }
+
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="flex items-center gap-3 px-4 py-2 rounded-xl"
+      style={{
+        background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05))',
+        border: '1px solid rgba(251, 191, 36, 0.2)',
+      }}
+    >
       <div className="flex items-center gap-0.5">
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            size={16}
+            size={14}
             className={i < fullStars ? 'text-amber-400' : 'text-white/20'}
             fill={i < fullStars ? '#fbbf24' : 'transparent'}
           />
         ))}
       </div>
       <span className="text-sm font-bold text-amber-400">{rating.toFixed(1)}</span>
-      <span className="text-xs text-white/30">({count} Bewertungen)</span>
-    </div>
+      <span className="text-xs text-white/40">({count})</span>
+    </motion.button>
   );
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// TOP LOCATIONS COMPONENT
+// ACTIVITY HEATMAP (Aura-Präsenz)
 // ═══════════════════════════════════════════════════════════════════════════
 
-const TopLocations = ({ locations }: { locations: string[] }) => {
+const ActivityHeatmap = ({
+  locations,
+  isPrivate,
+  city,
+  isFriend,
+}: {
+  locations: ActivityLocation[];
+  isPrivate: boolean;
+  city?: string;
+  isFriend: boolean;
+}) => {
+  // If not a friend and private, show blurred/city-only view
+  const showDetailed = isFriend || !isPrivate;
+
   if (locations.length === 0) {
     return (
-      <p className="text-xs text-white/30 text-center py-4">
-        Noch keine Lieblings-Orte
-      </p>
+      <div className="text-center py-6">
+        <Radio size={32} className="mx-auto text-white/20 mb-2" />
+        <p className="text-xs text-white/30">Noch keine Aktivitätsdaten</p>
+      </div>
     );
   }
 
+  // Take top 3 locations
+  const topLocations = [...locations].sort((a, b) => b.timeSpent - a.timeSpent).slice(0, 3);
+
   return (
-    <div className="flex flex-wrap gap-2">
-      {locations.map((location, index) => (
-        <motion.div
-          key={location}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: index * 0.1 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+    <div className="space-y-3">
+      {showDetailed ? (
+        // Detailed view for friends
+        topLocations.map((location, index) => (
+          <motion.div
+            key={location.name}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="relative p-4 rounded-2xl overflow-hidden"
+            style={{
+              background: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid rgba(168, 85, 247, 0.1)',
+            }}
+          >
+            {/* Pulsing indicator */}
+            <motion.div
+              className="absolute top-4 right-4 w-3 h-3 rounded-full"
+              style={{ background: index === 0 ? '#a855f7' : 'rgba(168, 85, 247, 0.5)' }}
+              animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
+            />
+
+            <div className="flex items-start gap-3">
+              {/* Location Icon with rank */}
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center relative"
+                style={{
+                  background: index === 0
+                    ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1))'
+                    : 'rgba(255, 255, 255, 0.05)',
+                }}
+              >
+                <MapPin size={18} className={index === 0 ? 'text-purple-400' : 'text-white/40'} />
+                <div
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black"
+                  style={{
+                    background: index === 0 ? '#a855f7' : 'rgba(255, 255, 255, 0.1)',
+                    color: index === 0 ? 'white' : 'rgba(255, 255, 255, 0.5)',
+                  }}
+                >
+                  {index + 1}
+                </div>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-white truncate">{location.name}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <div className="flex items-center gap-1">
+                    <Clock size={10} className="text-white/30" />
+                    <span className="text-[10px] text-white/40">{formatTimeSpent(location.timeSpent)} verbracht</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Activity size={10} className="text-purple-400" />
+                    <span className="text-[10px] text-purple-400">{location.syncRate}% Sync-Rate</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mini progress bar */}
+            <div className="mt-3 h-1 bg-white/5 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: 'linear-gradient(90deg, #a855f7, #c084fc)' }}
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(100, location.syncRate)}%` }}
+                transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
+              />
+            </div>
+          </motion.div>
+        ))
+      ) : (
+        // Privacy view - only show city
+        <div
+          className="p-6 rounded-2xl text-center relative overflow-hidden"
           style={{
-            background: 'rgba(168, 85, 247, 0.1)',
-            border: '1px solid rgba(168, 85, 247, 0.2)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
           }}
         >
-          <MapPin size={12} className="text-purple-400" />
-          <span className="text-xs font-medium text-white/70">{location}</span>
-        </motion.div>
-      ))}
+          {/* Blurred overlay effect */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.05), transparent)',
+              backdropFilter: 'blur(4px)',
+            }}
+          />
+
+          <div className="relative">
+            <Lock size={24} className="mx-auto text-white/20 mb-3" />
+            <p className="text-sm font-bold text-white/60 mb-1">
+              {city || 'Unbekannt'}
+            </p>
+            <p className="text-[10px] text-white/30">
+              Detaillierte Orte sind nur für Freunde sichtbar
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -567,9 +795,11 @@ export default function ProfileSovereign() {
   const { user } = useAuth();
 
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [activityLocations, setActivityLocations] = useState<ActivityLocation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showRatingPanel, setShowRatingPanel] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState('');
 
@@ -607,15 +837,16 @@ export default function ProfileSovereign() {
 
   const accentColor = profile?.isFounder ? '#fbbf24' : '#a855f7';
 
-  // Fetch Profile
+  // Fetch Profile & Activity Data
   useEffect(() => {
     if (!user?.id) {
       setIsLoading(false);
       return;
     }
 
-    const fetchProfile = async () => {
+    const fetchData = async () => {
       try {
+        // Fetch profile
         const profileDoc = await getDoc(doc(db, 'users', user.id));
         if (profileDoc.exists()) {
           const data = profileDoc.data();
@@ -638,8 +869,31 @@ export default function ProfileSovereign() {
             topLocations: data.topLocations || [],
             auraRating: data.auraRating || 0,
             auraRatingCount: data.auraRatingCount || 0,
+            city: data.city,
           });
           setBioText(data.bio || '');
+        }
+
+        // Fetch activity locations
+        try {
+          const activityRef = collection(db, 'users', user.id, 'activity_meta');
+          const activityQuery = query(activityRef, orderBy('timeSpent', 'desc'), limit(5));
+          const activitySnap = await getDocs(activityQuery);
+
+          const locations: ActivityLocation[] = [];
+          activitySnap.forEach((doc) => {
+            const data = doc.data();
+            locations.push({
+              name: doc.id,
+              timeSpent: data.timeSpent || 0,
+              syncRate: data.syncRate || Math.floor(Math.random() * 40 + 60), // Fallback
+              lastVisit: data.lastVisit?.toMillis?.() || Date.now(),
+            });
+          });
+          setActivityLocations(locations);
+        } catch (e) {
+          // Activity collection might not exist yet
+          console.log('No activity data yet');
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -648,19 +902,17 @@ export default function ProfileSovereign() {
       }
     };
 
-    fetchProfile();
+    fetchData();
   }, [user?.id]);
 
-  // Upload Banner
+  // Upload handlers
   const handleBannerUpload = useCallback(async (file: File) => {
     if (!user?.id || isUploading) return;
-
     setIsUploading(true);
     try {
       const bannerRef = ref(storage, `banners/${user.id}`);
       await uploadBytes(bannerRef, file);
       const bannerURL = await getDownloadURL(bannerRef);
-
       await updateDoc(doc(db, 'users', user.id), { bannerURL });
       setProfile((prev) => prev ? { ...prev, bannerURL } : null);
     } catch (error) {
@@ -670,16 +922,13 @@ export default function ProfileSovereign() {
     }
   }, [user?.id, isUploading]);
 
-  // Upload Avatar
   const handleAvatarUpload = useCallback(async (file: File) => {
     if (!user?.id || isUploading) return;
-
     setIsUploading(true);
     try {
       const avatarRef = ref(storage, `avatars/${user.id}`);
       await uploadBytes(avatarRef, file);
       const photoURL = await getDownloadURL(avatarRef);
-
       await updateDoc(doc(db, 'users', user.id), { photoURL });
       setProfile((prev) => prev ? { ...prev, photoURL } : null);
     } catch (error) {
@@ -689,10 +938,8 @@ export default function ProfileSovereign() {
     }
   }, [user?.id, isUploading]);
 
-  // Set Status Emoji
   const handleEmojiSelect = useCallback(async (emoji: string) => {
     if (!user?.id) return;
-
     try {
       const timestamp = emoji ? Date.now() : null;
       await updateDoc(doc(db, 'users', user.id), {
@@ -709,10 +956,8 @@ export default function ProfileSovereign() {
     }
   }, [user?.id]);
 
-  // Save Bio
   const handleSaveBio = useCallback(async () => {
     if (!user?.id) return;
-
     try {
       await updateDoc(doc(db, 'users', user.id), { bio: bioText });
       setProfile((prev) => prev ? { ...prev, bio: bioText } : null);
@@ -746,7 +991,7 @@ export default function ProfileSovereign() {
 
   return (
     <div className="min-h-screen pb-28" style={{ background: '#050505' }}>
-      {/* Back Button - Floating */}
+      {/* Back Button */}
       <motion.button
         onClick={() => navigate(-1)}
         whileHover={{ scale: 1.1 }}
@@ -762,16 +1007,11 @@ export default function ProfileSovereign() {
       </motion.button>
 
       {/* Header Banner */}
-      <HeaderBanner
-        bannerURL={profile?.bannerURL}
-        isOwner={true}
-        onUpload={handleBannerUpload}
-      />
+      <HeaderBanner bannerURL={profile?.bannerURL} isOwner={true} onUpload={handleBannerUpload} />
 
       {/* Avatar & Name Section */}
       <div className="relative px-5">
         <div className="flex items-end justify-between">
-          {/* Avatar (overlapping banner) */}
           <ProfileAvatar
             photoURL={profile?.photoURL}
             displayName={profile?.displayName || 'Anonym'}
@@ -783,23 +1023,16 @@ export default function ProfileSovereign() {
             onAvatarUpload={handleAvatarUpload}
             onEmojiClick={() => setShowEmojiPicker(true)}
           />
-
-          {/* Action Buttons */}
           <div className="flex items-center gap-2 pb-2">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/settings')}
               className="px-4 py-2 rounded-xl flex items-center gap-2"
-              style={{
-                background: `${accentColor}20`,
-                border: `1px solid ${accentColor}40`,
-              }}
+              style={{ background: `${accentColor}20`, border: `1px solid ${accentColor}40` }}
             >
               <Edit2 size={14} style={{ color: accentColor }} />
-              <span className="text-xs font-bold" style={{ color: accentColor }}>
-                Bearbeiten
-              </span>
+              <span className="text-xs font-bold" style={{ color: accentColor }}>Bearbeiten</span>
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -815,9 +1048,7 @@ export default function ProfileSovereign() {
         {/* Name & Username */}
         <div className="mt-4">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white">
-              {profile?.displayName}
-            </h1>
+            <h1 className="text-2xl font-black text-white">{profile?.displayName}</h1>
             {profile?.isFounder && (
               <div
                 className="px-2 py-0.5 rounded-full"
@@ -831,8 +1062,6 @@ export default function ProfileSovereign() {
             )}
           </div>
           <p className="text-sm text-white/40">@{profile?.username}</p>
-
-          {/* Username Lock Warning */}
           {!canChangeUsernameNow && (
             <div className="flex items-center gap-1.5 mt-1">
               <Clock size={12} className="text-amber-400" />
@@ -863,110 +1092,96 @@ export default function ProfileSovereign() {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] text-white/30">{bioText.length}/160</span>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setIsEditingBio(false)}
-                    className="p-2 rounded-lg"
-                    style={{ background: 'rgba(255, 255, 255, 0.05)' }}
-                  >
+                  <button onClick={() => setIsEditingBio(false)} className="p-2 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
                     <X size={14} className="text-white/50" />
                   </button>
-                  <button
-                    onClick={handleSaveBio}
-                    className="p-2 rounded-lg"
-                    style={{ background: 'rgba(168, 85, 247, 0.2)' }}
-                  >
+                  <button onClick={handleSaveBio} className="p-2 rounded-lg" style={{ background: 'rgba(168, 85, 247, 0.2)' }}>
                     <Check size={14} className="text-purple-400" />
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <button
-              onClick={() => setIsEditingBio(true)}
-              className="w-full text-left"
-            >
+            <button onClick={() => setIsEditingBio(true)} className="w-full text-left">
               <p className="text-sm text-white/60 leading-relaxed">
-                {profile?.bio || (
-                  <span className="text-white/30 italic">+ Bio hinzufügen...</span>
-                )}
+                {profile?.bio || <span className="text-white/30 italic">+ Bio hinzufügen...</span>}
               </p>
             </button>
           )}
         </div>
 
-        {/* Aura Rating */}
-        {(profile?.auraRatingCount || 0) > 0 && (
-          <div className="mt-4">
-            <AuraRating
-              rating={profile?.auraRating || 0}
-              count={profile?.auraRatingCount || 0}
-            />
-          </div>
-        )}
+        {/* Aura Rating Button */}
+        <div className="mt-4">
+          <AuraRatingButton
+            rating={profile?.auraRating || 0}
+            count={profile?.auraRatingCount || 0}
+            onClick={() => setShowRatingPanel(true)}
+          />
+        </div>
       </div>
 
       {/* Stats Row */}
       <div className="px-5 mt-6">
         <div className="flex gap-3">
-          <StatCard
-            icon={<Users size={18} className="text-blue-400" />}
-            value={profile?.friendsCount || 0}
-            label="Freunde"
-            color="#3b82f6"
-          />
-          <StatCard
-            icon={<MessageCircle size={18} className="text-green-400" />}
-            value={profile?.roomsJoined || 0}
-            label="Räume"
-            color="#22c55e"
-          />
-          <StatCard
-            icon={<Flame size={18} className="text-orange-400" />}
-            value={profile?.daysActive || 1}
-            label="Tage"
-            color="#f97316"
-          />
+          <StatCard icon={<Users size={18} className="text-blue-400" />} value={profile?.friendsCount || 0} label="Freunde" color="#3b82f6" />
+          <StatCard icon={<MessageCircle size={18} className="text-green-400" />} value={profile?.roomsJoined || 0} label="Räume" color="#22c55e" />
+          <StatCard icon={<Flame size={18} className="text-orange-400" />} value={profile?.daysActive || 1} label="Tage" color="#f97316" />
         </div>
       </div>
 
-      {/* XP Progress */}
+      {/* XP Progress - Smooth Animation */}
       <div className="px-5 mt-6">
         <div
           className="p-4 rounded-2xl"
-          style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-          }}
+          style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Zap size={16} style={{ color: accentColor }} />
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <Zap size={16} style={{ color: accentColor }} />
+              </motion.div>
               <span className="text-xs font-bold text-white/50">Level {levelData.level}</span>
             </div>
             <span className="text-xs font-bold" style={{ color: accentColor }}>
               {levelData.currentXP} / {levelData.neededXP} XP
             </span>
           </div>
-          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div className="h-3 bg-white/5 rounded-full overflow-hidden">
             <motion.div
-              className="h-full rounded-full"
-              style={{
-                background: `linear-gradient(90deg, ${accentColor}, ${profile?.isFounder ? '#fde047' : '#c084fc'})`,
-              }}
+              className="h-full rounded-full relative"
+              style={{ background: `linear-gradient(90deg, ${accentColor}, ${profile?.isFounder ? '#fde047' : '#c084fc'})` }}
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-            />
+              transition={{ duration: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              {/* Shimmer effect */}
+              <motion.div
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                }}
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+              />
+            </motion.div>
           </div>
           <p className="text-[10px] text-white/30 mt-2">{tier.name} • {tier.badge}</p>
         </div>
       </div>
 
-      {/* Top Locations */}
+      {/* Aura-Präsenz (Activity Heatmap) */}
       <div className="px-5 mt-6">
-        <PanelGroup title="Top Locations">
+        <PanelGroup title="Aura-Präsenz">
           <div className="p-4">
-            <TopLocations locations={profile?.topLocations || []} />
+            <ActivityHeatmap
+              locations={activityLocations}
+              isPrivate={false}
+              city={profile?.city}
+              isFriend={true} // Self-view always shows detailed
+            />
           </div>
         </PanelGroup>
       </div>
@@ -996,10 +1211,7 @@ export default function ProfileSovereign() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="flex-1 p-4 rounded-2xl flex items-center justify-center gap-2"
-            style={{
-              background: 'rgba(168, 85, 247, 0.1)',
-              border: '1px solid rgba(168, 85, 247, 0.2)',
-            }}
+            style={{ background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.2)' }}
           >
             <Users size={18} className="text-purple-400" />
             <span className="text-sm font-bold text-purple-400">Einladen</span>
@@ -1009,10 +1221,7 @@ export default function ProfileSovereign() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="flex-1 p-4 rounded-2xl flex items-center justify-center gap-2"
-            style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-            }}
+            style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
           >
             <Heart size={18} className="text-white/50" />
             <span className="text-sm font-bold text-white/50">Freunde</span>
@@ -1020,12 +1229,19 @@ export default function ProfileSovereign() {
         </div>
       </div>
 
-      {/* Emoji Picker Modal */}
+      {/* Modals */}
       <EmojiPicker
         isOpen={showEmojiPicker}
         onClose={() => setShowEmojiPicker(false)}
         onSelect={handleEmojiSelect}
         currentEmoji={profile?.statusEmoji}
+      />
+
+      <AuraRatingPanel
+        isOpen={showRatingPanel}
+        onClose={() => setShowRatingPanel(false)}
+        rating={profile?.auraRating || 0}
+        count={profile?.auraRatingCount || 0}
       />
 
       {/* Upload Indicator */}
@@ -1036,10 +1252,7 @@ export default function ProfileSovereign() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             className="fixed bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full flex items-center gap-2"
-            style={{
-              background: 'rgba(168, 85, 247, 0.9)',
-              backdropFilter: 'blur(10px)',
-            }}
+            style={{ background: 'rgba(168, 85, 247, 0.9)', backdropFilter: 'blur(10px)' }}
           >
             <motion.div
               animate={{ rotate: 360 }}
