@@ -1,10 +1,13 @@
-// Sovereign Home v3.0 - Nebula Command Center Edition
+// Sovereign Home v25.0 - High-End Shop-Ästhetik Edition
 // The Ultimate Home Dashboard with modular high-end components
 
-// Main Export - V3 (Nebula Command Center) is the only version
-export { default as SovereignHome } from './SovereignHomeV3';
+// Main Export - Shop Edition is the primary version
+export { default as SovereignHome } from './SovereignHomeShop';
+export { default as SovereignHomeShop } from './SovereignHomeShop';
+export { default } from './SovereignHomeShop';
+
+// Legacy V3 (Nebula Command Center) for fallback
 export { default as SovereignHomeV3 } from './SovereignHomeV3';
-export { default } from './SovereignHomeV3';
 
 // V2 Network Components (Aura Network)
 export { AuraNetwork } from './AuraNetwork';
