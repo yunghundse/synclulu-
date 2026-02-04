@@ -1,19 +1,27 @@
 /**
  * NebulaMap.tsx
- * 🌌 INTERACTIVE LIVE MAP - Nebula Space Visualization
+ * 🌌 INTERACTIVE LIVE MAP - Nebula Space Visualization v2.0
  *
- * A custom-built interactive map showing:
+ * Now with DUAL MODE:
+ * - Radar View: Original CSS-based radar visualization
+ * - Map View: Real Leaflet map with OpenStreetMap tiles
+ *
+ * Features:
  * - User's current position (pulsing dot)
  * - Nearby hotspots with activity indicators
  * - Real-time distance calculations
  * - Touch interactions for hotspot selection
+ * - Toggle between Radar and Map view
  *
- * @version 1.0.0
+ * @version 2.0.0
  */
 
-import React, { memo, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { memo, useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Users, Compass, Navigation, Zap, Radio } from 'lucide-react';
+import { MapPin, Users, Compass, Navigation, Zap, Radio, Map, Radar } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -30,6 +38,8 @@ export interface MapHotspot {
   distance?: number; // in meters
 }
 
+type ViewMode = 'radar' | 'map';
+
 interface NebulaMapProps {
   userLocation?: { lat: number; lng: number } | null;
   hotspots: MapHotspot[];
@@ -38,7 +48,12 @@ interface NebulaMapProps {
   onHotspotJoin?: (hotspotId: string) => void;
   maxDistance?: number; // Max distance to show in meters
   isLoading?: boolean;
+  defaultView?: ViewMode; // Default view mode
 }
+
+// Map tile URLs (free, no API key required)
+const DARK_MAP_URL = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const MAP_ATTRIBUTION = '&copy; OpenStreetMap &copy; CARTO';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
@@ -323,6 +338,150 @@ const DistanceRings = memo(function DistanceRings({ maxDistance }: { maxDistance
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
+// LEAFLET MAP COMPONENTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Custom user marker icon for Leaflet
+const createUserMarkerIcon = () => L.divIcon({
+  className: 'custom-user-marker',
+  html: `
+    <div style="position: relative; width: 24px; height: 24px;">
+      <div style="position: absolute; inset: 0; border-radius: 50%; background: rgba(139, 92, 246, 0.3); animation: pulse 2s infinite;"></div>
+      <div style="position: absolute; inset: 4px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #a855f7); box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);"></div>
+      <div style="position: absolute; inset: 8px; border-radius: 50%; background: white;"></div>
+    </div>
+  `,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+});
+
+// Custom hotspot marker icon for Leaflet
+const createHotspotMarkerIcon = (hotspot: MapHotspot, isSelected: boolean) => {
+  const color = getActivityColor(hotspot.activityLevel);
+  return L.divIcon({
+    className: 'custom-hotspot-marker',
+    html: `
+      <div style="position: relative; width: 40px; height: 40px;">
+        <div style="
+          position: absolute; inset: 0; border-radius: 50%;
+          background: linear-gradient(135deg, ${color}, ${color}dd);
+          box-shadow: 0 0 15px ${getActivityGlow(hotspot.activityLevel)};
+          ${isSelected ? 'border: 2px solid white;' : ''}
+          display: flex; align-items: center; justify-content: center;
+        ">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div style="
+          position: absolute; top: -4px; right: -4px;
+          min-width: 18px; height: 18px; border-radius: 50%;
+          background: #050505; border: 2px solid ${color};
+          display: flex; align-items: center; justify-content: center;
+          font-size: 9px; font-weight: bold; color: white;
+        ">${hotspot.userCount > 99 ? '99+' : hotspot.userCount}</div>
+      </div>
+    `,
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
+};
+
+// Map Controller for centering
+const MapCenterController = memo(function MapCenterController({
+  center
+}: {
+  center: { lat: number; lng: number }
+}) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([center.lat, center.lng], 15);
+  }, [map, center.lat, center.lng]);
+  return null;
+});
+
+// Leaflet Map View Component
+const LeafletMapView = memo(function LeafletMapView({
+  userLocation,
+  hotspots,
+  selectedId,
+  onHotspotClick,
+  onHotspotJoin,
+}: {
+  userLocation: { lat: number; lng: number };
+  hotspots: MapHotspot[];
+  selectedId: string | null;
+  onHotspotClick: (id: string) => void;
+  onHotspotJoin?: (id: string) => void;
+}) {
+  return (
+    <MapContainer
+      center={[userLocation.lat, userLocation.lng]}
+      zoom={15}
+      className="w-full h-full rounded-[24px]"
+      zoomControl={false}
+      attributionControl={false}
+      style={{ background: '#050505' }}
+    >
+      <TileLayer url={DARK_MAP_URL} attribution={MAP_ATTRIBUTION} />
+      <MapCenterController center={userLocation} />
+
+      {/* User location marker */}
+      <Marker position={[userLocation.lat, userLocation.lng]} icon={createUserMarkerIcon()}>
+        <Popup className="nebula-popup">
+          <div className="text-center p-2">
+            <p className="font-bold text-sm">Du bist hier</p>
+          </div>
+        </Popup>
+      </Marker>
+
+      {/* Activity zone circles */}
+      <Circle
+        center={[userLocation.lat, userLocation.lng]}
+        radius={500}
+        pathOptions={{ color: 'rgba(139, 92, 246, 0.3)', fillColor: 'rgba(139, 92, 246, 0.1)', weight: 1 }}
+      />
+      <Circle
+        center={[userLocation.lat, userLocation.lng]}
+        radius={1000}
+        pathOptions={{ color: 'rgba(139, 92, 246, 0.2)', fillColor: 'transparent', weight: 1, dashArray: '5, 10' }}
+      />
+
+      {/* Hotspot markers */}
+      {hotspots.map((hotspot) => (
+        <Marker
+          key={hotspot.id}
+          position={[hotspot.latitude, hotspot.longitude]}
+          icon={createHotspotMarkerIcon(hotspot, selectedId === hotspot.id)}
+          eventHandlers={{
+            click: () => onHotspotClick(hotspot.id),
+          }}
+        >
+          <Popup className="nebula-popup">
+            <div className="p-3 min-w-[180px]" style={{ background: '#1a1a1a', borderRadius: '12px' }}>
+              <h4 className="font-bold text-white text-sm mb-1">{hotspot.name}</h4>
+              <p className="text-xs text-white/60 mb-3">
+                {formatDistance(hotspot.distance || 0)} • {hotspot.userCount} Personen
+              </p>
+              <button
+                onClick={() => onHotspotJoin?.(hotspot.id)}
+                className="w-full py-2 rounded-lg text-xs font-bold text-white"
+                style={{ background: 'linear-gradient(135deg, #8b5cf6, #a855f7)' }}
+              >
+                Beitreten
+              </button>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+    </MapContainer>
+  );
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -334,8 +493,10 @@ export const NebulaMap = memo(function NebulaMap({
   onHotspotJoin,
   maxDistance = 2000,
   isLoading = false,
+  defaultView = 'map',
 }: NebulaMapProps) {
   const [localSelected, setLocalSelected] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>(defaultView);
 
   const selectedId = selectedHotspotId ?? localSelected;
   const selectedHotspot = hotspots.find((h) => h.id === selectedId);
@@ -392,8 +553,38 @@ export const NebulaMap = memo(function NebulaMap({
   }
 
   return (
-    <div className="relative">
-      {/* Map Container - Compact size */}
+    <div className="relative h-full">
+      {/* View Mode Toggle */}
+      <div className="absolute top-3 left-3 z-[1000] flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(5, 5, 5, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <button
+          onClick={() => setViewMode('map')}
+          className={`p-2 rounded-lg transition-all ${viewMode === 'map' ? 'bg-violet-500 text-white' : 'text-white/50 hover:text-white'}`}
+        >
+          <Map size={16} />
+        </button>
+        <button
+          onClick={() => setViewMode('radar')}
+          className={`p-2 rounded-lg transition-all ${viewMode === 'radar' ? 'bg-violet-500 text-white' : 'text-white/50 hover:text-white'}`}
+        >
+          <Radio size={16} />
+        </button>
+      </div>
+
+      {/* MAP VIEW - Leaflet */}
+      {viewMode === 'map' && userLocation && (
+        <div className="w-full h-full rounded-[24px] overflow-hidden" style={{ border: '1px solid rgba(139, 92, 246, 0.2)' }}>
+          <LeafletMapView
+            userLocation={userLocation}
+            hotspots={hotspots.filter(h => (h.distance || 0) <= maxDistance)}
+            selectedId={selectedId}
+            onHotspotClick={handleHotspotClick}
+            onHotspotJoin={onHotspotJoin}
+          />
+        </div>
+      )}
+
+      {/* RADAR VIEW - Original CSS visualization */}
+      {viewMode === 'radar' && (
       <div
         className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden"
         style={{
@@ -456,21 +647,23 @@ export const NebulaMap = memo(function NebulaMap({
           </div>
         </div>
       </div>
+      )}
 
-      {/* Selected Hotspot Details */}
+      {/* Selected Hotspot Details - Shows for both views */}
       <AnimatePresence>
-        {selectedHotspot && (
+        {selectedHotspot && viewMode === 'radar' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="mt-3"
+            className="absolute bottom-0 left-0 right-0 p-3"
           >
             <div
               className="p-4 rounded-2xl"
               style={{
-                background: 'rgba(5, 5, 5, 0.9)',
+                background: 'rgba(5, 5, 5, 0.95)',
                 border: '1px solid rgba(139, 92, 246, 0.2)',
+                backdropFilter: 'blur(20px)',
               }}
             >
               <div className="flex items-center justify-between mb-3">
