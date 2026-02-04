@@ -20,6 +20,7 @@ import Register from '@/pages/Register';
 import Onboarding from '@/pages/Onboarding';
 import Home from '@/pages/Home';
 import HomeLegacy from '@/pages/HomeLegacy';
+import SovereignNexusHome from '@/pages/SovereignNexusHome';
 import Discover from '@/pages/Discover';
 import Messages from '@/pages/Messages';
 import Profile from '@/pages/Profile';
@@ -249,7 +250,7 @@ function App() {
             <NotificationToast />
             <XPToast />
             <Routes>
-            <Route path="/" element={<HomeLegacy />} />
+            <Route path="/" element={<SovereignNexusHome />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<ProfileMinimal />} />
@@ -289,8 +290,8 @@ function App() {
             <Route path="/onboarding" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-            {/* Sovereign Floating Dock - Neue Navigation */}
-            <FloatingDock />
+            {/* Sovereign Floating Dock - Nur auf Sub-Pages, nicht auf Home */}
+            {location.pathname !== '/' && <FloatingDock />}
           </div>
         </NotificationProvider>
       </ThemeProvider>
