@@ -789,8 +789,7 @@ const PermissionsStep = ({
   // Check permission states
   const locationGranted = permissions.location === 'granted';
   const micGranted = permissions.microphone === 'granted';
-  const notifGranted = permissions.notifications === 'granted';
-  const allGranted = locationGranted && micGranted && notifGranted;
+  const allGranted = locationGranted && micGranted;
   const anyRequested = permissions.location !== null;
 
   const permissionItems = [
@@ -809,14 +808,6 @@ const PermissionsStep = ({
       description: 'Für Sprachnachrichten',
       required: true,
       status: permissions.microphone
-    },
-    {
-      key: 'notifications' as const,
-      icon: Bell,
-      title: 'Benachrichtigungen',
-      description: 'Verpasse keine Matches',
-      required: true,
-      status: permissions.notifications
     }
   ];
 
@@ -1407,42 +1398,6 @@ const OnboardingFlow = () => {
         setPermissions(prev => ({ ...prev, microphone: 'denied' }));
       }
 
-      // Small delay between permission requests
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // 3. NOTIFICATIONS - request last
-      console.log('🔔 [REG] Requesting notification permission...');
-      try {
-        if (!('Notification' in window)) {
-          console.log('⚠️ [REG] Notifications not supported');
-          setPermissions(prev => ({ ...prev, notifications: 'unsupported' }));
-        } else if (Notification.permission === 'granted') {
-          // Already granted
-          console.log('✅ [REG] Notifications already granted');
-          setPermissions(prev => ({ ...prev, notifications: 'granted' }));
-          if (firebaseUser) {
-            await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': true }, { merge: true });
-          }
-        } else if (Notification.permission === 'denied') {
-          // Already denied - can't request again
-          console.log('❌ [REG] Notifications already denied by user');
-          setPermissions(prev => ({ ...prev, notifications: 'denied' }));
-        } else {
-          // Request permission
-          const result = await Notification.requestPermission();
-          const mappedResult: PermissionStatus = result === 'default' ? 'prompt' : result as PermissionStatus;
-          setPermissions(prev => ({ ...prev, notifications: mappedResult }));
-          console.log('✅ [REG] Notifications result:', result);
-
-          if (firebaseUser && result === 'granted') {
-            await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': true }, { merge: true });
-          }
-        }
-      } catch (e) {
-        console.log('❌ [REG] Notifications error:', e);
-        setPermissions(prev => ({ ...prev, notifications: 'denied' }));
-      }
-
     } catch (error) {
       console.error('Permission request error:', error);
     } finally {
@@ -1475,25 +1430,6 @@ const OnboardingFlow = () => {
         }
       }
 
-      if (type === 'notifications') {
-        if (!('Notification' in window)) {
-          setPermissions(prev => ({ ...prev, notifications: 'unsupported' }));
-          return;
-        }
-
-        if (Notification.permission === 'denied') {
-          // Can't request again if already denied
-          setPermissions(prev => ({ ...prev, notifications: 'denied' }));
-          return;
-        }
-
-        const result = await Notification.requestPermission();
-        const mappedResult: PermissionStatus = result === 'default' ? 'prompt' : result as PermissionStatus;
-        setPermissions(prev => ({ ...prev, notifications: mappedResult }));
-        if (firebaseUser && result === 'granted') {
-          await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': result === 'granted' }, { merge: true });
-        }
-      }
     } catch (error) {
       console.error(`Permission ${type} denied:`, error);
       setPermissions(prev => ({ ...prev, [type]: 'denied' }));
@@ -1515,7 +1451,7 @@ const OnboardingFlow = () => {
           hasVerifiedAge: true,
           hasAcceptedLocation: permissions.location === 'granted',
           hasAcceptedMicrophone: permissions.microphone === 'granted',
-          hasAcceptedNotifications: permissions.notifications === 'granted',
+          hasAcceptedNotifications: true, // Skip notification permission for now
           consentTimestamp: serverTimestamp(),
           consentVersion: '1.2',
         }, { merge: true });
