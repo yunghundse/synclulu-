@@ -8,7 +8,7 @@ import {
   Loader2, Plus, Compass, Wifi, WifiOff, Cloud, MicOff as MicOffIcon
 } from 'lucide-react';
 import { NebulaBadge, VIPAura } from '@/components/NebulaBadge';
-import { SailorMascot, PegasusMascot, FloatingMascot } from '@/components/Mascots';
+// v31.0: Mascots removed - replaced with modern Voice Cloud design
 // v16.0 Stable Grid Room - replaces LiquidRoomExperience
 import { StableGridRoom, type GridParticipant } from '@/components/StableGridRoom';
 import { collection, onSnapshot, addDoc, updateDoc, doc, arrayUnion, Timestamp, deleteDoc, getDoc } from 'firebase/firestore';
@@ -442,6 +442,12 @@ const Discover = () => {
   const handleJoinRoom = async (room: VoiceRoom, asAnonymous: boolean = false) => {
     if (!user?.id || isRoomServiceJoining) return;
 
+    // v31.0: Navigate to new VoiceRoom page instead of in-place join
+    // This provides the full immersive Psycho-Acoustic experience
+    navigate(`/room/${room.id}`);
+    return;
+
+    // Legacy code below (kept for reference)
     // If already in a room, leave it first using roomService
     if (activeRoom) {
       await handleLeaveRoom();
@@ -1121,36 +1127,74 @@ const Discover = () => {
             {/* Complete empty state - no rooms at all */}
             {rooms.length === 0 ? (
               <div className="text-center py-12">
-                <FloatingMascot delay={0}>
-                  <SailorMascot size={140} className="mx-auto mb-4" />
-                </FloatingMascot>
-                <h3 className="font-display font-bold text-xl text-[var(--synclulu-text)] mb-3">
+                {/* v31.0: Modern Voice Cloud Empty State */}
+                <div className="relative w-32 h-32 mx-auto mb-6">
+                  <div
+                    className="absolute inset-0 rounded-3xl animate-pulse"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05))',
+                      border: '1px solid rgba(168, 85, 247, 0.2)',
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Cloud size={48} className="text-purple-400" />
+                  </div>
+                  <div
+                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1))',
+                      border: '1px solid rgba(34, 197, 94, 0.3)',
+                    }}
+                  >
+                    <Mic size={18} className="text-green-400" />
+                  </div>
+                </div>
+                <h3 className="font-bold text-xl text-white mb-3">
                   {UI_COPY.empty.lounges}
                 </h3>
-                <p className="text-sm text-[var(--synclulu-muted)] mb-8 max-w-xs mx-auto leading-relaxed">
+                <p className="text-sm text-white/50 mb-8 max-w-xs mx-auto leading-relaxed">
                   Sei der Erste und erstelle ein Wölkchen, in dem sich deine Nachbarschaft treffen kann!
                 </p>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[var(--synclulu-accent)] to-pink-500 text-white rounded-2xl font-display font-bold shadow-lg hover:shadow-xl transition-all"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(168, 85, 247, 0.2))',
+                    border: '1px solid rgba(168, 85, 247, 0.4)',
+                    color: 'white',
+                  }}
                 >
                   <Plus size={20} />
                   Wölkchen erstellen
                 </button>
               </div>
             ) : filteredRooms.length === 0 ? (
-              /* Filter has no results */
+              /* Filter has no results - v31.0 Modern Design */
               <div className="text-center py-12">
-                <FloatingMascot delay={0.2}>
-                  <PegasusMascot size={120} className="mx-auto mb-2" />
-                </FloatingMascot>
-                <p className="font-semibold text-[var(--synclulu-text)] mb-2">Keine Wölkchen gefunden</p>
-                <p className="text-sm text-[var(--synclulu-muted)] mb-4">
+                <div className="relative w-24 h-24 mx-auto mb-4">
+                  <div
+                    className="absolute inset-0 rounded-2xl"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Compass size={36} className="text-white/30" />
+                  </div>
+                </div>
+                <p className="font-semibold text-white mb-2">Keine Wölkchen gefunden</p>
+                <p className="text-sm text-white/40 mb-4">
                   Ändere den Filter oder erstelle ein neues Wölkchen
                 </p>
                 <button
                   onClick={() => setFilter('all')}
-                  className="px-6 py-3 bg-[var(--synclulu-accent)] text-white rounded-xl font-semibold"
+                  className="px-6 py-3 rounded-xl font-semibold"
+                  style={{
+                    background: 'rgba(168, 85, 247, 0.2)',
+                    border: '1px solid rgba(168, 85, 247, 0.3)',
+                    color: '#a855f7',
+                  }}
                 >
                   Alle Wölkchen anzeigen
                 </button>

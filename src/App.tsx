@@ -60,6 +60,7 @@ import FriendStreaks from '@/pages/FriendStreaks';
 import VoiceStats from '@/pages/VoiceStats';
 import ProfileVisitors from '@/pages/ProfileVisitors';
 import BattlePass from '@/pages/BattlePass';
+import VoiceRoom from '@/pages/VoiceRoom';
 import NexusDashboard from '@/pages/NexusDashboard';
 import LegalCenter from '@/pages/LegalCenter';
 import LegalPopup from '@/pages/LegalPopup';
@@ -284,6 +285,8 @@ function App() {
                 <Route path="/profile-visitors" element={<ProfileVisitors />} />
                 <Route path="/battlepass" element={<BattlePass />} />
                 <Route path="/battle-pass" element={<BattlePass />} />
+                <Route path="/room/:roomId" element={<VoiceRoom />} />
+                <Route path="/voice-room/:roomId" element={<VoiceRoom />} />
                 <Route path="/premium" element={<Premium />} />
                 <Route path="/settings" element={<SettingsHub />} />
                 <Route path="/settings/legacy" element={<Settings />} />
