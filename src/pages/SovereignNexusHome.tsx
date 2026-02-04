@@ -16,6 +16,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Mail, User, Sparkles, Zap, Search, Plus, Crown } from 'lucide-react';
 
+// Components
+import { GlobalDiscoveryButton } from '../components/SovereignUI/GlobalDiscoveryButton';
+
 // Firebase
 import {
   collection,
@@ -785,9 +788,17 @@ export default function SovereignNexusHome() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-          4. PORTAL CLOUD CENTER
+          4. GLOBAL DISCOVERY BUTTON
           ═══════════════════════════════════════════════════════ */}
-      <div className="absolute bottom-12 left-0 right-0">
+      <GlobalDiscoveryButton
+        onClick={() => navigate('/discover')}
+        isLocationApproximate={!ipLocation || isLoadingLocation}
+      />
+
+      {/* ═══════════════════════════════════════════════════════
+          5. PORTAL CLOUD CENTER
+          ═══════════════════════════════════════════════════════ */}
+      <div className="absolute bottom-8 left-0 right-0">
         <PortalCloudCenter
           onSearch={() => navigate('/discover')}
           onCreate={() => navigate('/create-room')}

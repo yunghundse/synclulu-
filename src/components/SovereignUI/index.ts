@@ -9,6 +9,7 @@ export { FloatingDock } from './FloatingDock';
 export { DeepSpaceGrid } from './DeepSpaceGrid';
 export { LightBridge } from './LightBridge';
 export { NexusCommandCenter, FOUNDER_UID } from './NexusCommandCenter';
+export { GlobalDiscoveryButton } from './GlobalDiscoveryButton';
 
 // Re-export ascension system
 export {
