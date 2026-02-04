@@ -1,14 +1,16 @@
 /**
  * levelSystem.ts
- * 👑 AURA EVOLUTION - Progressives Level-System
+ * 👑 SOVEREIGN LEVEL SYSTEM - Logarithmic XP Curve
  *
- * Features:
- * - Progressive XP-Kurve (Level * 150 XP pro Level)
- * - Rang-Titel basierend auf Level
- * - Memoized Berechnungen für Performance
- * - Firebase Sync für persistenten Fortschritt
+ * XP-Formel: Level 1-10 geht schnell (Dopamin-Hook),
+ * ab Level 20 wird es zur Prestige-Sache.
  *
- * @version 1.0.0
+ * XP-Quellen-Gewichtung:
+ * - Sync-Zeit (50%)
+ * - Neue Freunde (30%)
+ * - App-Streaks (20%)
+ *
+ * @version 2.0.0 - Sovereign Empire Edition
  */
 
 import { doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
@@ -24,6 +26,7 @@ export interface LevelInfo {
   xpForCurrentLevel: number;
   xpForNextLevel: number;
   progressPercent: number;
+  progress: number; // 0-1 für Animationen
   totalXP: number;
   rankName: string;
   rankColor: string;
@@ -35,6 +38,7 @@ export interface RankInfo {
   minLevel: number;
   color: string;
   glow: string;
+  badge?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -42,54 +46,62 @@ export interface RankInfo {
 // ═══════════════════════════════════════════════════════════════════════════
 
 const MAX_LEVEL = 100;
-const BASE_XP_MULTIPLIER = 150; // Jedes Level braucht level * 150 XP
-
-// Rang-Definitionen
-export const RANKS: RankInfo[] = [
-  { name: 'Newcomer', minLevel: 1, color: '#6B7280', glow: 'rgba(107, 114, 128, 0.4)' },
-  { name: 'Explorer', minLevel: 5, color: '#10B981', glow: 'rgba(16, 185, 129, 0.4)' },
-  { name: 'Wanderer', minLevel: 10, color: '#3B82F6', glow: 'rgba(59, 130, 246, 0.4)' },
-  { name: 'Pioneer', minLevel: 15, color: '#8B5CF6', glow: 'rgba(139, 92, 246, 0.4)' },
-  { name: 'Pathfinder', minLevel: 20, color: '#A855F7', glow: 'rgba(168, 85, 247, 0.4)' },
-  { name: 'Architect', minLevel: 30, color: '#D946EF', glow: 'rgba(217, 70, 239, 0.4)' },
-  { name: 'Luminary', minLevel: 40, color: '#F59E0B', glow: 'rgba(245, 158, 11, 0.4)' },
-  { name: 'Sovereign', minLevel: 50, color: '#EAB308', glow: 'rgba(234, 179, 8, 0.5)' },
-  { name: 'Transcendent', minLevel: 75, color: '#F472B6', glow: 'rgba(244, 114, 182, 0.5)' },
-  { name: 'Eternal', minLevel: 100, color: '#FBBF24', glow: 'rgba(251, 191, 36, 0.6)' },
-];
 
 // ═══════════════════════════════════════════════════════════════════════════
-// XP CALCULATION (Memoized)
+// LOGARITHMIC XP CURVE
+// Level 1-10: Schnell (100 * 1.5^level) - Dopamin Hook
+// Level 11-20: Moderat (1.3x multiplier)
+// Level 20+: Prestige (1.15x multiplier - sehr langsam)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Cache für XP-Schwellenwerte
+// Cache für Performance
 const xpThresholdCache = new Map<number, number>();
 
 /**
- * Berechnet die XP, die für ein bestimmtes Level benötigt werden
- * Formel: level * 150 XP
+ * Berechnet XP-Schwellenwert für ein bestimmtes Level
+ * Logarithmische Kurve für bessere Progression
  */
-export const getXPForLevel = (level: number): number => {
-  if (level <= 1) return 0;
+export const getLevelThreshold = (level: number): number => {
+  if (level <= 0) return 0;
 
+  // Cache check
   if (xpThresholdCache.has(level)) {
     return xpThresholdCache.get(level)!;
   }
 
-  const xp = level * BASE_XP_MULTIPLIER;
+  let xp: number;
+
+  if (level <= 10) {
+    // Early game: Schnelle Progression für Dopamin-Hook
+    // Level 1: 100, Level 5: ~759, Level 10: ~3844
+    xp = Math.floor(100 * Math.pow(1.5, level - 1));
+  } else if (level <= 20) {
+    // Mid game: Moderate Steigerung
+    const base10 = 100 * Math.pow(1.5, 9); // ~3844
+    xp = Math.floor(base10 * Math.pow(1.3, level - 10));
+  } else {
+    // Late game: Prestige-Kurve (langsam aber stetig)
+    const base10 = 100 * Math.pow(1.5, 9);
+    const base20 = base10 * Math.pow(1.3, 10); // ~53000
+    xp = Math.floor(base20 * Math.pow(1.15, level - 20));
+  }
+
   xpThresholdCache.set(level, xp);
   return xp;
 };
 
+// Alias für alte Kompatibilität
+export const getXPForLevel = getLevelThreshold;
+
 /**
- * Berechnet die Gesamt-XP, die für ein Level benötigt werden (kumulativ)
+ * Berechnet Gesamt-XP, die für ein bestimmtes Level benötigt werden (kumulativ)
  */
 export const getTotalXPForLevel = (level: number): number => {
   if (level <= 1) return 0;
 
   let total = 0;
-  for (let i = 2; i <= level; i++) {
-    total += getXPForLevel(i);
+  for (let i = 1; i < level; i++) {
+    total += getLevelThreshold(i);
   }
   return total;
 };
@@ -101,41 +113,67 @@ export const getLevelFromXP = (totalXP: number): number => {
   if (totalXP <= 0) return 1;
 
   let level = 1;
-  let xpNeeded = 0;
+  let xpRemaining = totalXP;
 
   while (level < MAX_LEVEL) {
-    const nextLevelXP = getXPForLevel(level + 1);
-    if (xpNeeded + nextLevelXP > totalXP) break;
-    xpNeeded += nextLevelXP;
+    const threshold = getLevelThreshold(level);
+    if (xpRemaining < threshold) break;
+    xpRemaining -= threshold;
     level++;
   }
 
   return level;
 };
 
+// ═══════════════════════════════════════════════════════════════════════════
+// RANK SYSTEM - 10 Prestige-Ränge
+// ═══════════════════════════════════════════════════════════════════════════
+
+export const RANKS: RankInfo[] = [
+  { name: 'Newcomer', minLevel: 1, color: '#6B7280', glow: 'rgba(107, 114, 128, 0.4)' },
+  { name: 'Explorer', minLevel: 5, color: '#10B981', glow: 'rgba(16, 185, 129, 0.4)' },
+  { name: 'Connector', minLevel: 10, color: '#3B82F6', glow: 'rgba(59, 130, 246, 0.4)' },
+  { name: 'Syncer', minLevel: 15, color: '#8B5CF6', glow: 'rgba(139, 92, 246, 0.4)' },
+  { name: 'Resonant', minLevel: 25, color: '#EC4899', glow: 'rgba(236, 72, 153, 0.4)' },
+  { name: 'Harmonic', minLevel: 35, color: '#F59E0B', glow: 'rgba(245, 158, 11, 0.4)' },
+  { name: 'Ascended', minLevel: 50, color: '#EF4444', glow: 'rgba(239, 68, 68, 0.4)' },
+  { name: 'Celestial', minLevel: 70, color: '#06B6D4', glow: 'rgba(6, 182, 212, 0.5)' },
+  { name: 'Mythic', minLevel: 85, color: '#D946EF', glow: 'rgba(217, 70, 239, 0.5)' },
+  { name: 'Eternal', minLevel: 100, color: '#FFD700', glow: 'rgba(255, 215, 0, 0.6)', badge: '👑' },
+];
+
 /**
  * Holt den Rang basierend auf Level
  */
 export const getRankForLevel = (level: number): RankInfo => {
   let rank = RANKS[0];
-
   for (const r of RANKS) {
     if (level >= r.minLevel) {
       rank = r;
     }
   }
-
   return rank;
 };
 
 /**
- * Hauptfunktion: Berechnet alle Level-Informationen
- * MEMOIZED für Performance
+ * Holt den nächsten Rang
  */
+export const getNextRank = (level: number): RankInfo | null => {
+  const currentRank = getRankForLevel(level);
+  const currentIndex = RANKS.findIndex((r) => r.name === currentRank.name);
+  return currentIndex < RANKS.length - 1 ? RANKS[currentIndex + 1] : null;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEVEL INFO CALCULATION (Memoized)
+// ═══════════════════════════════════════════════════════════════════════════
+
 const levelInfoCache = new Map<number, LevelInfo>();
 
+/**
+ * Hauptfunktion: Berechnet alle Level-Informationen
+ */
 export const calculateLevelInfo = (totalXP: number): LevelInfo => {
-  // Cache-Check
   const cacheKey = Math.floor(totalXP);
   if (levelInfoCache.has(cacheKey)) {
     return levelInfoCache.get(cacheKey)!;
@@ -144,15 +182,14 @@ export const calculateLevelInfo = (totalXP: number): LevelInfo => {
   const level = getLevelFromXP(totalXP);
   const isMaxLevel = level >= MAX_LEVEL;
 
-  // XP für aktuelles und nächstes Level
+  // XP-Berechnungen
   const xpAtCurrentLevel = getTotalXPForLevel(level);
-  const xpForNextLevel = isMaxLevel ? 0 : getXPForLevel(level + 1);
+  const xpForNextLevel = isMaxLevel ? 0 : getLevelThreshold(level);
   const xpInCurrentLevel = totalXP - xpAtCurrentLevel;
 
-  // Progress Prozent
-  const progressPercent = isMaxLevel
-    ? 100
-    : Math.min(100, (xpInCurrentLevel / xpForNextLevel) * 100);
+  // Progress
+  const progress = isMaxLevel ? 1 : Math.min(1, xpInCurrentLevel / xpForNextLevel);
+  const progressPercent = progress * 100;
 
   // Rang
   const rank = getRankForLevel(level);
@@ -163,21 +200,66 @@ export const calculateLevelInfo = (totalXP: number): LevelInfo => {
     xpForCurrentLevel: xpAtCurrentLevel,
     xpForNextLevel,
     progressPercent,
+    progress,
     totalXP: Math.floor(totalXP),
     rankName: rank.name,
     rankColor: rank.color,
     isMaxLevel,
   };
 
-  // Cache speichern (max 1000 Einträge)
+  // Cache (max 1000 Einträge)
   if (levelInfoCache.size > 1000) {
     const firstKey = levelInfoCache.keys().next().value;
-    levelInfoCache.delete(firstKey);
+    if (firstKey) levelInfoCache.delete(firstKey);
   }
   levelInfoCache.set(cacheKey, info);
 
   return info;
 };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// XP REWARDS - Gewichtet nach Importance
+// Sync-Zeit: 50%, Neue Freunde: 30%, Streaks: 20%
+// ═══════════════════════════════════════════════════════════════════════════
+
+export const XP_REWARDS = {
+  // === SYNC-ZEIT (50% der XP) ===
+  SYNC_MINUTE: 3,           // 3 XP pro Minute im Sync
+  SPEAK_MINUTE: 4,          // 4 XP pro Minute sprechen
+  LISTEN_MINUTE: 2,         // 2 XP pro Minute zuhören
+  SYNC_HOUR_BONUS: 50,      // Bonus nach 1h Sync
+  SYNC_MARATHON: 200,       // 3h+ Sync Session
+
+  // === FREUNDE (30% der XP) ===
+  NEW_FRIEND: 25,           // Neuen Freund gewonnen
+  FRIEND_SYNC: 15,          // Mit Freund gesynct
+  ACCEPT_SYNC_REQUEST: 10,  // Sync-Anfrage akzeptiert
+  SEND_SYNC_REQUEST: 2,     // Sync-Anfrage gesendet
+  HIGH_SYNC_MATCH: 20,      // 90%+ Match Score
+
+  // === STREAKS (20% der XP) ===
+  DAILY_LOGIN: 10,          // Täglich einloggen
+  FIRST_SYNC_OF_DAY: 20,    // Erster Sync des Tages
+  STREAK_3_DAYS: 30,        // 3-Tage-Streak
+  STREAK_7_DAYS: 100,       // 7-Tage-Streak (Weekly)
+  STREAK_30_DAYS: 500,      // 30-Tage-Streak
+
+  // === ROOM AKTIVITÄTEN ===
+  JOIN_ROOM: 5,             // Raum beitreten
+  CREATE_ROOM: 10,          // Raum erstellen
+  HOST_ACTIVE_ROOM: 25,     // Raum mit 5+ Usern hosten
+
+  // === ACHIEVEMENTS ===
+  PROFILE_COMPLETE: 50,     // Profil vervollständigt
+  FIRST_ROOM_CREATED: 50,   // Erster Raum erstellt
+  REACHED_10_SYNCS: 100,    // 10 erfolgreiche Syncs
+  VERIFICATION: 200,        // Account verifiziert
+
+  // === BONUS ===
+  LEVEL_UP_BONUS: 10,       // Bonus XP bei Level-Up
+  PREMIUM_MULTIPLIER: 1.5,  // Premium XP Multiplier
+  FOUNDER_DAILY: 25,        // Founder Daily Bonus
+} as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // FIREBASE SYNC
@@ -192,14 +274,12 @@ export const syncXPToFirebase = async (
 ): Promise<{ success: boolean; newTotal?: number; error?: string }> => {
   try {
     const userRef = doc(db, 'users', userId);
-
     await updateDoc(userRef, {
       xp: increment(xpToAdd),
       totalXP: increment(xpToAdd),
       lastXPSync: serverTimestamp(),
     });
-
-    console.log(`🌟 Aura-Sync: +${xpToAdd} XP gespeichert`);
+    console.log(`🌟 Aura-Sync: +${xpToAdd} XP`);
     return { success: true };
   } catch (error: any) {
     console.error('❌ XP-Sync Fehler:', error.message);
@@ -208,56 +288,23 @@ export const syncXPToFirebase = async (
 };
 
 /**
- * Setzt XP auf einen bestimmten Wert (für Admin/Debug)
+ * Setzt XP auf einen bestimmten Wert (Admin Only)
  */
 export const setXPInFirebase = async (
   userId: string,
   totalXP: number
 ): Promise<{ success: boolean; error?: string }> => {
   try {
-    const userRef = doc(db, 'users', userId);
-
-    await updateDoc(userRef, {
+    await updateDoc(doc(db, 'users', userId), {
       xp: totalXP,
       totalXP: totalXP,
       lastXPSync: serverTimestamp(),
     });
-
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
 };
-
-// ═══════════════════════════════════════════════════════════════════════════
-// XP REWARDS
-// ═══════════════════════════════════════════════════════════════════════════
-
-export const XP_REWARDS = {
-  // Room Aktivitäten
-  JOIN_ROOM: 5,
-  SPEAK_MINUTE: 2,
-  LISTEN_MINUTE: 1,
-  CREATE_ROOM: 10,
-  HOST_ACTIVE_ROOM: 15, // Room mit 5+ Usern
-
-  // Soziale Interaktionen
-  SEND_SYNC_REQUEST: 2,
-  ACCEPT_SYNC_REQUEST: 5,
-  FIRST_SYNC_OF_DAY: 10,
-  HIGH_SYNC_MATCH: 8, // 90%+ Match
-
-  // Achievements
-  DAILY_LOGIN: 5,
-  WEEKLY_STREAK: 25,
-  PROFILE_COMPLETE: 20,
-  FIRST_ROOM_CREATED: 50,
-  REACHED_10_SYNCS: 30,
-
-  // Special
-  LEVEL_UP_BONUS: 10, // Bonus XP bei Level-Up
-  FOUNDER_DAILY_BONUS: 15, // Für Founder Badge Holder
-} as const;
 
 /**
  * Gibt XP für eine bestimmte Aktion
@@ -268,22 +315,114 @@ export const awardXP = async (
   multiplier: number = 1
 ): Promise<{ xpAwarded: number; leveledUp: boolean }> => {
   const baseXP = XP_REWARDS[action];
+  if (typeof baseXP !== 'number') {
+    return { xpAwarded: 0, leveledUp: false };
+  }
+
   const xpAwarded = Math.floor(baseXP * multiplier);
-
   await syncXPToFirebase(userId, xpAwarded);
-
-  // TODO: Level-Up Check könnte hier passieren
 
   return { xpAwarded, leveledUp: false };
 };
 
+// ═══════════════════════════════════════════════════════════════════════════
+// FOUNDER SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+
+export const FOUNDER_UIDS = [
+  '3lonL4ruSPU53Vuwy1U9aLO4hLp2', // Jan - Founder
+];
+
+export const isFounder = (userId: string): boolean => {
+  return FOUNDER_UIDS.includes(userId);
+};
+
+export const getFounderBadge = () => ({
+  icon: '👑',
+  label: 'Founder',
+  color: '#FFD700',
+  glow: '0 0 20px rgba(255, 215, 0, 0.6)',
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Berechnet XP mit Premium-Bonus
+ */
+export const calculateXPWithBonus = (baseXP: number, isPremium: boolean = false): number => {
+  return isPremium ? Math.floor(baseXP * XP_REWARDS.PREMIUM_MULTIPLIER) : baseXP;
+};
+
+/**
+ * Berechnet Streak-Bonus basierend auf Tagen
+ */
+export const calculateStreakBonus = (streakDays: number): number => {
+  if (streakDays >= 30) return XP_REWARDS.STREAK_30_DAYS;
+  if (streakDays >= 7) return XP_REWARDS.STREAK_7_DAYS;
+  if (streakDays >= 3) return XP_REWARDS.STREAK_3_DAYS;
+  return 0;
+};
+
+/**
+ * Level-Up Nachricht
+ */
+export const getLevelUpMessage = (level: number): string => {
+  const rank = getRankForLevel(level);
+  const prevRank = getRankForLevel(level - 1);
+
+  if (rank.name !== prevRank.name) {
+    return `🎊 Neuer Rang: ${rank.name}! (Level ${level})`;
+  }
+
+  const messages = [
+    `Level ${level} erreicht! 🎉`,
+    `Du bist jetzt Level ${level}! ✨`,
+    `Aufgestiegen auf Level ${level}! 🚀`,
+  ];
+  return messages[level % messages.length];
+};
+
+/**
+ * Debug: Zeigt Level-Kurve in Console
+ */
+export const debugLevelCurve = (): void => {
+  console.log('📊 Sovereign Level Curve:');
+  console.log('Level | XP Required | Total XP | Rank');
+  console.log('------|-------------|----------|------');
+  for (let level = 1; level <= 30; level++) {
+    const threshold = getLevelThreshold(level);
+    const totalXP = getTotalXPForLevel(level);
+    const rank = getRankForLevel(level);
+    console.log(
+      `${level.toString().padStart(5)} | ${threshold.toLocaleString().padStart(11)} | ${totalXP.toLocaleString().padStart(8)} | ${rank.name}`
+    );
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════════════════════
+
 export default {
   calculateLevelInfo,
   getLevelFromXP,
-  getRankForLevel,
+  getLevelThreshold,
   getXPForLevel,
+  getTotalXPForLevel,
+  getRankForLevel,
+  getNextRank,
   syncXPToFirebase,
+  setXPInFirebase,
   awardXP,
+  isFounder,
+  getFounderBadge,
+  calculateXPWithBonus,
+  calculateStreakBonus,
+  getLevelUpMessage,
+  debugLevelCurve,
   XP_REWARDS,
   RANKS,
+  FOUNDER_UIDS,
 };
