@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
 import { useStore } from '@/lib/store';
@@ -13,9 +13,28 @@ export const useLocation = () => {
     setLocationPermission
   } = useStore();
 
-  // Check if user has given consent before requesting location
-  const hasConsent = typeof window !== 'undefined' &&
-    localStorage.getItem('synclulu_consent_accepted') === 'true';
+  // Use state for consent so it can be reactive
+  const [hasConsent, setHasConsent] = useState(() => {
+    return typeof window !== 'undefined' &&
+      localStorage.getItem('synclulu_consent_accepted') === 'true';
+  });
+
+  // Listen for consent changes
+  useEffect(() => {
+    const checkConsent = () => {
+      const consent = localStorage.getItem('synclulu_consent_accepted') === 'true';
+      setHasConsent(consent);
+    };
+
+    checkConsent();
+    window.addEventListener('storage', checkConsent);
+    const interval = setInterval(checkConsent, 1000);
+
+    return () => {
+      window.removeEventListener('storage', checkConsent);
+      clearInterval(interval);
+    };
+  }, []);
 
   const updateLocationInDB = useCallback(async (lat: number, lng: number, accuracy: number) => {
     const user = auth.currentUser;

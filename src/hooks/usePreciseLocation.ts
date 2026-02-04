@@ -85,6 +85,11 @@ async function reverseGeocode(
   }
 }
 
+// Track if we already have an active location watcher globally
+// This prevents multiple components from creating duplicate watchers
+let globalWatcherId: number | null = null;
+let globalWatcherCount = 0;
+
 export function usePreciseLocation(): UsePreciseLocationResult {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [geocoded, setGeocoded] = useState<GeocodedLocation | null>(null);
@@ -93,9 +98,31 @@ export function usePreciseLocation(): UsePreciseLocationResult {
   const [isWeak, setIsWeak] = useState(false);
   const [isDenied, setIsDenied] = useState(false);
 
-  // Check if user has given consent before requesting location
-  const hasConsent = typeof window !== 'undefined' &&
-    localStorage.getItem('synclulu_consent_accepted') === 'true';
+  // Use state for consent so it can be reactive
+  const [hasConsent, setHasConsent] = useState(() => {
+    return typeof window !== 'undefined' &&
+      localStorage.getItem('synclulu_consent_accepted') === 'true';
+  });
+
+  // Listen for consent changes (when ConsentScreen sets it)
+  useEffect(() => {
+    const checkConsent = () => {
+      const consent = localStorage.getItem('synclulu_consent_accepted') === 'true';
+      setHasConsent(consent);
+    };
+
+    // Check on mount and listen for storage events
+    checkConsent();
+    window.addEventListener('storage', checkConsent);
+
+    // Also check periodically in case storage event doesn't fire (same tab)
+    const interval = setInterval(checkConsent, 1000);
+
+    return () => {
+      window.removeEventListener('storage', checkConsent);
+      clearInterval(interval);
+    };
+  }, []);
 
   const watchIdRef = useRef<number | null>(null);
   const geocodeTimeoutRef = useRef<NodeJS.Timeout | null>(null);

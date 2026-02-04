@@ -117,14 +117,33 @@ export function useGeolocation(options?: {
     }
   }, [getCurrentPosition]);
 
+  // Use state for consent so it can be reactive
+  const [hasConsent, setHasConsent] = useState(() => {
+    return typeof window !== 'undefined' &&
+      localStorage.getItem('synclulu_consent_accepted') === 'true';
+  });
+
+  // Listen for consent changes
+  useEffect(() => {
+    const checkConsent = () => {
+      const consent = localStorage.getItem('synclulu_consent_accepted') === 'true';
+      setHasConsent(consent);
+    };
+
+    checkConsent();
+    window.addEventListener('storage', checkConsent);
+    const interval = setInterval(checkConsent, 1000);
+
+    return () => {
+      window.removeEventListener('storage', checkConsent);
+      clearInterval(interval);
+    };
+  }, []);
+
   // Watch position changes
   useEffect(() => {
     let watchId: string | null = null;
     let browserWatchId: number | null = null;
-
-    // Check if user has given consent before requesting location
-    const hasConsent = typeof window !== 'undefined' &&
-      localStorage.getItem('synclulu_consent_accepted') === 'true';
 
     const startWatching = async () => {
       // IMPORTANT: Only start watching if user has given consent
@@ -197,7 +216,7 @@ export function useGeolocation(options?: {
         navigator.geolocation.clearWatch(browserWatchId);
       }
     };
-  }, [getCurrentPosition, enableHighAccuracy, watchPosition, timeout]);
+  }, [getCurrentPosition, enableHighAccuracy, watchPosition, timeout, hasConsent]);
 
   return {
     location,
