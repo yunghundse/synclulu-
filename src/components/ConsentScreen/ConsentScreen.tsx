@@ -14,7 +14,7 @@
 
 import React, { memo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, CheckCircle, ExternalLink, Sparkles } from 'lucide-react';
+import { Shield, CheckCircle, ExternalLink, Sparkles, MapPin, Mic } from 'lucide-react';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
 
@@ -74,9 +74,11 @@ export const ConsentScreen = memo(function ConsentScreen({
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [ageVerified, setAgeVerified] = useState(false);
+  const [locationAccepted, setLocationAccepted] = useState(false);
+  const [microphoneAccepted, setMicrophoneAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const allAccepted = termsAccepted && privacyAccepted && ageVerified;
+  const allAccepted = termsAccepted && privacyAccepted && ageVerified && locationAccepted && microphoneAccepted;
 
   const handleConsent = useCallback(async () => {
     if (!allAccepted || isLoading) return;
@@ -93,8 +95,10 @@ export const ConsentScreen = memo(function ConsentScreen({
           hasAcceptedTerms: true,
           hasAcceptedPrivacy: true,
           hasVerifiedAge: true,
+          hasAcceptedLocation: true,
+          hasAcceptedMicrophone: true,
           consentTimestamp: serverTimestamp(),
-          consentVersion: '1.0',
+          consentVersion: '1.1',
         });
       }
 
@@ -129,15 +133,17 @@ export const ConsentScreen = memo(function ConsentScreen({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[300] flex items-center justify-center p-6"
+      className="fixed inset-0 z-[300] flex items-center justify-center"
       style={{ background: 'rgba(5, 5, 5, 0.98)' }}
     >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="w-full max-w-md"
-      >
+      {/* Scrollable Container */}
+      <div className="w-full h-full overflow-y-auto px-6 py-8">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="w-full max-w-md mx-auto"
+        >
         {/* Header */}
         <div className="text-center mb-8">
           <motion.div
@@ -208,6 +214,32 @@ export const ConsentScreen = memo(function ConsentScreen({
               Erforderlich für die Nutzung von synclulu
             </p>
           </ConsentCheckbox>
+
+          {/* Location Permission - Pflicht */}
+          <ConsentCheckbox checked={locationAccepted} onChange={setLocationAccepted}>
+            <div className="flex items-start gap-2">
+              <MapPin size={16} className="text-emerald-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-white/80">Standort-Zugriff erlauben</p>
+                <p className="text-[10px] text-white/40 mt-1">
+                  Pflicht: Wird benötigt um Wölkchen und Freunde in deiner Nähe zu finden
+                </p>
+              </div>
+            </div>
+          </ConsentCheckbox>
+
+          {/* Microphone Permission - Pflicht für Wölkchen */}
+          <ConsentCheckbox checked={microphoneAccepted} onChange={setMicrophoneAccepted}>
+            <div className="flex items-start gap-2">
+              <Mic size={16} className="text-violet-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-white/80">Mikrofon-Zugriff erlauben</p>
+                <p className="text-[10px] text-white/40 mt-1">
+                  Pflicht: Wird benötigt um in Wölkchen sprechen zu können
+                </p>
+              </div>
+            </div>
+          </ConsentCheckbox>
         </div>
 
         {/* Action Button */}
@@ -239,10 +271,11 @@ export const ConsentScreen = memo(function ConsentScreen({
         </motion.button>
 
         {/* Footer */}
-        <p className="text-center text-[10px] text-white/30 mt-6">
+        <p className="text-center text-[10px] text-white/30 mt-6 mb-8">
           Mit der Zustimmung bestätigst du, dass du unsere Regeln gelesen und verstanden hast.
         </p>
       </motion.div>
+      </div>
     </motion.div>
   );
 });

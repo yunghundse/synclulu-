@@ -123,17 +123,46 @@ const MinimalHeader = memo(function MinimalHeader({
 });
 
 // ═══════════════════════════════════════════════════════════════
-// QUICK STATS BAR
+// QUICK STATS BAR WITH LOCATION
 // ═══════════════════════════════════════════════════════════════
 const QuickStats = memo(function QuickStats({
   nearbyCount,
   activeRooms,
+  locationName,
+  isLoadingLocation,
 }: {
   nearbyCount: number;
   activeRooms: number;
+  locationName?: string;
+  isLoadingLocation?: boolean;
 }) {
   return (
-    <div className="absolute top-[140px] left-5 right-5 z-40">
+    <div className="absolute top-[140px] left-5 right-5 z-40 space-y-2">
+      {/* Location Display */}
+      <div
+        className="flex items-center gap-2 px-4 py-2.5 rounded-xl"
+        style={{
+          background: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 197, 94, 0.15)',
+        }}
+      >
+        <MapPin size={14} className="text-emerald-400 flex-shrink-0" />
+        <span className="text-xs text-white/80 truncate">
+          {isLoadingLocation ? (
+            <span className="text-white/40">Standort wird ermittelt...</span>
+          ) : locationName ? (
+            <>
+              <span className="text-emerald-400 font-medium">Dein Standort:</span>{' '}
+              <span className="text-white">{locationName}</span>
+            </>
+          ) : (
+            <span className="text-white/40">Standort unbekannt</span>
+          )}
+        </span>
+      </div>
+
+      {/* Stats */}
       <div
         className="flex items-center justify-between px-4 py-3 rounded-2xl"
         style={{
@@ -176,6 +205,8 @@ export default function SovereignHomeV3() {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [selectedMapHotspot, setSelectedMapHotspot] = useState<string | null>(null);
   const [isInSync, setIsInSync] = useState(false); // Ob User in einem Wölkchen ist
+  const [locationName, setLocationName] = useState<string>('');
+  const [isLoadingLocationName, setIsLoadingLocationName] = useState(false);
 
   // Permission Guard
   const {
@@ -197,6 +228,61 @@ export default function SovereignHomeV3() {
   const userCoords = preciseLocation
     ? { lat: preciseLocation.latitude, lng: preciseLocation.longitude }
     : null;
+
+  // Reverse Geocoding - Ort aus Koordinaten ermitteln
+  useEffect(() => {
+    if (!preciseLocation?.latitude || !preciseLocation?.longitude) {
+      setLocationName('');
+      return;
+    }
+
+    const fetchLocationName = async () => {
+      setIsLoadingLocationName(true);
+      try {
+        // Verwende OpenStreetMap Nominatim (kostenlos, kein API Key)
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${preciseLocation.latitude}&lon=${preciseLocation.longitude}&zoom=16&addressdetails=1`,
+          {
+            headers: {
+              'Accept-Language': 'de',
+              'User-Agent': 'synclulu-app',
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          // Priorität: Stadtteil > Stadt > Bundesland
+          const address = data.address;
+          const locationParts: string[] = [];
+
+          if (address.suburb || address.neighbourhood || address.quarter) {
+            locationParts.push(address.suburb || address.neighbourhood || address.quarter);
+          }
+          if (address.city || address.town || address.village || address.municipality) {
+            locationParts.push(address.city || address.town || address.village || address.municipality);
+          }
+
+          if (locationParts.length > 0) {
+            setLocationName(locationParts.join(', '));
+          } else if (data.display_name) {
+            // Fallback: Ersten Teil des display_name verwenden
+            const parts = data.display_name.split(',');
+            setLocationName(parts.slice(0, 2).join(',').trim());
+          }
+        }
+      } catch (error) {
+        console.error('Reverse geocoding error:', error);
+        setLocationName('');
+      } finally {
+        setIsLoadingLocationName(false);
+      }
+    };
+
+    // Debounce: Nur alle 5 Sekunden aktualisieren
+    const timeoutId = setTimeout(fetchLocationName, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [preciseLocation?.latitude, preciseLocation?.longitude]);
 
   // Computed stats
   const nearbyCount = useMemo(() => {
@@ -314,14 +400,16 @@ export default function SovereignHomeV3() {
         onNotificationsClick={() => navigate('/notifications')}
       />
 
-      {/* Quick Stats */}
+      {/* Quick Stats with Location */}
       <QuickStats
         nearbyCount={nearbyCount}
         activeRooms={mapHotspots.length}
+        locationName={locationName}
+        isLoadingLocation={locationLoading || isLoadingLocationName}
       />
 
       {/* Full-Screen Map */}
-      <div className="absolute inset-0 pt-[200px] pb-24">
+      <div className="absolute inset-0 pt-[240px] pb-24">
         <NebulaMap
           userLocation={userCoords}
           hotspots={mapHotspots}
