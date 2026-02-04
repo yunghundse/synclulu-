@@ -208,6 +208,24 @@ export default function SovereignHomeV3() {
   const [locationName, setLocationName] = useState<string>('');
   const [isLoadingLocationName, setIsLoadingLocationName] = useState(false);
 
+  // Check if user has given consent (to avoid showing PermissionOverlay before ConsentScreen)
+  const [hasConsent, setHasConsent] = useState(() => {
+    return localStorage.getItem('synclulu_consent_accepted') === 'true';
+  });
+
+  // Listen for consent changes
+  useEffect(() => {
+    const checkConsent = () => {
+      setHasConsent(localStorage.getItem('synclulu_consent_accepted') === 'true');
+    };
+    window.addEventListener('storage', checkConsent);
+    const interval = setInterval(checkConsent, 500);
+    return () => {
+      window.removeEventListener('storage', checkConsent);
+      clearInterval(interval);
+    };
+  }, []);
+
   // Permission Guard
   const {
     isBlocked: permissionBlocked,
@@ -291,11 +309,11 @@ export default function SovereignHomeV3() {
 
   // Fetch user profile
   useEffect(() => {
-    if (!user?.uid) return;
+    if (!user?.id) return;
 
     const fetchProfile = async () => {
       try {
-        const profileDoc = await getDoc(doc(db, 'users', user.uid));
+        const profileDoc = await getDoc(doc(db, 'users', user.id));
         if (profileDoc.exists()) {
           const data = profileDoc.data();
           setUserProfile({
@@ -313,7 +331,7 @@ export default function SovereignHomeV3() {
     };
 
     fetchProfile();
-  }, [user?.uid]);
+  }, [user?.id]);
 
   // Subscribe to rooms
   useEffect(() => {
@@ -345,7 +363,8 @@ export default function SovereignHomeV3() {
         setMapHotspots(rooms);
       },
       (error) => {
-        console.error('Error fetching hotspots:', error);
+        // Gracefully handle permission errors
+        console.log('Rooms query error (may be permission):', error.code);
         setMapHotspots([]);
       }
     );
@@ -355,20 +374,28 @@ export default function SovereignHomeV3() {
 
   // Subscribe to notifications
   useEffect(() => {
-    if (!user?.uid) return;
+    if (!user?.id) return;
 
     const notificationsQuery = query(
       collection(db, 'notifications'),
-      where('userId', '==', user.uid),
+      where('userId', '==', user.id),
       where('read', '==', false)
     );
 
-    const unsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
-      setUnreadNotifications(snapshot.size);
-    });
+    const unsubscribe = onSnapshot(
+      notificationsQuery,
+      (snapshot) => {
+        setUnreadNotifications(snapshot.size);
+      },
+      (error) => {
+        // Gracefully handle permission errors
+        console.log('Notifications query error (may be permission):', error.code);
+        setUnreadNotifications(0);
+      }
+    );
 
     return () => unsubscribe();
-  }, [user?.uid]);
+  }, [user?.id]);
 
   return (
     <div
@@ -421,9 +448,9 @@ export default function SovereignHomeV3() {
         />
       </div>
 
-      {/* Permission Overlay */}
+      {/* Permission Overlay - Only show AFTER consent was given */}
       <PermissionOverlay
-        isVisible={permissionBlocked || locationDenied}
+        isVisible={hasConsent && (permissionBlocked || locationDenied)}
         missingPermissions={missingPermissions}
         onRequestGeolocation={requestGeolocation}
         onRequestMicrophone={requestMicrophone}
