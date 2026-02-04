@@ -1,17 +1,14 @@
 /**
  * HomeLegacy.tsx
- * Privacy-First Home Page - Delulu Legacy Style
+ * Simplified Home Page - NO LOCATION FEATURES
  *
- * KEINE automatischen Permission-Requests!
- * - Startet im Guest-Discovery-Modus
- * - Location nur bei explizitem Klick
- * - Klassischer Delulu-Header
+ * Standort komplett deaktiviert - zeigt nur Rooms und Freunde
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Users, Sparkles, X } from 'lucide-react';
+import { Users, Sparkles, MessageCircle, Compass } from 'lucide-react';
 
 // Firebase
 import {
@@ -29,114 +26,111 @@ import { useAuth } from '../hooks/useAuth';
 
 // Components
 import { LegacyHomeHeader } from '../components/SovereignHome/LegacyHomeHeader';
-import { NebulaMap, MapHotspot } from '../components/NebulaMap';
-
-// Privacy-First Location
-import {
-  getQuickLocation,
-  getPreciseLocationOnDemand,
-  checkLocationPermission,
-  getDefaultLocation,
-  QuickLocation,
-} from '../lib/privacyAwareLocation';
 
 // Level System
-import { getLevelFromXP, getAscensionTier } from '../lib/ascensionSystem';
+import { getLevelFromXP } from '../lib/ascensionSystem';
 
 // ═══════════════════════════════════════════════════════════════
-// LOCATION REQUEST MODAL
+// ROOM CARD COMPONENT
 // ═══════════════════════════════════════════════════════════════
-const LocationRequestModal = ({
-  isOpen,
-  onClose,
-  onAllow,
-  onSkip,
+interface RoomData {
+  id: string;
+  name: string;
+  topic?: string;
+  userCount: number;
+  category?: string;
+  createdAt?: any;
+}
+
+const RoomCard = ({
+  room,
+  onJoin
 }: {
-  isOpen: boolean;
-  onClose: () => void;
-  onAllow: () => void;
-  onSkip: () => void;
+  room: RoomData;
+  onJoin: (id: string) => void;
 }) => {
-  if (!isOpen) return null;
+  const activityColor = room.userCount >= 10 ? '#22c55e' :
+                        room.userCount >= 5 ? '#fbbf24' : '#a855f7';
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[200] flex items-center justify-center p-6"
-        style={{ background: 'rgba(0, 0, 0, 0.8)' }}
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="w-full max-w-sm p-6 rounded-3xl"
-          style={{
-            background: 'rgba(15, 15, 20, 0.95)',
-            border: '1px solid rgba(168, 85, 247, 0.2)',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-          }}
-          onClick={(e) => e.stopPropagation()}
+    <motion.div
+      whileTap={{ scale: 0.98 }}
+      onClick={() => onJoin(room.id)}
+      className="p-4 rounded-2xl cursor-pointer"
+      style={{
+        background: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+      }}
+    >
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-white truncate">
+            {room.name}
+          </h3>
+          {room.topic && (
+            <p className="text-xs text-white/40 truncate mt-0.5">
+              {room.topic}
+            </p>
+          )}
+        </div>
+
+        {/* Activity Indicator */}
+        <div
+          className="flex items-center gap-1.5 px-2 py-1 rounded-full ml-3"
+          style={{ background: `${activityColor}20` }}
         >
-          {/* Icon */}
           <div
-            className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.1))',
-            }}
-          >
-            <MapPin size={32} className="text-violet-400" />
-          </div>
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ background: activityColor }}
+          />
+          <span className="text-xs font-medium" style={{ color: activityColor }}>
+            {room.userCount}
+          </span>
+        </div>
+      </div>
 
-          {/* Title */}
-          <h2 className="text-xl font-bold text-white text-center mb-2">
-            Wer redet in deiner Nähe?
-          </h2>
-
-          {/* Description */}
-          <p className="text-sm text-white/60 text-center mb-6">
-            Erlaube Standortzugriff, um Gespräche in deiner Umgebung zu entdecken.
-            Du kannst dies jederzeit ändern.
-          </p>
-
-          {/* Buttons */}
-          <div className="space-y-3">
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={onAllow}
-              className="w-full py-3.5 rounded-xl font-semibold text-white"
-              style={{
-                background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
-                boxShadow: '0 4px 20px rgba(168, 85, 247, 0.4)',
-              }}
-            >
-              Standort erlauben
-            </motion.button>
-
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={onSkip}
-              className="w-full py-3 rounded-xl font-medium text-white/60"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-              }}
-            >
-              Später entscheiden
-            </motion.button>
-          </div>
-
-          {/* Privacy Note */}
-          <p className="text-[10px] text-white/30 text-center mt-4">
-            Dein Standort wird niemals ohne deine Zustimmung geteilt.
-          </p>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+      {room.category && (
+        <span
+          className="inline-block text-[10px] px-2 py-0.5 rounded-full text-white/50"
+          style={{ background: 'rgba(168, 85, 247, 0.1)' }}
+        >
+          {room.category}
+        </span>
+      )}
+    </motion.div>
   );
 };
+
+// ═══════════════════════════════════════════════════════════════
+// EMPTY STATE
+// ═══════════════════════════════════════════════════════════════
+const EmptyState = ({ onCreateRoom }: { onCreateRoom: () => void }) => (
+  <div className="flex flex-col items-center justify-center py-12 px-6">
+    <div
+      className="w-20 h-20 rounded-full flex items-center justify-center mb-4"
+      style={{ background: 'rgba(168, 85, 247, 0.1)' }}
+    >
+      <MessageCircle size={36} className="text-violet-400" />
+    </div>
+    <h3 className="text-lg font-semibold text-white mb-2">
+      Noch keine Gespräche
+    </h3>
+    <p className="text-sm text-white/50 text-center mb-6">
+      Starte das erste Gespräch und lade andere ein!
+    </p>
+    <motion.button
+      whileTap={{ scale: 0.95 }}
+      onClick={onCreateRoom}
+      className="px-6 py-3 rounded-xl font-semibold text-white"
+      style={{
+        background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+        boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)',
+      }}
+    >
+      Raum erstellen
+    </motion.button>
+  </div>
+);
 
 // ═══════════════════════════════════════════════════════════════
 // MAIN HOME COMPONENT
@@ -153,14 +147,9 @@ export default function HomeLegacy() {
     isFounder: boolean;
   } | null>(null);
 
-  const [location, setLocation] = useState<QuickLocation | null>(null);
-  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-  const [showLocationModal, setShowLocationModal] = useState(false);
-  const [hasAskedForLocation, setHasAskedForLocation] = useState(false);
-
-  const [mapHotspots, setMapHotspots] = useState<MapHotspot[]>([]);
+  const [rooms, setRooms] = useState<RoomData[]>([]);
   const [activeFriendsCount, setActiveFriendsCount] = useState(0);
-  const [selectedHotspot, setSelectedHotspot] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Level aus XP berechnen
   const levelData = useMemo(() => {
@@ -171,32 +160,6 @@ export default function HomeLegacy() {
   const progress = useMemo(() => {
     return Math.min(100, (levelData.currentXP / levelData.neededXP) * 100);
   }, [levelData]);
-
-  // ───────────────────────────────────────────────────────────
-  // PRIVACY-FIRST: Hole IP-Location beim Start (KEIN Popup!)
-  // ───────────────────────────────────────────────────────────
-  useEffect(() => {
-    const initLocation = async () => {
-      // Prüfe ob Permission schon erteilt wurde
-      const permissionStatus = await checkLocationPermission();
-
-      if (permissionStatus === 'granted') {
-        // Permission schon da - nutze GPS
-        setIsLoadingLocation(true);
-        const preciseLocation = await getPreciseLocationOnDemand();
-        setLocation(preciseLocation);
-        setIsLoadingLocation(false);
-      } else {
-        // Keine Permission - nutze IP-Location (KEIN Popup!)
-        setIsLoadingLocation(true);
-        const quickLocation = await getQuickLocation();
-        setLocation(quickLocation || getDefaultLocation());
-        setIsLoadingLocation(false);
-      }
-    };
-
-    initLocation();
-  }, []);
 
   // ───────────────────────────────────────────────────────────
   // Fetch User Profile
@@ -225,9 +188,11 @@ export default function HomeLegacy() {
   }, [user?.id]);
 
   // ───────────────────────────────────────────────────────────
-  // Subscribe to Rooms (graceful error handling)
+  // Subscribe to Active Rooms
   // ───────────────────────────────────────────────────────────
   useEffect(() => {
+    setIsLoading(true);
+
     try {
       const roomsQuery = query(
         collection(db, 'rooms'),
@@ -239,106 +204,62 @@ export default function HomeLegacy() {
       const unsubscribe = onSnapshot(
         roomsQuery,
         (snapshot) => {
-          const rooms: MapHotspot[] = [];
-          snapshot.docs.forEach((doc) => {
+          const roomsList: RoomData[] = snapshot.docs.map((doc) => {
             const data = doc.data();
-            if (data.location?.latitude && data.location?.longitude) {
-              rooms.push({
-                id: doc.id,
-                name: data.name || 'Unbenannt',
-                latitude: data.location.latitude,
-                longitude: data.location.longitude,
-                userCount: data.userCount || 0,
-                activityLevel: getActivityLevel(data.userCount || 0),
-                category: data.category,
-              });
-            }
+            return {
+              id: doc.id,
+              name: data.name || 'Unbenannt',
+              topic: data.topic,
+              userCount: data.userCount || 0,
+              category: data.category,
+              createdAt: data.createdAt,
+            };
           });
-          setMapHotspots(rooms);
+          setRooms(roomsList);
+          setIsLoading(false);
         },
         (error) => {
-          // Graceful handling - keine Error-Anzeige für User
           console.log('Rooms query info:', error.code);
-          setMapHotspots([]);
+          setRooms([]);
+          setIsLoading(false);
         }
       );
 
       return () => unsubscribe();
     } catch {
       console.log('Rooms subscription setup failed');
+      setIsLoading(false);
     }
   }, []);
 
   // ───────────────────────────────────────────────────────────
   // Handlers
   // ───────────────────────────────────────────────────────────
-  const handleNearMeClick = useCallback(async () => {
-    // Prüfe ob wir schon präzise Location haben
-    if (location && !location.isApproximate) {
-      // Schon präzise - zeige die Map/Liste
-      navigate('/discover');
-      return;
-    }
-
-    // Prüfe Permission-Status
-    const permissionStatus = await checkLocationPermission();
-
-    if (permissionStatus === 'granted') {
-      // Permission da - hole präzise Location
-      setIsLoadingLocation(true);
-      const preciseLocation = await getPreciseLocationOnDemand();
-      setLocation(preciseLocation);
-      setIsLoadingLocation(false);
-      navigate('/discover');
-    } else if (permissionStatus === 'denied') {
-      // Permission denied - zeige Hinweis
-      alert('Standort wurde verweigert. Du kannst dies in den Einstellungen ändern.');
-    } else {
-      // Permission noch nicht gefragt - zeige Modal
-      setShowLocationModal(true);
-    }
-  }, [location, navigate]);
-
-  const handleAllowLocation = useCallback(async () => {
-    setShowLocationModal(false);
-    setIsLoadingLocation(true);
-
-    const preciseLocation = await getPreciseLocationOnDemand();
-    setLocation(preciseLocation);
-    setIsLoadingLocation(false);
-    setHasAskedForLocation(true);
-
-    // Nach erfolgreicher Permission - navigiere zu Discover
-    if (preciseLocation) {
-      navigate('/discover');
-    }
+  const handleJoinRoom = useCallback((roomId: string) => {
+    navigate(`/room/${roomId}`);
   }, [navigate]);
 
-  const handleSkipLocation = useCallback(() => {
-    setShowLocationModal(false);
-    setHasAskedForLocation(true);
-    // Nutze weiterhin IP-Location
+  const handleCreateRoom = useCallback(() => {
+    navigate('/create-room');
+  }, [navigate]);
+
+  const handleDiscoverClick = useCallback(() => {
     navigate('/discover');
   }, [navigate]);
 
   // ───────────────────────────────────────────────────────────
-  // Computed Values
+  // Total Users Online
   // ───────────────────────────────────────────────────────────
-  const nearbyCount = useMemo(() => {
-    return mapHotspots.reduce((sum, h) => sum + h.userCount, 0);
-  }, [mapHotspots]);
-
-  const userCoords = useMemo(() => {
-    if (!location) return null;
-    return { lat: location.lat, lng: location.lng };
-  }, [location]);
+  const totalUsersOnline = useMemo(() => {
+    return rooms.reduce((sum, r) => sum + r.userCount, 0);
+  }, [rooms]);
 
   // ───────────────────────────────────────────────────────────
   // Render
   // ───────────────────────────────────────────────────────────
   return (
     <div
-      className="fixed inset-0 overflow-hidden"
+      className="fixed inset-0 overflow-hidden flex flex-col"
       style={{ background: '#050505' }}
     >
       {/* Legacy Header - Delulu Style */}
@@ -351,57 +272,78 @@ export default function HomeLegacy() {
           isFounder: userProfile?.isFounder,
         }}
         activeFriendsCount={activeFriendsCount}
-        nearbyCount={nearbyCount}
+        nearbyCount={totalUsersOnline}
         onProfileClick={() => navigate('/profile')}
-        onNearMeClick={handleNearMeClick}
+        onNearMeClick={handleDiscoverClick}
         onFriendsClick={() => navigate('/friends')}
       />
 
-      {/* Map Background */}
-      <div className="absolute inset-0 pt-[180px] pb-24">
-        <NebulaMap
-          userLocation={userCoords}
-          hotspots={mapHotspots}
-          selectedHotspotId={selectedHotspot}
-          onHotspotSelect={setSelectedHotspot}
-          onHotspotJoin={(id) => navigate(`/room/${id}`)}
-          maxDistance={2000}
-          isLoading={isLoadingLocation}
-        />
-
-        {/* Approximate Location Indicator */}
-        {location?.isApproximate && !isLoadingLocation && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-28 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full"
-            style={{
-              background: 'rgba(251, 191, 36, 0.1)',
-              border: '1px solid rgba(251, 191, 36, 0.3)',
-            }}
-          >
-            <span className="text-xs text-amber-400">
-              📍 Ungefährer Standort ({location.city || 'Unbekannt'})
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-y-auto pt-[180px] pb-24 px-4">
+        {/* Stats Bar */}
+        <div className="flex items-center justify-between mb-6 px-2">
+          <div className="flex items-center gap-2">
+            <Users size={16} className="text-violet-400" />
+            <span className="text-sm text-white/70">
+              <span className="font-semibold text-white">{totalUsersOnline}</span> online
             </span>
-          </motion.div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Sparkles size={16} className="text-amber-400" />
+            <span className="text-sm text-white/70">
+              <span className="font-semibold text-white">{rooms.length}</span> aktive Räume
+            </span>
+          </div>
+        </div>
+
+        {/* Room List or Empty State */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : rooms.length === 0 ? (
+          <EmptyState onCreateRoom={handleCreateRoom} />
+        ) : (
+          <div className="space-y-3">
+            {rooms.map((room) => (
+              <RoomCard
+                key={room.id}
+                room={room}
+                onJoin={handleJoinRoom}
+              />
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Location Request Modal */}
-      <LocationRequestModal
-        isOpen={showLocationModal}
-        onClose={() => setShowLocationModal(false)}
-        onAllow={handleAllowLocation}
-        onSkip={handleSkipLocation}
-      />
+      {/* Floating Action Button - Create Room */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleCreateRoom}
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center z-50"
+        style={{
+          background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+          boxShadow: '0 4px 20px rgba(168, 85, 247, 0.4)',
+        }}
+      >
+        <span className="text-2xl text-white">+</span>
+      </motion.button>
+
+      {/* Discover Button */}
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handleDiscoverClick}
+        className="fixed bottom-24 left-5 px-4 py-3 rounded-xl flex items-center gap-2 z-50"
+        style={{
+          background: 'rgba(168, 85, 247, 0.15)',
+          border: '1px solid rgba(168, 85, 247, 0.3)',
+        }}
+      >
+        <Compass size={18} className="text-violet-400" />
+        <span className="text-sm font-medium text-violet-300">Entdecken</span>
+      </motion.button>
     </div>
   );
 }
-
-// Utility
-const getActivityLevel = (userCount: number): MapHotspot['activityLevel'] => {
-  if (userCount >= 20) return 'hot';
-  if (userCount >= 10) return 'sehr_aktiv';
-  if (userCount >= 5) return 'aktiv';
-  return 'ruhig';
-};

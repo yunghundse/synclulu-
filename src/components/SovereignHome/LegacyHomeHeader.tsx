@@ -6,12 +6,14 @@
  * - Avatar mit Aura-Glow
  * - Name + Level Badge
  * - Progress Bar für XP
- * - Discovery Row (Wer redet? + Freunde aktiv)
+ * - Discovery Row (Gespräche + Freunde aktiv)
+ *
+ * KEIN Standort mehr!
  */
 
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Crown } from 'lucide-react';
+import { Crown, MessageCircle } from 'lucide-react';
 
 interface LegacyHomeHeaderProps {
   user: {
@@ -22,7 +24,7 @@ interface LegacyHomeHeaderProps {
     isFounder?: boolean;
   };
   activeFriendsCount: number;
-  nearbyCount?: number;
+  nearbyCount?: number; // Jetzt = Users Online statt Nearby
   onProfileClick: () => void;
   onNearMeClick: () => void;
   onFriendsClick?: () => void;
@@ -152,10 +154,10 @@ export const LegacyHomeHeader = memo(function LegacyHomeHeader({
       </motion.div>
 
       {/* ═══════════════════════════════════════════════════════════
-          2. DISCOVERY ROW (Wölkchen + Freunde)
+          2. DISCOVERY ROW (Gespräche + Freunde)
           ═══════════════════════════════════════════════════════════ */}
       <div className="mt-6 flex justify-between items-center">
-        {/* "Wer redet in deiner Nähe?" Button */}
+        {/* "Alle Gespräche" Button - KEIN Standort mehr! */}
         <motion.button
           onClick={onNearMeClick}
           whileHover={{ scale: 1.02 }}
@@ -166,12 +168,12 @@ export const LegacyHomeHeader = memo(function LegacyHomeHeader({
             border: '1px solid rgba(168, 85, 247, 0.2)',
           }}
         >
-          <span className="text-xl">☁️</span>
+          <MessageCircle size={20} className="text-violet-400" />
           <div className="flex flex-col items-start">
             <span className="text-[10px] font-black uppercase tracking-widest text-violet-400">
-              Wer redet
+              Alle Gespräche
             </span>
-            <span className="text-[9px] text-white/40">in deiner Nähe?</span>
+            <span className="text-[9px] text-white/40">entdecken</span>
           </div>
           {nearbyCount > 0 && (
             <span
