@@ -93,6 +93,10 @@ export function usePreciseLocation(): UsePreciseLocationResult {
   const [isWeak, setIsWeak] = useState(false);
   const [isDenied, setIsDenied] = useState(false);
 
+  // Check if user has given consent before requesting location
+  const hasConsent = typeof window !== 'undefined' &&
+    localStorage.getItem('synclulu_consent_accepted') === 'true';
+
   const watchIdRef = useRef<number | null>(null);
   const geocodeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastGeocodedRef = useRef<{ lat: number; lon: number } | null>(null);
@@ -200,6 +204,14 @@ export function usePreciseLocation(): UsePreciseLocationResult {
   }, [startWatching]);
 
   useEffect(() => {
+    // IMPORTANT: Only start watching if user has given consent
+    // This prevents permission conflicts with ConsentScreen
+    if (!hasConsent) {
+      setIsLoading(false);
+      setError('Warte auf Consent...');
+      return;
+    }
+
     startWatching();
 
     return () => {
@@ -210,7 +222,7 @@ export function usePreciseLocation(): UsePreciseLocationResult {
         clearTimeout(geocodeTimeoutRef.current);
       }
     };
-  }, [startWatching]);
+  }, [startWatching, hasConsent]);
 
   return {
     location,

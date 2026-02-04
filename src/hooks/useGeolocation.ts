@@ -122,7 +122,18 @@ export function useGeolocation(options?: {
     let watchId: string | null = null;
     let browserWatchId: number | null = null;
 
+    // Check if user has given consent before requesting location
+    const hasConsent = typeof window !== 'undefined' &&
+      localStorage.getItem('synclulu_consent_accepted') === 'true';
+
     const startWatching = async () => {
+      // IMPORTANT: Only start watching if user has given consent
+      // This prevents permission conflicts with ConsentScreen
+      if (!hasConsent) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         // Check permissions first
         if (Capacitor.isNativePlatform()) {

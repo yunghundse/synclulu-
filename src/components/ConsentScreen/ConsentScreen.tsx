@@ -106,29 +106,37 @@ export const ConsentScreen = memo(function ConsentScreen({
       }
 
       // LocalStorage speichern für schnelle Prüfung
+      // IMPORTANT: Set this FIRST so location hooks know consent is given
       localStorage.setItem('synclulu_consent_accepted', 'true');
 
-      // Request actual permissions
-      // 1. Location Permission
-      if (locationAccepted && 'geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 1000 });
+      // Request permissions SEQUENTIALLY to avoid conflicts
+      // The location hooks will now start watching automatically after consent is set
+
+      // 1. Push Notification Permission (non-blocking, do first)
+      if (notificationsAccepted) {
+        try {
+          await requestNotificationPermission();
+          await initializePushNotifications();
+        } catch (e) {
+          console.log('Push notification permission not granted:', e);
+        }
       }
 
-      // 2. Microphone Permission
+      // 2. Microphone Permission (blocking, requires user interaction)
+      // Small delay to ensure previous permission dialog is closed
       if (microphoneAccepted && navigator.mediaDevices) {
+        await new Promise(resolve => setTimeout(resolve, 300));
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           stream.getTracks().forEach(track => track.stop()); // Stop immediately
         } catch (e) {
-          console.log('Microphone permission not yet granted');
+          console.log('Microphone permission not yet granted:', e);
         }
       }
 
-      // 3. Push Notification Permission
-      if (notificationsAccepted) {
-        await requestNotificationPermission();
-        await initializePushNotifications();
-      }
+      // 3. Location Permission is handled by location hooks automatically
+      // after localStorage consent is set - no need to request here
+      // This prevents double permission dialogs!
 
       // Haptic Feedback
       if ('vibrate' in navigator) {

@@ -13,6 +13,10 @@ export const useLocation = () => {
     setLocationPermission
   } = useStore();
 
+  // Check if user has given consent before requesting location
+  const hasConsent = typeof window !== 'undefined' &&
+    localStorage.getItem('synclulu_consent_accepted') === 'true';
+
   const updateLocationInDB = useCallback(async (lat: number, lng: number, accuracy: number) => {
     const user = auth.currentUser;
     if (!user) return;
@@ -108,6 +112,12 @@ export const useLocation = () => {
   useEffect(() => {
     let watchId: number | null = null;
 
+    // IMPORTANT: Only start watching if user has given consent
+    // This prevents permission conflicts with ConsentScreen
+    if (!hasConsent) {
+      return;
+    }
+
     const init = async () => {
       const hasPermission = await requestPermission();
       if (hasPermission) {
@@ -122,7 +132,7 @@ export const useLocation = () => {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-  }, [requestPermission, startWatching]);
+  }, [requestPermission, startWatching, hasConsent]);
 
   return {
     location,
