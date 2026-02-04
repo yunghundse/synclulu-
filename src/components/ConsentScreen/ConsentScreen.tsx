@@ -14,9 +14,10 @@
 
 import React, { memo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, CheckCircle, ExternalLink, Sparkles, MapPin, Mic } from 'lucide-react';
+import { Shield, CheckCircle, ExternalLink, Sparkles, MapPin, Mic, Bell } from 'lucide-react';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
+import { initializePushNotifications, requestNotificationPermission } from '@/lib/pushNotifications';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -76,9 +77,10 @@ export const ConsentScreen = memo(function ConsentScreen({
   const [ageVerified, setAgeVerified] = useState(false);
   const [locationAccepted, setLocationAccepted] = useState(false);
   const [microphoneAccepted, setMicrophoneAccepted] = useState(false);
+  const [notificationsAccepted, setNotificationsAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const allAccepted = termsAccepted && privacyAccepted && ageVerified && locationAccepted && microphoneAccepted;
+  const allAccepted = termsAccepted && privacyAccepted && ageVerified && locationAccepted && microphoneAccepted && notificationsAccepted;
 
   const handleConsent = useCallback(async () => {
     if (!allAccepted || isLoading) return;
@@ -97,13 +99,36 @@ export const ConsentScreen = memo(function ConsentScreen({
           hasVerifiedAge: true,
           hasAcceptedLocation: true,
           hasAcceptedMicrophone: true,
+          hasAcceptedNotifications: true,
           consentTimestamp: serverTimestamp(),
-          consentVersion: '1.1',
+          consentVersion: '1.2',
         });
       }
 
       // LocalStorage speichern für schnelle Prüfung
       localStorage.setItem('synclulu_consent_accepted', 'true');
+
+      // Request actual permissions
+      // 1. Location Permission
+      if (locationAccepted && 'geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 1000 });
+      }
+
+      // 2. Microphone Permission
+      if (microphoneAccepted && navigator.mediaDevices) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          stream.getTracks().forEach(track => track.stop()); // Stop immediately
+        } catch (e) {
+          console.log('Microphone permission not yet granted');
+        }
+      }
+
+      // 3. Push Notification Permission
+      if (notificationsAccepted) {
+        await requestNotificationPermission();
+        await initializePushNotifications();
+      }
 
       // Haptic Feedback
       if ('vibrate' in navigator) {
@@ -236,6 +261,19 @@ export const ConsentScreen = memo(function ConsentScreen({
                 <p className="text-sm text-white/80">Mikrofon-Zugriff erlauben</p>
                 <p className="text-[10px] text-white/40 mt-1">
                   Pflicht: Wird benötigt um in Wölkchen sprechen zu können
+                </p>
+              </div>
+            </div>
+          </ConsentCheckbox>
+
+          {/* Push Notifications Permission - Pflicht */}
+          <ConsentCheckbox checked={notificationsAccepted} onChange={setNotificationsAccepted}>
+            <div className="flex items-start gap-2">
+              <Bell size={16} className="text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-white/80">Push-Benachrichtigungen erlauben</p>
+                <p className="text-[10px] text-white/40 mt-1">
+                  Pflicht: Erhalte Benachrichtigungen über Nachrichten, Freundschaftsanfragen und Wölkchen in deiner Nähe
                 </p>
               </div>
             </div>

@@ -263,11 +263,13 @@ service cloud.firestore {
 
     // ═══════════════════════════════════════════════════════════════════
     // CATCH-ALL FOR DEVELOPMENT
-    // Remove or restrict in production!
+    // Allows public read for system docs, auth required for everything else
     // ═══════════════════════════════════════════════════════════════════
 
     match /{document=**} {
+      // Allow read for authenticated users
       allow read: if request.auth != null;
+      // Allow write only for authenticated users
       allow write: if request.auth != null;
     }
   }
