@@ -51,6 +51,8 @@ import Friends from '@/pages/Friends';
 import VoiceStats from '@/pages/VoiceStats';
 import NexusDashboard from '@/pages/NexusDashboard';
 import LegalCenter from '@/pages/LegalCenter';
+import LegalPopup from '@/pages/LegalPopup';
+import DatenschutzPopup from '@/pages/DatenschutzPopup';
 
 // Components
 import GhostOrbitDock from '@/components/GhostOrbitDock';
@@ -173,6 +175,8 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
+          <Route path="/legal-popup" element={<LegalPopup />} />
+          <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -190,6 +194,8 @@ function App() {
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
+          <Route path="/legal-popup" element={<LegalPopup />} />
+          <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
           <Route path="*" element={<Navigate to="/onboarding" replace />} />
         </Routes>
       </ThemeProvider>
@@ -247,6 +253,8 @@ function App() {
             <Route path="/datenschutz" element={<Datenschutz />} />
             <Route path="/legal" element={<LegalCenter />} />
             <Route path="/legal-center" element={<LegalCenter />} />
+            <Route path="/legal-popup" element={<LegalPopup />} />
+            <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
             <Route path="/nexus-admin" element={<NexusDashboard />} />
             <Route path="/onboarding" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />

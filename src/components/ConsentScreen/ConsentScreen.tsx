@@ -118,11 +118,11 @@ export const ConsentScreen = memo(function ConsentScreen({
   }, [allAccepted, isLoading, onAccept]);
 
   const openTerms = () => {
-    window.open('/legal', '_blank');
+    window.open('/legal-popup', '_blank', 'width=600,height=800,scrollbars=yes');
   };
 
   const openPrivacy = () => {
-    window.open('/datenschutz', '_blank');
+    window.open('/datenschutz-popup', '_blank', 'width=600,height=800,scrollbars=yes');
   };
 
   return (
