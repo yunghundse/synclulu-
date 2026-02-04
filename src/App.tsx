@@ -139,8 +139,9 @@ function App() {
   }, []);
 
   // Check if user is admin/founder (to bypass maintenance mode)
+  // Also check if user has already accepted consent in Firestore (from registration)
   useEffect(() => {
-    const checkAdmin = async () => {
+    const checkAdminAndConsent = async () => {
       if (user?.id) {
         try {
           const userDoc = await getDoc(doc(db, 'users', user.id));
@@ -149,13 +150,20 @@ function App() {
                                   data?.role === 'founder' ||
                                   data?.role === 'admin';
           setIsAdmin(hasAdminAccess);
+
+          // Check if user already gave consent during registration
+          // If hasAcceptedTerms is true in Firestore, set localStorage and skip ConsentScreen
+          if (data?.hasAcceptedTerms === true) {
+            localStorage.setItem('synclulu_consent_accepted', 'true');
+            setHasAcceptedConsent(true);
+          }
         } catch (error) {
           setIsAdmin(false);
         }
       }
       setAdminCheckDone(true);
     };
-    checkAdmin();
+    checkAdminAndConsent();
   }, [user?.id]);
 
   // Loading state

@@ -724,49 +724,54 @@ const ProfileStep = ({ formData, setFormData, errors, onNext, isLoading, theme }
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// STEP 3: PERMISSIONS
+// STEP 3: PERMISSIONS - AUTO-REQUEST ALL PERMISSIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface PermissionsStepProps {
   permissions: PermissionState;
-  onRequestPermission: (type: 'location' | 'microphone' | 'notifications') => void;
+  onRequestAllPermissions: () => void;
   onComplete: () => void;
   onSkip: () => void;
   isLoading: boolean;
+  isRequestingPermissions: boolean;
   theme: ThemeMode;
 }
 
 const PermissionsStep = ({
-  permissions, onRequestPermission, onComplete, onSkip, isLoading, theme
+  permissions, onRequestAllPermissions, onComplete, onSkip, isLoading, isRequestingPermissions, theme
 }: PermissionsStepProps) => {
   const t = themes[theme];
 
-  // NUR Location ist Pflicht!
+  // Check permission states
   const locationGranted = permissions.location === 'granted';
+  const micGranted = permissions.microphone === 'granted';
+  const notifGranted = permissions.notifications === 'granted';
+  const allGranted = locationGranted && micGranted && notifGranted;
+  const anyRequested = permissions.location !== null;
 
   const permissionItems = [
     {
       key: 'location' as const,
       icon: MapPin,
-      title: 'Standort aktivieren',
-      description: 'Zeige dich auf dem Radar für andere.',
+      title: 'Standort',
+      description: 'Zeige dich auf dem Radar',
       required: true,
       status: permissions.location
     },
     {
       key: 'microphone' as const,
       icon: Mic,
-      title: 'Mikrofon (optional)',
-      description: 'Für Sprachnachrichten in der Cloud.',
-      required: false,
+      title: 'Mikrofon',
+      description: 'Für Sprachnachrichten',
+      required: true,
       status: permissions.microphone
     },
     {
       key: 'notifications' as const,
       icon: Bell,
       title: 'Benachrichtigungen',
-      description: 'Verpasse keine Matches.',
-      required: false,
+      description: 'Verpasse keine Matches',
+      required: true,
       status: permissions.notifications
     }
   ];
@@ -801,22 +806,25 @@ const PermissionsStep = ({
           Aktiviere deine Aura
         </h2>
         <p style={{ color: t.textSecondary }}>
-          Nur der Standort ist erforderlich
+          {isRequestingPermissions
+            ? 'Bitte erlaube alle Berechtigungen...'
+            : anyRequested
+              ? 'Fast geschafft!'
+              : 'Ein Klick für alle Berechtigungen'}
         </p>
       </div>
 
-      {/* Permission Items */}
+      {/* Permission Status Cards */}
       <div className="space-y-3">
         {permissionItems.map((item, index) => {
           const Icon = item.icon;
           const isGranted = item.status === 'granted';
           const isDenied = item.status === 'denied';
+          const isPending = item.status === null || item.status === 'prompt';
 
           return (
-            <motion.button
+            <motion.div
               key={item.key}
-              onClick={() => !isGranted && onRequestPermission(item.key)}
-              disabled={isGranted}
               className="w-full p-4 rounded-2xl text-left relative overflow-hidden"
               style={{
                 background: isGranted ? `${t.success}12` : isDenied ? `${t.error}12` : t.cardBg,
@@ -825,8 +833,6 @@ const PermissionsStep = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              whileHover={!isGranted ? { background: `${t.accent}10` } : {}}
-              whileTap={!isGranted ? { scale: 0.98 } : {}}
             >
               <div className="flex items-center gap-4">
                 <div
@@ -841,51 +847,101 @@ const PermissionsStep = ({
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-medium" style={{ color: t.text }}>{item.title}</span>
-                    {item.required && !isGranted && (
+                    {isGranted && (
                       <span
                         className="text-xs px-2 py-0.5 rounded-full font-medium"
-                        style={{ background: `${t.accent}25`, color: t.accent }}
+                        style={{ background: `${t.success}25`, color: t.success }}
                       >
-                        Pflicht
+                        ✓ Erlaubt
+                      </span>
+                    )}
+                    {isDenied && (
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: `${t.error}25`, color: t.error }}
+                      >
+                        Blockiert
                       </span>
                     )}
                   </div>
                   <p className="text-sm mt-0.5" style={{ color: t.textSecondary }}>{item.description}</p>
                 </div>
-                {!isGranted && <ChevronRight size={18} style={{ color: t.textMuted }} />}
               </div>
-            </motion.button>
+            </motion.div>
           );
         })}
       </div>
 
-      {/* Continue Button */}
-      <motion.button
-        onClick={onComplete}
-        disabled={!locationGranted || isLoading}
-        className="w-full py-4 rounded-2xl font-semibold text-white relative overflow-hidden disabled:opacity-40"
-        style={{
-          background: locationGranted
-            ? `linear-gradient(135deg, ${t.success} 0%, #16A34A 100%)`
-            : `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
-          boxShadow: locationGranted ? `0 4px 25px ${t.success}40` : `0 4px 25px ${t.accent}40`
-        }}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        <span className="relative flex items-center justify-center gap-2">
-          {isLoading ? (
-            <Loader2 className="animate-spin" size={20} />
-          ) : locationGranted ? (
-            <>
-              <Sparkles size={18} />
-              In die Cloud eintreten
-            </>
-          ) : (
-            'Standort erforderlich'
-          )}
-        </span>
-      </motion.button>
+      {/* Main Action Button */}
+      {!anyRequested ? (
+        // Initial state - request all permissions with one button
+        <motion.button
+          onClick={onRequestAllPermissions}
+          disabled={isLoading || isRequestingPermissions}
+          className="w-full py-4 rounded-2xl font-semibold text-white relative overflow-hidden disabled:opacity-40"
+          style={{
+            background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+            boxShadow: `0 4px 25px ${t.accent}40`
+          }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <motion.div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)' }}
+            animate={{ x: ['-100%', '100%'] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <span className="relative flex items-center justify-center gap-2">
+            {isRequestingPermissions ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Berechtigungen werden angefragt...
+              </>
+            ) : (
+              <>
+                <Shield size={18} />
+                Alle Berechtigungen erlauben
+              </>
+            )}
+          </span>
+        </motion.button>
+      ) : (
+        // After permissions requested - show continue button
+        <motion.button
+          onClick={onComplete}
+          disabled={!locationGranted || isLoading}
+          className="w-full py-4 rounded-2xl font-semibold text-white relative overflow-hidden disabled:opacity-40"
+          style={{
+            background: locationGranted
+              ? `linear-gradient(135deg, ${t.success} 0%, #16A34A 100%)`
+              : `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+            boxShadow: locationGranted ? `0 4px 25px ${t.success}40` : `0 4px 25px ${t.accent}40`
+          }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <span className="relative flex items-center justify-center gap-2">
+            {isLoading ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : locationGranted ? (
+              <>
+                <Sparkles size={18} />
+                In die Cloud eintreten
+              </>
+            ) : (
+              'Standort ist erforderlich'
+            )}
+          </span>
+        </motion.button>
+      )}
+
+      {!locationGranted && anyRequested && (
+        <p className="text-xs text-center" style={{ color: t.error }}>
+          Ohne Standort-Berechtigung kannst du synclulu nicht nutzen.
+          <br />Bitte erlaube den Standort in deinen Browser-Einstellungen.
+        </p>
+      )}
 
       <p className="text-xs text-center" style={{ color: t.textMuted }}>
         Du kannst Berechtigungen später in den Einstellungen ändern
@@ -949,6 +1005,7 @@ const OnboardingFlow = () => {
     microphone: null,
     notifications: null
   });
+  const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // EFFECTS
@@ -1146,6 +1203,79 @@ const OnboardingFlow = () => {
     }
   };
 
+  // Request ALL permissions at once (sequentially to avoid conflicts)
+  const handleRequestAllPermissions = async () => {
+    setIsRequestingPermissions(true);
+
+    try {
+      // 1. LOCATION (required) - request first
+      console.log('🗺️ [REG] Requesting location permission...');
+      try {
+        const result = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+          });
+        });
+        setPermissions(prev => ({ ...prev, location: 'granted' }));
+        console.log('✅ [REG] Location granted');
+
+        if (firebaseUser) {
+          await setDoc(doc(db, 'users', firebaseUser.uid), {
+            location: { lat: result.coords.latitude, lng: result.coords.longitude, updatedAt: serverTimestamp() },
+            'permissions.location': true
+          }, { merge: true });
+        }
+      } catch (e) {
+        console.log('❌ [REG] Location denied:', e);
+        setPermissions(prev => ({ ...prev, location: 'denied' }));
+      }
+
+      // Small delay between permission requests
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // 2. MICROPHONE - request second
+      console.log('🎤 [REG] Requesting microphone permission...');
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(track => track.stop());
+        setPermissions(prev => ({ ...prev, microphone: 'granted' }));
+        console.log('✅ [REG] Microphone granted');
+
+        if (firebaseUser) {
+          await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.microphone': true }, { merge: true });
+        }
+      } catch (e) {
+        console.log('❌ [REG] Microphone denied:', e);
+        setPermissions(prev => ({ ...prev, microphone: 'denied' }));
+      }
+
+      // Small delay between permission requests
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // 3. NOTIFICATIONS - request last
+      console.log('🔔 [REG] Requesting notification permission...');
+      try {
+        const result = await Notification.requestPermission();
+        setPermissions(prev => ({ ...prev, notifications: result as PermissionStatus }));
+        console.log('✅ [REG] Notifications:', result);
+
+        if (firebaseUser) {
+          await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': result === 'granted' }, { merge: true });
+        }
+      } catch (e) {
+        console.log('❌ [REG] Notifications denied:', e);
+        setPermissions(prev => ({ ...prev, notifications: 'denied' }));
+      }
+
+    } catch (error) {
+      console.error('Permission request error:', error);
+    } finally {
+      setIsRequestingPermissions(false);
+    }
+  };
+
   const handleRequestPermission = async (type: 'location' | 'microphone' | 'notifications') => {
     try {
       if (type === 'location') {
@@ -1190,7 +1320,20 @@ const OnboardingFlow = () => {
     setIsLoading(true);
     try {
       if (firebaseUser) {
-        await setDoc(doc(db, 'users', firebaseUser.uid), { onboardingCompleted: true }, { merge: true });
+        // Set ALL consent flags so ConsentScreen won't show again
+        await setDoc(doc(db, 'users', firebaseUser.uid), {
+          onboardingCompleted: true,
+          // Consent flags - so ConsentScreen is skipped
+          hasAcceptedTerms: true,
+          hasAcceptedPrivacy: true,
+          hasVerifiedAge: true,
+          hasAcceptedLocation: permissions.location === 'granted',
+          hasAcceptedMicrophone: permissions.microphone === 'granted',
+          hasAcceptedNotifications: permissions.notifications === 'granted',
+          consentTimestamp: serverTimestamp(),
+          consentVersion: '1.2',
+        }, { merge: true });
+
         await completeRegistration(
           firebaseUser.uid,
           formData.email,
@@ -1198,10 +1341,15 @@ const OnboardingFlow = () => {
           referralValid ? referralCode || undefined : undefined
         );
       }
+
+      // Set localStorage so ConsentScreen doesn't appear
+      localStorage.setItem('synclulu_consent_accepted', 'true');
+
       navigate('/');
     } catch (error) {
       console.error('Completion error:', error);
-      // Navigate anyway - user is registered
+      // Set localStorage anyway and navigate
+      localStorage.setItem('synclulu_consent_accepted', 'true');
       navigate('/');
     } finally {
       setIsLoading(false);
@@ -1278,10 +1426,11 @@ const OnboardingFlow = () => {
               <PermissionsStep
                 key="permissions"
                 permissions={permissions}
-                onRequestPermission={handleRequestPermission}
+                onRequestAllPermissions={handleRequestAllPermissions}
                 onComplete={handleComplete}
                 onSkip={handleComplete}
                 isLoading={isLoading}
+                isRequestingPermissions={isRequestingPermissions}
                 theme={theme}
               />
             )}
