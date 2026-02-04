@@ -141,7 +141,7 @@ export const GlobalDock = memo(function GlobalDock({
   const handleCreateRoom = useCallback(() => navigate('/create-room'), [navigate]);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[200] pb-safe">
+    <div className="fixed bottom-0 left-0 right-0 z-[999] pb-safe">
       <div className="px-4 pb-4">
         <motion.div
           initial={{ y: 100, opacity: 0 }}

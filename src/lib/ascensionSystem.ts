@@ -27,7 +27,7 @@ export interface AscensionTier {
 export const ASCENSION_TIERS: AscensionTier[] = [
   {
     rank: 'SPARK',
-    minLevel: 1,
+    minLevel: 0, // Level 0 ist jetzt auch SPARK
     maxLevel: 10,
     title: 'Spark',
     titleDE: 'Funke',
@@ -117,7 +117,17 @@ export function getTotalXPForLevel(level: number): number {
 }
 
 // Level aus Gesamt-XP berechnen
+// WICHTIG: xp:0 = Level 0 (Database-First Logic)
 export function getLevelFromXP(totalXP: number): { level: number; currentXP: number; neededXP: number } {
+  // Level 0 für User ohne XP
+  if (!totalXP || totalXP <= 0) {
+    return {
+      level: 0,
+      currentXP: 0,
+      neededXP: getXPForLevel(1), // 100 XP für Level 1
+    };
+  }
+
   let level = 1;
   let remainingXP = totalXP;
 
