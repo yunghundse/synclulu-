@@ -1,16 +1,15 @@
 /**
  * HomeSovereign.tsx
- * 🏠 SOVEREIGN HOME v27.0 - Ultimate Activity Hub
+ * 🏠 SOVEREIGN HOME v28.0 - Data Engineer Edition
  *
- * Features:
- * - LVL-Ring Fortschrittsanzeige (ersetzt alten Level-Button)
- * - Standort-Name im Delulu-Stil
- * - Settings Zahnrad oben rechts
- * - Friends-Teaser: "Zuletzt auf deinem Profil"
- * - Discovery-Teaser: Top Speaker & Locations
- * - Z-Index Fixes für volle Sichtbarkeit
+ * REAL-TIME DATABASE FEATURES:
+ * - Precise Location-Sync: GPS/IP-based with DB update
+ * - Top Speaker Logic: Real DB query with Zero-State
+ * - Locations & Rooms: 50km Radius Proximity-Sync
+ * - Zero-State-Handling: Honest status messages
+ * - Visual Fix: High contrast text for all states
  *
- * @version 27.0.0 - Ultimate Activity Hub
+ * @version 28.0.0 - Data Engineer Edition
  */
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
@@ -33,6 +32,8 @@ import {
   Mic,
   Eye,
   Sparkles,
+  CloudOff,
+  Radio,
 } from 'lucide-react';
 import {
   collection,
@@ -45,6 +46,7 @@ import {
   getDoc,
   updateDoc,
   getDocs,
+  GeoPoint,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
@@ -53,6 +55,7 @@ import { getLevelFromXP, getAscensionTier } from '../lib/ascensionSystem';
 import { RoomCard } from '../components/SovereignUI/RoomCard';
 
 const FOUNDER_UID = 'MIbamchs82Ve7y0ecX2TpPyymbw1';
+const MAX_DISTANCE_KM = 50; // 50km Radius für Proximity-Sync
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -69,6 +72,8 @@ interface ProfileData {
   isFounder: boolean;
   location?: string;
   locationName?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 interface Room {
@@ -77,12 +82,15 @@ interface Room {
   category: string;
   activeUsers: number;
   distance?: number;
+  distanceKm?: number;
   hasBoost?: boolean;
   isHot?: boolean;
   emoji?: string;
   hostName?: string;
   isFounderRoom?: boolean;
   locationName?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 interface ProfileVisitor {
@@ -102,6 +110,7 @@ interface TopSpeaker {
   speakMinutes: number;
   isActive: boolean;
   isFounder?: boolean;
+  roomName?: string;
 }
 
 interface NearbyLocation {
@@ -110,6 +119,7 @@ interface NearbyLocation {
   activeCount: number;
   emoji: string;
   distance?: string;
+  distanceKm?: number;
 }
 
 const MILESTONES = [
@@ -128,7 +138,91 @@ function triggerHaptic(type: 'light' | 'medium' | 'heavy' = 'light') {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// HEADER BANNER (Read-Only auf Home)
+// LOCATION UTILITIES
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Calculate distance between two coordinates using Haversine formula
+ */
+function calculateDistanceKm(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371; // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+/**
+ * Format distance for display
+ */
+function formatDistance(km: number): string {
+  if (km < 1) return `${Math.round(km * 1000)}m`;
+  if (km < 10) return `${km.toFixed(1)}km`;
+  return `${Math.round(km)}km`;
+}
+
+/**
+ * Reverse geocode coordinates to city/district name
+ */
+async function reverseGeocode(lat: number, lon: number): Promise<string> {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=14&addressdetails=1`,
+      { headers: { 'Accept-Language': 'de' } }
+    );
+    const data = await response.json();
+
+    // Try to get the most specific location name
+    const address = data.address || {};
+    return (
+      address.suburb ||
+      address.neighbourhood ||
+      address.district ||
+      address.city_district ||
+      address.town ||
+      address.city ||
+      address.village ||
+      'Unbekannter Standort'
+    );
+  } catch (error) {
+    console.error('[Location] Reverse geocode error:', error);
+    return 'Standort nicht verfügbar';
+  }
+}
+
+/**
+ * Get location from IP as fallback
+ */
+async function getLocationFromIP(): Promise<{ lat: number; lon: number; city: string } | null> {
+  try {
+    const response = await fetch('https://ipapi.co/json/');
+    const data = await response.json();
+    if (data.latitude && data.longitude) {
+      return {
+        lat: data.latitude,
+        lon: data.longitude,
+        city: data.city || data.region || 'Unbekannt',
+      };
+    }
+  } catch (error) {
+    console.error('[Location] IP geolocation error:', error);
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HEADER BANNER
 // ═══════════════════════════════════════════════════════════════
 
 const HeaderBanner = ({ bannerURL }: { bannerURL?: string }) => {
@@ -158,7 +252,7 @@ const HeaderBanner = ({ bannerURL }: { bannerURL?: string }) => {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// LEVEL RING (Fortschrittsanzeige)
+// LEVEL RING
 // ═══════════════════════════════════════════════════════════════
 
 const LevelRing = ({
@@ -188,24 +282,15 @@ const LevelRing = ({
       }}
       className="relative flex items-center justify-center z-20"
     >
-      {/* Founder Glow */}
       {isFounder && (
         <motion.div
           className="absolute inset-0 rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)`,
-          }}
-          animate={{
-            opacity: [0.5, 1, 0.5],
-            scale: [1, 1.15, 1],
-          }}
+          style={{ background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)` }}
+          animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.15, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
       )}
-
-      {/* SVG Ring */}
       <svg width={ringSize} height={ringSize} className="transform -rotate-90">
-        {/* Background Ring */}
         <circle
           cx={ringSize / 2}
           cy={ringSize / 2}
@@ -214,7 +299,6 @@ const LevelRing = ({
           stroke="rgba(255, 255, 255, 0.1)"
           strokeWidth={strokeWidth}
         />
-        {/* Progress Ring */}
         <motion.circle
           cx={ringSize / 2}
           cy={ringSize / 2}
@@ -227,18 +311,11 @@ const LevelRing = ({
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          style={{
-            filter: `drop-shadow(0 0 6px ${accentColor}80)`,
-          }}
+          style={{ filter: `drop-shadow(0 0 6px ${accentColor}80)` }}
         />
       </svg>
-
-      {/* Level Number */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span
-          className="text-xs font-black"
-          style={{ color: accentColor }}
-        >
+        <span className="text-xs font-black" style={{ color: accentColor }}>
           {level}
         </span>
       </div>
@@ -322,10 +399,7 @@ const ProfileAvatar = ({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           className="absolute -bottom-1 -left-1 w-7 h-7 rounded-full flex items-center justify-center z-30"
-          style={{
-            background: 'rgba(168, 85, 247, 0.2)',
-            border: '2px solid #a855f7',
-          }}
+          style={{ background: 'rgba(168, 85, 247, 0.2)', border: '2px solid #a855f7' }}
         >
           <span className="text-sm">{statusEmoji}</span>
         </motion.div>
@@ -335,25 +409,56 @@ const ProfileAvatar = ({
 };
 
 // ═══════════════════════════════════════════════════════════════
-// FRIENDS TEASER - "Zuletzt auf deinem Profil"
+// FRIENDS TEASER
 // ═══════════════════════════════════════════════════════════════
 
 const FriendsTeaser = ({
   visitors,
+  loading,
   onVisitorClick,
   onSeeAll,
 }: {
   visitors: ProfileVisitor[];
+  loading: boolean;
   onVisitorClick: (id: string) => void;
   onSeeAll: () => void;
 }) => {
-  if (visitors.length === 0) return null;
+  // Zero-State: No visitors from DB
+  if (!loading && visitors.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-5 mb-4 p-4 rounded-2xl z-30"
+        style={{
+          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.05), rgba(168, 85, 247, 0.02))',
+          border: '1px solid rgba(168, 85, 247, 0.1)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <Eye size={14} className="text-violet-400/60" />
+          <span className="text-[10px] font-black text-white/60 uppercase tracking-wider">
+            Profilbesucher
+          </span>
+        </div>
+        <p className="text-[11px] text-white/50 text-center py-2">
+          Noch keine Profilbesucher. Teile dein Profil, um mehr Besucher zu bekommen!
+        </p>
+      </motion.div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="mx-5 mb-4 h-20 rounded-2xl animate-pulse z-30" style={{ background: 'rgba(168, 85, 247, 0.05)' }} />
+    );
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-5 mb-4 z-20"
+      className="mx-5 mb-4 z-30"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -370,16 +475,12 @@ const FriendsTeaser = ({
           Alle <ChevronRight size={12} />
         </motion.button>
       </div>
-
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
         {visitors.slice(0, 8).map((visitor, index) => (
           <motion.button
             key={visitor.id}
             whileTap={{ scale: 0.9 }}
-            onClick={() => {
-              triggerHaptic('light');
-              onVisitorClick(visitor.id);
-            }}
+            onClick={() => { triggerHaptic('light'); onVisitorClick(visitor.id); }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
@@ -387,9 +488,7 @@ const FriendsTeaser = ({
           >
             <div
               className="w-12 h-12 rounded-full overflow-hidden"
-              style={{
-                border: visitor.isFounder ? '2px solid #fbbf24' : '2px solid rgba(168, 85, 247, 0.3)',
-              }}
+              style={{ border: visitor.isFounder ? '2px solid #fbbf24' : '2px solid rgba(168, 85, 247, 0.3)' }}
             >
               {visitor.photoURL ? (
                 <img src={visitor.photoURL} alt="" className="w-full h-full object-cover" />
@@ -406,34 +505,74 @@ const FriendsTeaser = ({
             )}
           </motion.button>
         ))}
-        {visitors.length > 8 && (
-          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-white/40 border border-white/10 flex-shrink-0">
-            +{visitors.length - 8}
-          </div>
-        )}
       </div>
     </motion.div>
   );
 };
 
 // ═══════════════════════════════════════════════════════════════
-// TOP SPEAKER SECTION
+// TOP SPEAKER SECTION WITH ZERO-STATE
 // ═══════════════════════════════════════════════════════════════
 
 const TopSpeakerSection = ({
   speakers,
+  loading,
   onSpeakerClick,
 }: {
   speakers: TopSpeaker[];
+  loading: boolean;
   onSpeakerClick: (id: string) => void;
 }) => {
-  if (speakers.length === 0) return null;
+  // Loading state
+  if (loading) {
+    return (
+      <div className="mx-5 mb-4 p-4 rounded-2xl animate-pulse z-30" style={{ background: 'rgba(34, 197, 94, 0.05)' }}>
+        <div className="h-4 w-32 bg-white/10 rounded mb-3" />
+        <div className="space-y-2">
+          <div className="h-14 bg-white/5 rounded-xl" />
+          <div className="h-14 bg-white/5 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
 
+  // ZERO-STATE: No active speakers from DB
+  if (speakers.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-5 mb-4 p-4 rounded-2xl z-30"
+        style={{
+          background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(34, 197, 94, 0.02))',
+          border: '1px solid rgba(34, 197, 94, 0.1)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <Mic size={14} className="text-emerald-400/60" />
+          <span className="text-[10px] font-black text-emerald-400/60 uppercase tracking-wider">
+            Top Speaker
+          </span>
+        </div>
+        <div className="text-center py-4">
+          <Radio size={24} className="text-white/20 mx-auto mb-2" />
+          <p className="text-[11px] text-white/50">
+            Gerade gibt es keine Top Speaker in deiner Nähe
+          </p>
+          <p className="text-[9px] text-white/30 mt-1">
+            Starte ein Wölkchen und werde der Erste!
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Data exists - show speakers
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-5 mb-4 p-4 rounded-2xl z-20"
+      className="mx-5 mb-4 p-4 rounded-2xl z-30"
       style={{
         background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.02))',
         border: '1px solid rgba(34, 197, 94, 0.15)',
@@ -450,24 +589,18 @@ const TopSpeakerSection = ({
           transition={{ duration: 1.5, repeat: Infinity }}
         />
       </div>
-
       <div className="space-y-2">
         {speakers.slice(0, 3).map((speaker, index) => (
           <motion.button
             key={speaker.id}
             whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              triggerHaptic('light');
-              onSpeakerClick(speaker.id);
-            }}
+            onClick={() => { triggerHaptic('light'); onSpeakerClick(speaker.id); }}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
             className="w-full flex items-center gap-3 p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
           >
-            <div className="text-lg">
-              {index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}
-            </div>
+            <div className="text-lg">{index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}</div>
             <div className="relative">
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500/30">
                 {speaker.photoURL ? (
@@ -491,12 +624,12 @@ const TopSpeakerSection = ({
                 {speaker.displayName || speaker.username}
                 {speaker.isFounder && <Crown size={10} className="text-amber-400" />}
               </p>
-              <p className="text-[9px] text-white/40">Spricht gerade</p>
+              <p className="text-[9px] text-white/40">
+                {speaker.roomName ? `In: ${speaker.roomName}` : 'Spricht gerade'}
+              </p>
             </div>
             <div className="px-2 py-1 rounded-lg bg-emerald-500/10">
-              <span className="text-[9px] font-bold text-emerald-400">
-                {speaker.speakMinutes}m
-              </span>
+              <span className="text-[9px] font-bold text-emerald-400">{speaker.speakMinutes}m</span>
             </div>
           </motion.button>
         ))}
@@ -506,40 +639,93 @@ const TopSpeakerSection = ({
 };
 
 // ═══════════════════════════════════════════════════════════════
-// NEARBY LOCATIONS SECTION
+// NEARBY LOCATIONS SECTION WITH ZERO-STATE
 // ═══════════════════════════════════════════════════════════════
 
 const NearbyLocationsSection = ({
   locations,
+  loading,
   onLocationClick,
+  onCreateRoom,
 }: {
   locations: NearbyLocation[];
+  loading: boolean;
   onLocationClick: (id: string) => void;
+  onCreateRoom: () => void;
 }) => {
-  if (locations.length === 0) return null;
+  // Loading state
+  if (loading) {
+    return (
+      <div className="mx-5 mb-4 z-30">
+        <div className="h-4 w-40 bg-white/10 rounded mb-3 animate-pulse" />
+        <div className="flex gap-2">
+          <div className="w-[120px] h-24 bg-white/5 rounded-xl animate-pulse" />
+          <div className="w-[120px] h-24 bg-white/5 rounded-xl animate-pulse" />
+        </div>
+      </div>
+    );
+  }
 
+  // ZERO-STATE: No nearby locations
+  if (locations.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-5 mb-4 p-4 rounded-2xl z-30"
+        style={{
+          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.02))',
+          border: '1px solid rgba(59, 130, 246, 0.1)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <MapPin size={14} className="text-blue-400/60" />
+          <span className="text-[10px] font-black text-blue-400/60 uppercase tracking-wider">
+            Locations in der Nähe
+          </span>
+        </div>
+        <div className="text-center py-4">
+          <CloudOff size={24} className="text-white/20 mx-auto mb-2" />
+          <p className="text-[11px] text-white/50">
+            Keine aktiven Locations gefunden
+          </p>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={onCreateRoom}
+            className="mt-3 px-4 py-2 rounded-xl text-[11px] font-bold text-blue-400 flex items-center gap-2 mx-auto"
+            style={{
+              background: 'rgba(59, 130, 246, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.2)',
+            }}
+          >
+            <Plus size={14} />
+            <span>Eröffne den ersten Raum!</span>
+          </motion.button>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Data exists - show locations
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-5 mb-4 z-20"
+      className="mx-5 mb-4 z-30"
     >
       <div className="flex items-center gap-2 mb-3">
         <MapPin size={14} className="text-blue-400" />
         <span className="text-[10px] font-black text-blue-400 uppercase tracking-wider">
           Locations in der Nähe
         </span>
+        <span className="text-[8px] text-white/30">({MAX_DISTANCE_KM}km Radius)</span>
       </div>
-
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         {locations.slice(0, 5).map((location, index) => (
           <motion.button
             key={location.id}
             whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              triggerHaptic('light');
-              onLocationClick(location.id);
-            }}
+            onClick={() => { triggerHaptic('light'); onLocationClick(location.id); }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
@@ -552,11 +738,9 @@ const NearbyLocationsSection = ({
             <div className="text-2xl mb-2">{location.emoji}</div>
             <p className="text-[11px] font-semibold text-white truncate">{location.name}</p>
             <div className="flex items-center justify-between mt-1">
-              <span className="text-[9px] text-emerald-400 font-bold">
-                {location.activeCount} aktiv
-              </span>
+              <span className="text-[9px] text-emerald-400 font-bold">{location.activeCount} aktiv</span>
               {location.distance && (
-                <span className="text-[8px] text-white/30">{location.distance}</span>
+                <span className="text-[8px] text-white/40">{location.distance}</span>
               )}
             </div>
           </motion.button>
@@ -616,38 +800,25 @@ const XPOverlay = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6" />
-
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <motion.div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}10)`,
-                    border: `2px solid ${accentColor}`,
-                  }}
-                  animate={isFounder ? { boxShadow: [`0 0 20px ${accentColor}40`, `0 0 40px ${accentColor}60`, `0 0 20px ${accentColor}40`] } : {}}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  style={{ background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}10)`, border: `2px solid ${accentColor}` }}
                 >
-                  <span className="text-2xl font-black" style={{ color: accentColor }}>
-                    {level}
-                  </span>
+                  <span className="text-2xl font-black" style={{ color: accentColor }}>{level}</span>
                 </motion.div>
                 <div>
                   <p className="text-xs text-white/40 uppercase tracking-wider">Dein Level</p>
                   <p className="text-lg font-bold text-white">{tier.name}</p>
                 </div>
               </div>
-              <button onClick={onClose}>
-                <X size={24} className="text-white/40" />
-              </button>
+              <button onClick={onClose}><X size={24} className="text-white/40" /></button>
             </div>
-
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-xs text-white/40">Fortschritt zu Level {level + 1}</span>
-                <span className="text-xs font-bold" style={{ color: accentColor }}>
-                  {currentXP} / {neededXP} XP
-                </span>
+                <span className="text-xs font-bold" style={{ color: accentColor }}>{currentXP} / {neededXP} XP</span>
               </div>
               <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
                 <motion.div
@@ -661,31 +832,19 @@ const XPOverlay = ({
                   }}
                 />
               </div>
-              <p className="text-[10px] text-white/30 mt-1">
-                Gesamt: {totalXP.toLocaleString()} XP gesammelt
-              </p>
+              <p className="text-[10px] text-white/30 mt-1">Gesamt: {totalXP.toLocaleString()} XP gesammelt</p>
             </div>
-
             <div>
               <p className="text-xs text-white/40 uppercase tracking-wider mb-3">Nächste Meilensteine</p>
               <div className="space-y-2">
                 {MILESTONES.filter((m) => m.level > level).slice(0, 3).map((milestone) => (
-                  <div
-                    key={milestone.level}
-                    className="flex items-center gap-3 p-3 rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)' }}
-                  >
+                  <div key={milestone.level} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
                     <span className="text-2xl">{milestone.icon}</span>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-white">
-                        Level {milestone.level} - {milestone.title}
-                      </p>
+                      <p className="text-sm font-semibold text-white">Level {milestone.level} - {milestone.title}</p>
                       <p className="text-xs text-white/40">{milestone.reward}</p>
                     </div>
-                    <div
-                      className="px-2 py-1 rounded-lg text-[10px] font-bold"
-                      style={{ background: `${accentColor}20`, color: accentColor }}
-                    >
+                    <div className="px-2 py-1 rounded-lg text-[10px] font-bold" style={{ background: `${accentColor}20`, color: accentColor }}>
                       {milestone.level - level} LVL
                     </div>
                   </div>
@@ -717,7 +876,7 @@ const RoomGrid = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-5 my-4 z-20"
+        className="mx-5 my-4 z-30"
       >
         <div
           className="relative p-8 rounded-3xl text-center overflow-hidden"
@@ -726,30 +885,18 @@ const RoomGrid = ({
             border: '1px solid rgba(139, 92, 246, 0.15)',
           }}
         >
-          <motion.div
-            className="text-5xl mb-4"
-            animate={{ y: [0, -8, 0], rotate: [-2, 2, -2] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
+          <motion.div className="text-5xl mb-4" animate={{ y: [0, -8, 0], rotate: [-2, 2, -2] }} transition={{ duration: 3, repeat: Infinity }}>
             ☁️
           </motion.div>
-          <p className="text-xs text-white/30 uppercase tracking-wider mb-2">
-            Gerade ist nichts los
-          </p>
-          <h3 className="text-lg font-bold text-white mb-4">
-            Eröffne dein eigenes Wölkchen
-          </h3>
+          <p className="text-xs text-white/50 uppercase tracking-wider mb-2">Gerade ist nichts los</p>
+          <h3 className="text-lg font-bold text-white mb-4">Eröffne dein eigenes Wölkchen</h3>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={onCreateRoom}
             className="px-6 py-3 rounded-2xl font-bold text-white flex items-center gap-2 mx-auto"
-            style={{
-              background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3)',
-            }}
+            style={{ background: 'linear-gradient(135deg, #8b5cf6, #a855f7)', boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3)' }}
           >
-            <Plus size={18} />
-            <span>Wölkchen erstellen</span>
+            <Plus size={18} /><span>Wölkchen erstellen</span>
           </motion.button>
         </div>
       </motion.div>
@@ -757,26 +904,14 @@ const RoomGrid = ({
   }
 
   return (
-    <div className="px-5 mt-2 z-20">
+    <div className="px-5 mt-2 z-30">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">
-          Live Wölkchen
-        </span>
-        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          {rooms.length}
-        </span>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Live Wölkchen</span>
+        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{rooms.length}</span>
       </div>
-      <div
-        className="grid grid-cols-2 rounded-2xl overflow-hidden"
-        style={{ border: '1px solid rgba(255, 255, 255, 0.04)' }}
-      >
+      <div className="grid grid-cols-2 rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255, 255, 255, 0.04)' }}>
         {rooms.map((room, index) => (
-          <RoomCard
-            key={room.id}
-            room={room}
-            index={index}
-            onClick={() => onRoomClick(room.id)}
-          />
+          <RoomCard key={room.id} room={room} index={index} onClick={() => onRoomClick(room.id)} />
         ))}
       </div>
     </div>
@@ -800,6 +935,12 @@ export default function HomeSovereign() {
   const [profileVisitors, setProfileVisitors] = useState<ProfileVisitor[]>([]);
   const [topSpeakers, setTopSpeakers] = useState<TopSpeaker[]>([]);
   const [nearbyLocations, setNearbyLocations] = useState<NearbyLocation[]>([]);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
+
+  // Loading states for each section
+  const [visitorsLoading, setVisitorsLoading] = useState(true);
+  const [speakersLoading, setSpeakersLoading] = useState(true);
+  const [locationsLoading, setLocationsLoading] = useState(true);
 
   // Level calculation
   const levelData = useMemo(() => {
@@ -807,11 +948,78 @@ export default function HomeSovereign() {
     return getLevelFromXP(profile.xp);
   }, [profile?.xp]);
 
-  const levelProgress = useMemo(() => {
-    return Math.min(100, (levelData.currentXP / levelData.neededXP) * 100);
-  }, [levelData]);
+  const levelProgress = useMemo(() => Math.min(100, (levelData.currentXP / levelData.neededXP) * 100), [levelData]);
 
   const accentColor = profile?.isFounder ? '#fbbf24' : '#a855f7';
+
+  // ───────────────────────────────────────────────────────────
+  // PRECISE LOCATION SYNC
+  // ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const syncLocation = async () => {
+      try {
+        // Try GPS first
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              setUserCoords({ lat: latitude, lon: longitude });
+
+              // Get location name via reverse geocoding
+              const locationName = await reverseGeocode(latitude, longitude);
+
+              // Update user profile in DB
+              await updateDoc(doc(db, 'users', user.id), {
+                current_location: locationName,
+                locationName: locationName,
+                latitude: latitude,
+                longitude: longitude,
+                lastLocationUpdate: new Date(),
+              });
+
+              setProfile((prev) => prev ? { ...prev, locationName, latitude, longitude } : null);
+              console.log('[Location] GPS sync successful:', locationName);
+            },
+            async (error) => {
+              console.warn('[Location] GPS error, falling back to IP:', error.message);
+
+              // Fallback to IP-based location
+              const ipLocation = await getLocationFromIP();
+              if (ipLocation) {
+                setUserCoords({ lat: ipLocation.lat, lon: ipLocation.lon });
+
+                await updateDoc(doc(db, 'users', user.id), {
+                  current_location: ipLocation.city,
+                  locationName: ipLocation.city,
+                  latitude: ipLocation.lat,
+                  longitude: ipLocation.lon,
+                  lastLocationUpdate: new Date(),
+                  locationSource: 'ip',
+                });
+
+                setProfile((prev) => prev ? { ...prev, locationName: ipLocation.city, latitude: ipLocation.lat, longitude: ipLocation.lon } : null);
+                console.log('[Location] IP fallback sync:', ipLocation.city);
+              }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+          );
+        } else {
+          // No geolocation support - use IP
+          const ipLocation = await getLocationFromIP();
+          if (ipLocation) {
+            setUserCoords({ lat: ipLocation.lat, lon: ipLocation.lon });
+            setProfile((prev) => prev ? { ...prev, locationName: ipLocation.city } : null);
+          }
+        }
+      } catch (error) {
+        console.error('[Location] Sync error:', error);
+      }
+    };
+
+    syncLocation();
+  }, [user?.id]);
 
   // ───────────────────────────────────────────────────────────
   // Fetch Profile
@@ -834,7 +1042,9 @@ export default function HomeSovereign() {
             xp: data.xp || data.totalXP || 0,
             isFounder: user.id === FOUNDER_UID || data.role === 'founder' || data.isAdmin === true,
             location: data.location,
-            locationName: data.locationName || data.neighborhood || 'Berlin-Mitte',
+            locationName: data.locationName || data.current_location || 'Standort wird geladen...',
+            latitude: data.latitude,
+            longitude: data.longitude,
           });
         }
       } catch (error) {
@@ -848,56 +1058,76 @@ export default function HomeSovereign() {
   }, [user?.id]);
 
   // ───────────────────────────────────────────────────────────
-  // Subscribe to Rooms
+  // Subscribe to Rooms with Proximity Filter
   // ───────────────────────────────────────────────────────────
   useEffect(() => {
     const roomsQuery = query(
       collection(db, 'rooms'),
       where('isActive', '==', true),
       orderBy('userCount', 'desc'),
-      limit(20)
+      limit(30)
     );
 
     const unsubscribe = onSnapshot(
       roomsQuery,
       (snapshot) => {
-        const roomsList: Room[] = snapshot.docs.map((docSnap) => {
+        let roomsList: Room[] = snapshot.docs.map((docSnap) => {
           const data = docSnap.data();
+          const roomLat = data.latitude || data.location?.latitude;
+          const roomLon = data.longitude || data.location?.longitude;
+
+          let distanceKm: number | undefined;
+          if (userCoords && roomLat && roomLon) {
+            distanceKm = calculateDistanceKm(userCoords.lat, userCoords.lon, roomLat, roomLon);
+          }
+
           return {
             id: docSnap.id,
             name: data.name || 'Unbenannt',
             category: data.category || 'chill',
             activeUsers: data.userCount || 0,
+            distanceKm,
+            distance: distanceKm ? formatDistance(distanceKm) : undefined,
             hasBoost: data.hasXpBoost || data.isSponsored || false,
             isHot: (data.userCount || 0) >= 10,
             emoji: data.emoji || '☁️',
             hostName: data.hostName || data.creatorName,
             isFounderRoom: data.creatorId === FOUNDER_UID,
             locationName: data.locationName,
+            latitude: roomLat,
+            longitude: roomLon,
           };
         });
-        setRooms(roomsList);
+
+        // Filter by 50km radius if user coords available
+        if (userCoords) {
+          roomsList = roomsList.filter((room) => {
+            if (!room.distanceKm) return true; // Keep rooms without location
+            return room.distanceKm <= MAX_DISTANCE_KM;
+          });
+        }
+
+        // Sort by distance if available
+        roomsList.sort((a, b) => {
+          if (a.distanceKm && b.distanceKm) return a.distanceKm - b.distanceKm;
+          return b.activeUsers - a.activeUsers;
+        });
+
+        setRooms(roomsList.slice(0, 20));
       },
       () => setRooms([])
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [userCoords]);
 
   // ───────────────────────────────────────────────────────────
-  // Fetch Profile Visitors (Mock for now)
+  // Fetch Profile Visitors (Real DB Query)
   // ───────────────────────────────────────────────────────────
   useEffect(() => {
     if (!user?.id) return;
+    setVisitorsLoading(true);
 
-    // In production, this would fetch from a profileVisitors collection
-    const mockVisitors: ProfileVisitor[] = [
-      { id: '1', username: 'luna', displayName: 'Luna', photoURL: '', visitedAt: new Date(), isFounder: false },
-      { id: '2', username: 'max', displayName: 'Max', photoURL: '', visitedAt: new Date(), isFounder: true },
-      { id: '3', username: 'sarah', displayName: 'Sarah', photoURL: '', visitedAt: new Date(), isFounder: false },
-    ];
-
-    // Try to fetch real visitors
     const fetchVisitors = async () => {
       try {
         const visitsQuery = query(
@@ -906,111 +1136,183 @@ export default function HomeSovereign() {
           orderBy('visitedAt', 'desc'),
           limit(10)
         );
+
         const snapshot = await getDocs(visitsQuery);
-        if (!snapshot.empty) {
-          const visitors: ProfileVisitor[] = [];
-          for (const docSnap of snapshot.docs) {
-            const data = docSnap.data();
-            try {
-              const visitorDoc = await getDoc(doc(db, 'users', data.visitorId));
-              if (visitorDoc.exists()) {
-                const vData = visitorDoc.data();
-                visitors.push({
-                  id: data.visitorId,
-                  username: vData.username || 'User',
-                  displayName: vData.displayName,
-                  photoURL: vData.photoURL,
-                  visitedAt: data.visitedAt?.toDate() || new Date(),
-                  isFounder: data.visitorId === FOUNDER_UID,
-                });
-              }
-            } catch {}
-          }
-          if (visitors.length > 0) {
-            setProfileVisitors(visitors);
-            return;
-          }
+        const visitors: ProfileVisitor[] = [];
+
+        for (const docSnap of snapshot.docs) {
+          const data = docSnap.data();
+          try {
+            const visitorDoc = await getDoc(doc(db, 'users', data.visitorId));
+            if (visitorDoc.exists()) {
+              const vData = visitorDoc.data();
+              visitors.push({
+                id: data.visitorId,
+                username: vData.username || 'User',
+                displayName: vData.displayName,
+                photoURL: vData.photoURL,
+                visitedAt: data.visitedAt?.toDate() || new Date(),
+                isFounder: data.visitorId === FOUNDER_UID,
+              });
+            }
+          } catch {}
         }
-      } catch {}
-      // Fall back to mock
-      setProfileVisitors(mockVisitors);
+
+        // Return only real DB data - no mock fallback
+        setProfileVisitors(visitors);
+      } catch (error) {
+        console.error('[Visitors] Fetch error:', error);
+        setProfileVisitors([]); // Empty array = zero state
+      } finally {
+        setVisitorsLoading(false);
+      }
     };
 
     fetchVisitors();
   }, [user?.id]);
 
   // ───────────────────────────────────────────────────────────
-  // Fetch Top Speakers
+  // TOP SPEAKER LOGIC (Real DB Query - No Mocks)
   // ───────────────────────────────────────────────────────────
   useEffect(() => {
+    setSpeakersLoading(true);
+
     const fetchTopSpeakers = async () => {
       try {
-        // Get active users from rooms
+        // Query active rooms
         const roomsQuery = query(
           collection(db, 'rooms'),
           where('isActive', '==', true),
-          limit(5)
+          limit(10)
         );
+
         const roomsSnapshot = await getDocs(roomsQuery);
         const speakers: TopSpeaker[] = [];
 
         for (const roomDoc of roomsSnapshot.docs) {
           const roomData = roomDoc.data();
+
+          // Query participants who are speaking
           const participantsQuery = query(
             collection(db, `rooms/${roomDoc.id}/participants`),
             where('isSpeaking', '==', true),
-            limit(3)
+            limit(5)
           );
+
           try {
             const participantsSnapshot = await getDocs(participantsQuery);
+
             for (const pDoc of participantsSnapshot.docs) {
               const pData = pDoc.data();
-              if (!speakers.find(s => s.id === pDoc.id)) {
+
+              // Check if already in list
+              if (!speakers.find((s) => s.id === pDoc.id)) {
                 speakers.push({
                   id: pDoc.id,
-                  username: pData.username || 'Speaker',
+                  username: pData.username || pData.displayName || 'Speaker',
                   displayName: pData.displayName,
                   photoURL: pData.photoURL,
-                  speakMinutes: pData.speakMinutes || Math.floor(Math.random() * 30) + 5,
+                  speakMinutes: pData.speakMinutes || pData.speakingDuration || 0,
                   isActive: true,
                   isFounder: pDoc.id === FOUNDER_UID,
+                  roomName: roomData.name,
                 });
               }
             }
           } catch {}
         }
 
-        if (speakers.length === 0) {
-          // Mock data
-          setTopSpeakers([
-            { id: 'sp1', username: 'alex', displayName: 'Alex', speakMinutes: 45, isActive: true, isFounder: true },
-            { id: 'sp2', username: 'mia', displayName: 'Mia', speakMinutes: 32, isActive: true, isFounder: false },
-            { id: 'sp3', username: 'leon', displayName: 'Leon', speakMinutes: 28, isActive: true, isFounder: false },
-          ]);
-        } else {
-          speakers.sort((a, b) => b.speakMinutes - a.speakMinutes);
-          setTopSpeakers(speakers.slice(0, 5));
-        }
-      } catch {
-        setTopSpeakers([]);
+        // Sort by speak time and return
+        speakers.sort((a, b) => b.speakMinutes - a.speakMinutes);
+
+        // NO MOCK DATA - only real DB results
+        setTopSpeakers(speakers.slice(0, 5));
+      } catch (error) {
+        console.error('[TopSpeakers] Fetch error:', error);
+        setTopSpeakers([]); // Empty = zero state
+      } finally {
+        setSpeakersLoading(false);
       }
     };
 
     fetchTopSpeakers();
+
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchTopSpeakers, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   // ───────────────────────────────────────────────────────────
-  // Fetch Nearby Locations
+  // LOCATIONS FROM ROOMS (50km Proximity Sync)
   // ───────────────────────────────────────────────────────────
   useEffect(() => {
-    // Mock nearby locations
-    setNearbyLocations([
-      { id: 'loc1', name: 'Prenzlauer Berg', activeCount: 12, emoji: '🏙️', distance: '0.5km' },
-      { id: 'loc2', name: 'Kreuzberg', activeCount: 8, emoji: '🎸', distance: '1.2km' },
-      { id: 'loc3', name: 'Friedrichshain', activeCount: 15, emoji: '🌙', distance: '1.8km' },
-      { id: 'loc4', name: 'Neukölln', activeCount: 6, emoji: '☕', distance: '2.4km' },
-    ]);
-  }, []);
+    setLocationsLoading(true);
+
+    const fetchNearbyLocations = async () => {
+      try {
+        // Query active rooms
+        const roomsQuery = query(
+          collection(db, 'rooms'),
+          where('isActive', '==', true),
+          orderBy('userCount', 'desc'),
+          limit(50)
+        );
+
+        const snapshot = await getDocs(roomsQuery);
+        const locationMap = new Map<string, NearbyLocation>();
+
+        for (const docSnap of snapshot.docs) {
+          const data = docSnap.data();
+          const locName = data.locationName || data.city || data.neighborhood;
+
+          if (!locName) continue;
+
+          const roomLat = data.latitude || data.location?.latitude;
+          const roomLon = data.longitude || data.location?.longitude;
+
+          let distanceKm: number | undefined;
+          if (userCoords && roomLat && roomLon) {
+            distanceKm = calculateDistanceKm(userCoords.lat, userCoords.lon, roomLat, roomLon);
+
+            // Skip if outside 50km radius
+            if (distanceKm > MAX_DISTANCE_KM) continue;
+          }
+
+          // Aggregate by location name
+          if (locationMap.has(locName)) {
+            const existing = locationMap.get(locName)!;
+            existing.activeCount += data.userCount || 1;
+          } else {
+            locationMap.set(locName, {
+              id: docSnap.id,
+              name: locName,
+              activeCount: data.userCount || 1,
+              emoji: data.emoji || '📍',
+              distance: distanceKm ? formatDistance(distanceKm) : undefined,
+              distanceKm,
+            });
+          }
+        }
+
+        // Convert to array and sort by distance/activity
+        let locations = Array.from(locationMap.values());
+        locations.sort((a, b) => {
+          if (a.distanceKm && b.distanceKm) return a.distanceKm - b.distanceKm;
+          return b.activeCount - a.activeCount;
+        });
+
+        // NO MOCK DATA - only real DB results
+        setNearbyLocations(locations.slice(0, 6));
+      } catch (error) {
+        console.error('[Locations] Fetch error:', error);
+        setNearbyLocations([]); // Empty = zero state
+      } finally {
+        setLocationsLoading(false);
+      }
+    };
+
+    fetchNearbyLocations();
+  }, [userCoords]);
 
   // ───────────────────────────────────────────────────────────
   // Subscribe to Notifications
@@ -1069,51 +1371,37 @@ export default function HomeSovereign() {
 
   return (
     <div className="min-h-screen pb-32 relative" style={{ background: '#050505' }}>
-      {/* Banner (Read-Only) */}
+      {/* Banner */}
       <HeaderBanner bannerURL={profile?.bannerURL} />
 
       {/* Header Row - Settings & Notifications */}
-      <div className="absolute top-4 right-4 flex items-center gap-2 z-30">
-        {/* Notifications */}
+      <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate('/notifications')}
           className="relative w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{
-            background: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-          }}
+          style={{ background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
         >
           <Bell size={18} className="text-white/80" />
           {unreadNotifications > 0 && (
             <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
-              <span className="text-[9px] font-bold text-white">
-                {unreadNotifications > 9 ? '9+' : unreadNotifications}
-              </span>
+              <span className="text-[9px] font-bold text-white">{unreadNotifications > 9 ? '9+' : unreadNotifications}</span>
             </div>
           )}
         </motion.button>
-
-        {/* Settings */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate('/settings')}
           className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{
-            background: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-          }}
+          style={{ background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
         >
           <Settings size={18} className="text-white/80" />
         </motion.button>
       </div>
 
       {/* Profile Section */}
-      <div className="relative -mt-10 px-5 z-20">
+      <div className="relative -mt-10 px-5 z-40">
         <div className="flex items-end gap-4">
-          {/* Avatar */}
           <ProfileAvatar
             photoURL={profile?.photoURL}
             displayName={profile?.displayName || 'Anonym'}
@@ -1121,19 +1409,15 @@ export default function HomeSovereign() {
             statusEmoji={profile?.statusEmoji}
             onAvatarUpload={handleAvatarUpload}
           />
-
-          {/* Name & Location */}
           <div className="flex-1 pb-2">
             <h1 className="text-lg font-bold text-white">{profile?.displayName || 'Anonym'}</h1>
             <div className="flex items-center gap-2 mt-1">
               <MapPin size={12} className="text-violet-400" />
               <span className="text-[11px] text-violet-300 font-medium">
-                {profile?.locationName || 'Berlin-Mitte'}
+                {profile?.locationName || 'Standort wird geladen...'}
               </span>
             </div>
           </div>
-
-          {/* Level Ring */}
           <div className="pb-2">
             <LevelRing
               level={levelData.level}
@@ -1146,49 +1430,46 @@ export default function HomeSovereign() {
       </div>
 
       {/* Live Counter */}
-      <div className="px-5 mt-4 mb-2 z-20">
+      <div className="px-5 mt-4 mb-2 z-30">
         <motion.div
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
-          style={{
-            background: 'rgba(34, 197, 94, 0.1)',
-            border: '1px solid rgba(34, 197, 94, 0.2)',
-          }}
+          style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.2)' }}
         >
-          <motion.div
-            className="w-2 h-2 rounded-full bg-emerald-400"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
+          <motion.div className="w-2 h-2 rounded-full bg-emerald-400" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.5, repeat: Infinity }} />
           <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">
             {rooms.reduce((sum, r) => sum + r.activeUsers, 0)} Menschen gerade aktiv
           </span>
         </motion.div>
       </div>
 
-      {/* Friends Teaser - "Zuletzt auf deinem Profil" */}
+      {/* Friends Teaser */}
       <FriendsTeaser
         visitors={profileVisitors}
+        loading={visitorsLoading}
         onVisitorClick={(id) => navigate(`/user/${id}`)}
         onSeeAll={() => navigate('/profile-visitors')}
       />
 
-      {/* Room Grid OR Empty State */}
+      {/* Room Grid */}
       <RoomGrid
         rooms={rooms}
         onRoomClick={(id) => navigate(`/room/${id}`)}
         onCreateRoom={() => navigate('/create-room')}
       />
 
-      {/* Discovery Section - Top Speakers */}
+      {/* Top Speakers (Real DB - No Mocks) */}
       <TopSpeakerSection
         speakers={topSpeakers}
+        loading={speakersLoading}
         onSpeakerClick={(id) => navigate(`/user/${id}`)}
       />
 
-      {/* Discovery Section - Nearby Locations */}
+      {/* Nearby Locations (50km Proximity) */}
       <NearbyLocationsSection
         locations={nearbyLocations}
-        onLocationClick={(id) => navigate(`/discover?location=${id}`)}
+        loading={locationsLoading}
+        onLocationClick={(id) => navigate(`/room/${id}`)}
+        onCreateRoom={() => navigate('/create-room')}
       />
 
       {/* Create Room FAB */}
@@ -1197,10 +1478,7 @@ export default function HomeSovereign() {
         animate={{ scale: 1 }}
         transition={{ delay: 0.5, type: 'spring' }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => {
-          triggerHaptic('medium');
-          navigate('/create-room');
-        }}
+        onClick={() => { triggerHaptic('medium'); navigate('/create-room'); }}
         className="fixed bottom-28 right-5 w-14 h-14 rounded-2xl flex items-center justify-center z-[100]"
         style={{
           background: `linear-gradient(135deg, ${accentColor}, ${profile?.isFounder ? '#fde047' : '#c084fc'})`,
