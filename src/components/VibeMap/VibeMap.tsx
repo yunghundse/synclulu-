@@ -478,6 +478,12 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
   const [isLoading, setIsLoading] = useState(false); // Start without loading state
   const [recentSyncFriends, setRecentSyncFriends] = useState<Set<string>>(new Set()); // Track recent syncs
   const previousRoomStates = useRef<Map<string, boolean>>(new Map()); // Track room state changes
+  const recentSyncFriendsRef = useRef<Set<string>>(new Set()); // Ref for closure-safe access
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    recentSyncFriendsRef.current = recentSyncFriends;
+  }, [recentSyncFriends]);
 
   // Theme detection for map tiles (safe fallback)
   const { isDark } = useSafeTheme();
@@ -565,7 +571,7 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
               roomName: friendData.currentRoomName,
               sanctuaryScore: friendData.sanctuaryScore || 50,
               auraResonance,
-              justStartedSync: recentSyncFriends.has(friendId),
+              justStartedSync: recentSyncFriendsRef.current.has(friendId),
             });
 
             // Add heat point based on sanctuary score
