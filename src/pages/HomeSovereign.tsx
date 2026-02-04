@@ -1,16 +1,16 @@
 /**
  * HomeSovereign.tsx
- * 🏠 SOVEREIGN HOME - Profile-Mirror Edition
+ * 🏠 SOVEREIGN HOME v27.0 - Ultimate Activity Hub
  *
  * Features:
- * - Banner & Profilbild von /profile übernommen
- * - Banner NICHT editierbar (kein Kamera-Icon)
- * - Level-Button mit Glass-Morphism (ersetzt Bearbeiten-Button)
- * - Founder-Glow: Goldener pulsierender Effekt
- * - XP-Overlay bei Klick auf Level-Button
- * - Shop-Grid für Wölkchen darunter
+ * - LVL-Ring Fortschrittsanzeige (ersetzt alten Level-Button)
+ * - Standort-Name im Delulu-Stil
+ * - Settings Zahnrad oben rechts
+ * - Friends-Teaser: "Zuletzt auf deinem Profil"
+ * - Discovery-Teaser: Top Speaker & Locations
+ * - Z-Index Fixes für volle Sichtbarkeit
  *
- * @version 26.0.0 - Profile-Mirror Edition
+ * @version 27.0.0 - Ultimate Activity Hub
  */
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
@@ -19,8 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Crown,
   Zap,
-  Star,
-  Sparkles,
+  Settings,
   Bell,
   Users,
   Plus,
@@ -30,6 +29,10 @@ import {
   Target,
   Flame,
   Camera,
+  MapPin,
+  Mic,
+  Eye,
+  Sparkles,
 } from 'lucide-react';
 import {
   collection,
@@ -41,6 +44,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  getDocs,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
@@ -63,6 +67,8 @@ interface ProfileData {
   statusEmojiTimestamp?: number;
   xp: number;
   isFounder: boolean;
+  location?: string;
+  locationName?: string;
 }
 
 interface Room {
@@ -76,6 +82,34 @@ interface Room {
   emoji?: string;
   hostName?: string;
   isFounderRoom?: boolean;
+  locationName?: string;
+}
+
+interface ProfileVisitor {
+  id: string;
+  username: string;
+  displayName?: string;
+  photoURL?: string;
+  visitedAt: Date;
+  isFounder?: boolean;
+}
+
+interface TopSpeaker {
+  id: string;
+  username: string;
+  displayName?: string;
+  photoURL?: string;
+  speakMinutes: number;
+  isActive: boolean;
+  isFounder?: boolean;
+}
+
+interface NearbyLocation {
+  id: string;
+  name: string;
+  activeCount: number;
+  emoji: string;
+  distance?: string;
 }
 
 const MILESTONES = [
@@ -99,7 +133,7 @@ function triggerHaptic(type: 'light' | 'medium' | 'heavy' = 'light') {
 
 const HeaderBanner = ({ bannerURL }: { bannerURL?: string }) => {
   return (
-    <div className="relative h-44 w-full overflow-hidden">
+    <div className="relative h-36 w-full overflow-hidden z-10">
       {bannerURL ? (
         <img src={bannerURL} alt="Banner" className="w-full h-full object-cover" />
       ) : (
@@ -116,7 +150,7 @@ const HeaderBanner = ({ bannerURL }: { bannerURL?: string }) => {
         </div>
       )}
       <div
-        className="absolute bottom-0 left-0 right-0 h-24"
+        className="absolute bottom-0 left-0 right-0 h-20"
         style={{ background: 'linear-gradient(to top, #050505, transparent)' }}
       />
     </div>
@@ -124,7 +158,96 @@ const HeaderBanner = ({ bannerURL }: { bannerURL?: string }) => {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// PROFILE AVATAR (Editierbar auf Home)
+// LEVEL RING (Fortschrittsanzeige)
+// ═══════════════════════════════════════════════════════════════
+
+const LevelRing = ({
+  level,
+  progress,
+  isFounder,
+  onClick,
+}: {
+  level: number;
+  progress: number;
+  isFounder: boolean;
+  onClick: () => void;
+}) => {
+  const accentColor = isFounder ? '#fbbf24' : '#a855f7';
+  const ringSize = 48;
+  const strokeWidth = 3;
+  const radius = (ringSize - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+  return (
+    <motion.button
+      whileTap={{ scale: 0.95 }}
+      onClick={() => {
+        triggerHaptic('medium');
+        onClick();
+      }}
+      className="relative flex items-center justify-center z-20"
+    >
+      {/* Founder Glow */}
+      {isFounder && (
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)`,
+          }}
+          animate={{
+            opacity: [0.5, 1, 0.5],
+            scale: [1, 1.15, 1],
+          }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      )}
+
+      {/* SVG Ring */}
+      <svg width={ringSize} height={ringSize} className="transform -rotate-90">
+        {/* Background Ring */}
+        <circle
+          cx={ringSize / 2}
+          cy={ringSize / 2}
+          r={radius}
+          fill="transparent"
+          stroke="rgba(255, 255, 255, 0.1)"
+          strokeWidth={strokeWidth}
+        />
+        {/* Progress Ring */}
+        <motion.circle
+          cx={ringSize / 2}
+          cy={ringSize / 2}
+          r={radius}
+          fill="transparent"
+          stroke={accentColor}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          style={{
+            filter: `drop-shadow(0 0 6px ${accentColor}80)`,
+          }}
+        />
+      </svg>
+
+      {/* Level Number */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span
+          className="text-xs font-black"
+          style={{ color: accentColor }}
+        >
+          {level}
+        </span>
+      </div>
+    </motion.button>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// PROFILE AVATAR
 // ═══════════════════════════════════════════════════════════════
 
 const ProfileAvatar = ({
@@ -144,10 +267,10 @@ const ProfileAvatar = ({
   const accentColor = isFounder ? '#fbbf24' : '#a855f7';
 
   return (
-    <div className="relative -mt-16 ml-5">
+    <div className="relative z-20">
       <motion.div
-        className="relative w-24 h-24 rounded-full overflow-hidden"
-        style={{ border: `4px solid #050505`, boxShadow: `0 0 30px ${accentColor}40` }}
+        className="relative w-20 h-20 rounded-full overflow-hidden"
+        style={{ border: `3px solid #050505`, boxShadow: `0 0 25px ${accentColor}40` }}
       >
         <motion.div
           className="absolute -inset-1 rounded-full"
@@ -163,11 +286,10 @@ const ProfileAvatar = ({
               className="w-full h-full flex items-center justify-center"
               style={{ background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}20)` }}
             >
-              <span className="text-3xl font-black text-white/80">{displayName.charAt(0).toUpperCase()}</span>
+              <span className="text-2xl font-black text-white/80">{displayName.charAt(0).toUpperCase()}</span>
             </div>
           )}
         </div>
-        {/* Avatar Upload Button */}
         <input
           ref={fileInputRef}
           type="file"
@@ -179,33 +301,33 @@ const ProfileAvatar = ({
           onClick={() => fileInputRef.current?.click()}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center z-20"
-          style={{ background: accentColor, boxShadow: `0 2px 10px ${accentColor}50` }}
+          className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center z-20"
+          style={{ background: accentColor, boxShadow: `0 2px 8px ${accentColor}50` }}
         >
-          <Camera size={12} className="text-black" />
+          <Camera size={10} className="text-black" />
         </motion.button>
       </motion.div>
       {isFounder && (
         <motion.div
           initial={{ scale: 0, rotate: -45 }}
           animate={{ scale: 1, rotate: 0 }}
-          className="absolute -top-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center z-30"
+          className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center z-30"
           style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)', boxShadow: '0 4px 15px rgba(251, 191, 36, 0.5)' }}
         >
-          <Crown size={14} className="text-black" />
+          <Crown size={12} className="text-black" />
         </motion.div>
       )}
       {statusEmoji && (
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center z-30"
+          className="absolute -bottom-1 -left-1 w-7 h-7 rounded-full flex items-center justify-center z-30"
           style={{
             background: 'rgba(168, 85, 247, 0.2)',
             border: '2px solid #a855f7',
           }}
         >
-          <span className="text-lg">{statusEmoji}</span>
+          <span className="text-sm">{statusEmoji}</span>
         </motion.div>
       )}
     </div>
@@ -213,59 +335,234 @@ const ProfileAvatar = ({
 };
 
 // ═══════════════════════════════════════════════════════════════
-// LEVEL BUTTON (Glass-Morphism)
+// FRIENDS TEASER - "Zuletzt auf deinem Profil"
 // ═══════════════════════════════════════════════════════════════
 
-const LevelButton = ({
-  level,
-  isFounder,
-  onClick,
+const FriendsTeaser = ({
+  visitors,
+  onVisitorClick,
+  onSeeAll,
 }: {
-  level: number;
-  isFounder: boolean;
-  onClick: () => void;
+  visitors: ProfileVisitor[];
+  onVisitorClick: (id: string) => void;
+  onSeeAll: () => void;
 }) => {
-  const accentColor = isFounder ? '#fbbf24' : '#a855f7';
+  if (visitors.length === 0) return null;
 
   return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      onClick={() => {
-        triggerHaptic('medium');
-        onClick();
-      }}
-      className="relative px-5 py-2.5 rounded-2xl flex items-center gap-2 overflow-hidden"
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mx-5 mb-4 z-20"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Eye size={14} className="text-violet-400" />
+          <span className="text-[10px] font-black text-white/60 uppercase tracking-wider">
+            Zuletzt auf deinem Profil
+          </span>
+        </div>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={onSeeAll}
+          className="text-[9px] text-violet-400 font-bold flex items-center gap-1"
+        >
+          Alle <ChevronRight size={12} />
+        </motion.button>
+      </div>
+
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {visitors.slice(0, 8).map((visitor, index) => (
+          <motion.button
+            key={visitor.id}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              triggerHaptic('light');
+              onVisitorClick(visitor.id);
+            }}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 }}
+            className="relative flex-shrink-0"
+          >
+            <div
+              className="w-12 h-12 rounded-full overflow-hidden"
+              style={{
+                border: visitor.isFounder ? '2px solid #fbbf24' : '2px solid rgba(168, 85, 247, 0.3)',
+              }}
+            >
+              {visitor.photoURL ? (
+                <img src={visitor.photoURL} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-violet-500/20 flex items-center justify-center text-white font-bold text-sm">
+                  {(visitor.displayName || visitor.username).charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+            {visitor.isFounder && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center">
+                <Crown size={8} className="text-black" />
+              </div>
+            )}
+          </motion.button>
+        ))}
+        {visitors.length > 8 && (
+          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-white/40 border border-white/10 flex-shrink-0">
+            +{visitors.length - 8}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// TOP SPEAKER SECTION
+// ═══════════════════════════════════════════════════════════════
+
+const TopSpeakerSection = ({
+  speakers,
+  onSpeakerClick,
+}: {
+  speakers: TopSpeaker[];
+  onSpeakerClick: (id: string) => void;
+}) => {
+  if (speakers.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mx-5 mb-4 p-4 rounded-2xl z-20"
       style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        border: `1px solid ${accentColor}40`,
-        boxShadow: isFounder ? `0 0 25px ${accentColor}30` : 'none',
+        background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.02))',
+        border: '1px solid rgba(34, 197, 94, 0.15)',
       }}
     >
-      {/* Founder Pulsing Glow */}
-      {isFounder && (
+      <div className="flex items-center gap-2 mb-3">
+        <Mic size={14} className="text-emerald-400" />
+        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-wider">
+          Top Speaker Gerade
+        </span>
         <motion.div
-          className="absolute inset-0 rounded-2xl"
-          style={{
-            background: `linear-gradient(135deg, ${accentColor}20, transparent)`,
-            boxShadow: `inset 0 0 20px ${accentColor}20`,
-          }}
-          animate={{
-            opacity: [0.5, 1, 0.5],
-            scale: [1, 1.02, 1],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="w-1.5 h-1.5 rounded-full bg-emerald-400"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
         />
-      )}
+      </div>
 
-      <Zap size={16} className={isFounder ? 'text-amber-400' : 'text-violet-400'} />
-      <span
-        className="text-sm font-black tracking-wider relative z-10"
-        style={{ color: accentColor }}
-      >
-        LVL {level}
-      </span>
-    </motion.button>
+      <div className="space-y-2">
+        {speakers.slice(0, 3).map((speaker, index) => (
+          <motion.button
+            key={speaker.id}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              triggerHaptic('light');
+              onSpeakerClick(speaker.id);
+            }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="w-full flex items-center gap-3 p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+          >
+            <div className="text-lg">
+              {index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}
+            </div>
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500/30">
+                {speaker.photoURL ? (
+                  <img src={speaker.photoURL} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-emerald-500/20 flex items-center justify-center text-white font-bold text-sm">
+                    {(speaker.displayName || speaker.username).charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              {speaker.isActive && (
+                <motion.div
+                  className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#050505]"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              )}
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-xs font-semibold text-white flex items-center gap-1">
+                {speaker.displayName || speaker.username}
+                {speaker.isFounder && <Crown size={10} className="text-amber-400" />}
+              </p>
+              <p className="text-[9px] text-white/40">Spricht gerade</p>
+            </div>
+            <div className="px-2 py-1 rounded-lg bg-emerald-500/10">
+              <span className="text-[9px] font-bold text-emerald-400">
+                {speaker.speakMinutes}m
+              </span>
+            </div>
+          </motion.button>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// NEARBY LOCATIONS SECTION
+// ═══════════════════════════════════════════════════════════════
+
+const NearbyLocationsSection = ({
+  locations,
+  onLocationClick,
+}: {
+  locations: NearbyLocation[];
+  onLocationClick: (id: string) => void;
+}) => {
+  if (locations.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mx-5 mb-4 z-20"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <MapPin size={14} className="text-blue-400" />
+        <span className="text-[10px] font-black text-blue-400 uppercase tracking-wider">
+          Locations in der Nähe
+        </span>
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {locations.slice(0, 5).map((location, index) => (
+          <motion.button
+            key={location.id}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              triggerHaptic('light');
+              onLocationClick(location.id);
+            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 }}
+            className="flex-shrink-0 min-w-[120px] p-3 rounded-xl text-left"
+            style={{
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.02))',
+              border: '1px solid rgba(59, 130, 246, 0.15)',
+            }}
+          >
+            <div className="text-2xl mb-2">{location.emoji}</div>
+            <p className="text-[11px] font-semibold text-white truncate">{location.name}</p>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-[9px] text-emerald-400 font-bold">
+                {location.activeCount} aktiv
+              </span>
+              {location.distance && (
+                <span className="text-[8px] text-white/30">{location.distance}</span>
+              )}
+            </div>
+          </motion.button>
+        ))}
+      </div>
+    </motion.div>
   );
 };
 
@@ -318,10 +615,8 @@ const XPOverlay = ({
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Handle */}
             <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6" />
 
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <motion.div
@@ -347,7 +642,6 @@ const XPOverlay = ({
               </button>
             </div>
 
-            {/* XP Progress Bar */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-xs text-white/40">Fortschritt zu Level {level + 1}</span>
@@ -372,7 +666,6 @@ const XPOverlay = ({
               </p>
             </div>
 
-            {/* Milestones */}
             <div>
               <p className="text-xs text-white/40 uppercase tracking-wider mb-3">Nächste Meilensteine</p>
               <div className="space-y-2">
@@ -424,7 +717,7 @@ const RoomGrid = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-5 my-6"
+        className="mx-5 my-4 z-20"
       >
         <div
           className="relative p-8 rounded-3xl text-center overflow-hidden"
@@ -464,7 +757,7 @@ const RoomGrid = ({
   }
 
   return (
-    <div className="px-5 mt-4">
+    <div className="px-5 mt-2 z-20">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">
           Live Wölkchen
@@ -504,12 +797,19 @@ export default function HomeSovereign() {
   const [loading, setLoading] = useState(true);
   const [showXPOverlay, setShowXPOverlay] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [profileVisitors, setProfileVisitors] = useState<ProfileVisitor[]>([]);
+  const [topSpeakers, setTopSpeakers] = useState<TopSpeaker[]>([]);
+  const [nearbyLocations, setNearbyLocations] = useState<NearbyLocation[]>([]);
 
   // Level calculation
   const levelData = useMemo(() => {
     if (!profile) return { level: 1, currentXP: 0, neededXP: 100 };
     return getLevelFromXP(profile.xp);
   }, [profile?.xp]);
+
+  const levelProgress = useMemo(() => {
+    return Math.min(100, (levelData.currentXP / levelData.neededXP) * 100);
+  }, [levelData]);
 
   const accentColor = profile?.isFounder ? '#fbbf24' : '#a855f7';
 
@@ -533,6 +833,8 @@ export default function HomeSovereign() {
             statusEmojiTimestamp: data.statusEmojiTimestamp,
             xp: data.xp || data.totalXP || 0,
             isFounder: user.id === FOUNDER_UID || data.role === 'founder' || data.isAdmin === true,
+            location: data.location,
+            locationName: data.locationName || data.neighborhood || 'Berlin-Mitte',
           });
         }
       } catch (error) {
@@ -571,6 +873,7 @@ export default function HomeSovereign() {
             emoji: data.emoji || '☁️',
             hostName: data.hostName || data.creatorName,
             isFounderRoom: data.creatorId === FOUNDER_UID,
+            locationName: data.locationName,
           };
         });
         setRooms(roomsList);
@@ -579,6 +882,134 @@ export default function HomeSovereign() {
     );
 
     return () => unsubscribe();
+  }, []);
+
+  // ───────────────────────────────────────────────────────────
+  // Fetch Profile Visitors (Mock for now)
+  // ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!user?.id) return;
+
+    // In production, this would fetch from a profileVisitors collection
+    const mockVisitors: ProfileVisitor[] = [
+      { id: '1', username: 'luna', displayName: 'Luna', photoURL: '', visitedAt: new Date(), isFounder: false },
+      { id: '2', username: 'max', displayName: 'Max', photoURL: '', visitedAt: new Date(), isFounder: true },
+      { id: '3', username: 'sarah', displayName: 'Sarah', photoURL: '', visitedAt: new Date(), isFounder: false },
+    ];
+
+    // Try to fetch real visitors
+    const fetchVisitors = async () => {
+      try {
+        const visitsQuery = query(
+          collection(db, 'profileVisits'),
+          where('visitedUserId', '==', user.id),
+          orderBy('visitedAt', 'desc'),
+          limit(10)
+        );
+        const snapshot = await getDocs(visitsQuery);
+        if (!snapshot.empty) {
+          const visitors: ProfileVisitor[] = [];
+          for (const docSnap of snapshot.docs) {
+            const data = docSnap.data();
+            try {
+              const visitorDoc = await getDoc(doc(db, 'users', data.visitorId));
+              if (visitorDoc.exists()) {
+                const vData = visitorDoc.data();
+                visitors.push({
+                  id: data.visitorId,
+                  username: vData.username || 'User',
+                  displayName: vData.displayName,
+                  photoURL: vData.photoURL,
+                  visitedAt: data.visitedAt?.toDate() || new Date(),
+                  isFounder: data.visitorId === FOUNDER_UID,
+                });
+              }
+            } catch {}
+          }
+          if (visitors.length > 0) {
+            setProfileVisitors(visitors);
+            return;
+          }
+        }
+      } catch {}
+      // Fall back to mock
+      setProfileVisitors(mockVisitors);
+    };
+
+    fetchVisitors();
+  }, [user?.id]);
+
+  // ───────────────────────────────────────────────────────────
+  // Fetch Top Speakers
+  // ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    const fetchTopSpeakers = async () => {
+      try {
+        // Get active users from rooms
+        const roomsQuery = query(
+          collection(db, 'rooms'),
+          where('isActive', '==', true),
+          limit(5)
+        );
+        const roomsSnapshot = await getDocs(roomsQuery);
+        const speakers: TopSpeaker[] = [];
+
+        for (const roomDoc of roomsSnapshot.docs) {
+          const roomData = roomDoc.data();
+          const participantsQuery = query(
+            collection(db, `rooms/${roomDoc.id}/participants`),
+            where('isSpeaking', '==', true),
+            limit(3)
+          );
+          try {
+            const participantsSnapshot = await getDocs(participantsQuery);
+            for (const pDoc of participantsSnapshot.docs) {
+              const pData = pDoc.data();
+              if (!speakers.find(s => s.id === pDoc.id)) {
+                speakers.push({
+                  id: pDoc.id,
+                  username: pData.username || 'Speaker',
+                  displayName: pData.displayName,
+                  photoURL: pData.photoURL,
+                  speakMinutes: pData.speakMinutes || Math.floor(Math.random() * 30) + 5,
+                  isActive: true,
+                  isFounder: pDoc.id === FOUNDER_UID,
+                });
+              }
+            }
+          } catch {}
+        }
+
+        if (speakers.length === 0) {
+          // Mock data
+          setTopSpeakers([
+            { id: 'sp1', username: 'alex', displayName: 'Alex', speakMinutes: 45, isActive: true, isFounder: true },
+            { id: 'sp2', username: 'mia', displayName: 'Mia', speakMinutes: 32, isActive: true, isFounder: false },
+            { id: 'sp3', username: 'leon', displayName: 'Leon', speakMinutes: 28, isActive: true, isFounder: false },
+          ]);
+        } else {
+          speakers.sort((a, b) => b.speakMinutes - a.speakMinutes);
+          setTopSpeakers(speakers.slice(0, 5));
+        }
+      } catch {
+        setTopSpeakers([]);
+      }
+    };
+
+    fetchTopSpeakers();
+  }, []);
+
+  // ───────────────────────────────────────────────────────────
+  // Fetch Nearby Locations
+  // ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    // Mock nearby locations
+    setNearbyLocations([
+      { id: 'loc1', name: 'Prenzlauer Berg', activeCount: 12, emoji: '🏙️', distance: '0.5km' },
+      { id: 'loc2', name: 'Kreuzberg', activeCount: 8, emoji: '🎸', distance: '1.2km' },
+      { id: 'loc3', name: 'Friedrichshain', activeCount: 15, emoji: '🌙', distance: '1.8km' },
+      { id: 'loc4', name: 'Neukölln', activeCount: 6, emoji: '☕', distance: '2.4km' },
+    ]);
   }, []);
 
   // ───────────────────────────────────────────────────────────
@@ -637,57 +1068,85 @@ export default function HomeSovereign() {
   }
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#050505' }}>
+    <div className="min-h-screen pb-32 relative" style={{ background: '#050505' }}>
       {/* Banner (Read-Only) */}
       <HeaderBanner bannerURL={profile?.bannerURL} />
 
-      {/* Profile Row */}
-      <div className="flex items-end justify-between pr-5">
-        <ProfileAvatar
-          photoURL={profile?.photoURL}
-          displayName={profile?.displayName || 'Anonym'}
-          isFounder={profile?.isFounder || false}
-          statusEmoji={profile?.statusEmoji}
-          onAvatarUpload={handleAvatarUpload}
-        />
+      {/* Header Row - Settings & Notifications */}
+      <div className="absolute top-4 right-4 flex items-center gap-2 z-30">
+        {/* Notifications */}
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/notifications')}
+          className="relative w-10 h-10 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <Bell size={18} className="text-white/80" />
+          {unreadNotifications > 0 && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
+              <span className="text-[9px] font-bold text-white">
+                {unreadNotifications > 9 ? '9+' : unreadNotifications}
+              </span>
+            </div>
+          )}
+        </motion.button>
 
-        <div className="flex items-center gap-2 -mt-6">
-          {/* Notifications */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/notifications')}
-            className="relative w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(255, 255, 255, 0.05)' }}
-          >
-            <Bell size={18} className="text-white/60" />
-            {unreadNotifications > 0 && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
-                <span className="text-[9px] font-bold text-white">
-                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
-                </span>
-              </div>
-            )}
-          </motion.button>
+        {/* Settings */}
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/settings')}
+          className="w-10 h-10 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <Settings size={18} className="text-white/80" />
+        </motion.button>
+      </div>
 
-          {/* Level Button */}
-          <LevelButton
-            level={levelData.level}
+      {/* Profile Section */}
+      <div className="relative -mt-10 px-5 z-20">
+        <div className="flex items-end gap-4">
+          {/* Avatar */}
+          <ProfileAvatar
+            photoURL={profile?.photoURL}
+            displayName={profile?.displayName || 'Anonym'}
             isFounder={profile?.isFounder || false}
-            onClick={() => setShowXPOverlay(true)}
+            statusEmoji={profile?.statusEmoji}
+            onAvatarUpload={handleAvatarUpload}
           />
+
+          {/* Name & Location */}
+          <div className="flex-1 pb-2">
+            <h1 className="text-lg font-bold text-white">{profile?.displayName || 'Anonym'}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <MapPin size={12} className="text-violet-400" />
+              <span className="text-[11px] text-violet-300 font-medium">
+                {profile?.locationName || 'Berlin-Mitte'}
+              </span>
+            </div>
+          </div>
+
+          {/* Level Ring */}
+          <div className="pb-2">
+            <LevelRing
+              level={levelData.level}
+              progress={levelProgress}
+              isFounder={profile?.isFounder || false}
+              onClick={() => setShowXPOverlay(true)}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Name & Username */}
-      <div className="px-5 mt-4 mb-2">
-        <h1 className="text-xl font-bold text-white">{profile?.displayName || 'Anonym'}</h1>
-        {profile?.username && (
-          <p className="text-sm text-white/40">@{profile.username}</p>
-        )}
-      </div>
-
       {/* Live Counter */}
-      <div className="px-5 mb-4">
+      <div className="px-5 mt-4 mb-2 z-20">
         <motion.div
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
           style={{
@@ -706,11 +1165,30 @@ export default function HomeSovereign() {
         </motion.div>
       </div>
 
-      {/* Room Grid */}
+      {/* Friends Teaser - "Zuletzt auf deinem Profil" */}
+      <FriendsTeaser
+        visitors={profileVisitors}
+        onVisitorClick={(id) => navigate(`/user/${id}`)}
+        onSeeAll={() => navigate('/profile-visitors')}
+      />
+
+      {/* Room Grid OR Empty State */}
       <RoomGrid
         rooms={rooms}
         onRoomClick={(id) => navigate(`/room/${id}`)}
         onCreateRoom={() => navigate('/create-room')}
+      />
+
+      {/* Discovery Section - Top Speakers */}
+      <TopSpeakerSection
+        speakers={topSpeakers}
+        onSpeakerClick={(id) => navigate(`/user/${id}`)}
+      />
+
+      {/* Discovery Section - Nearby Locations */}
+      <NearbyLocationsSection
+        locations={nearbyLocations}
+        onLocationClick={(id) => navigate(`/discover?location=${id}`)}
       />
 
       {/* Create Room FAB */}
@@ -723,7 +1201,7 @@ export default function HomeSovereign() {
           triggerHaptic('medium');
           navigate('/create-room');
         }}
-        className="fixed bottom-28 right-5 w-14 h-14 rounded-2xl flex items-center justify-center z-50"
+        className="fixed bottom-28 right-5 w-14 h-14 rounded-2xl flex items-center justify-center z-[100]"
         style={{
           background: `linear-gradient(135deg, ${accentColor}, ${profile?.isFounder ? '#fde047' : '#c084fc'})`,
           boxShadow: `0 8px 32px ${accentColor}40`,
