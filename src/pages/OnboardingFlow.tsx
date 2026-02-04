@@ -1096,7 +1096,12 @@ const OnboardingFlow = () => {
       }
 
       if ('Notification' in window) {
-        setPermissions(prev => ({ ...prev, notifications: Notification.permission as PermissionStatus }));
+        // Map 'default' to 'prompt' for consistency
+        const notifPerm = Notification.permission;
+        const mappedPerm: PermissionStatus = notifPerm === 'default' ? 'prompt' : notifPerm as PermissionStatus;
+        setPermissions(prev => ({ ...prev, notifications: mappedPerm }));
+      } else {
+        setPermissions(prev => ({ ...prev, notifications: 'unsupported' }));
       }
     };
     checkPermissions();
@@ -1408,15 +1413,33 @@ const OnboardingFlow = () => {
       // 3. NOTIFICATIONS - request last
       console.log('🔔 [REG] Requesting notification permission...');
       try {
-        const result = await Notification.requestPermission();
-        setPermissions(prev => ({ ...prev, notifications: result as PermissionStatus }));
-        console.log('✅ [REG] Notifications:', result);
+        if (!('Notification' in window)) {
+          console.log('⚠️ [REG] Notifications not supported');
+          setPermissions(prev => ({ ...prev, notifications: 'unsupported' }));
+        } else if (Notification.permission === 'granted') {
+          // Already granted
+          console.log('✅ [REG] Notifications already granted');
+          setPermissions(prev => ({ ...prev, notifications: 'granted' }));
+          if (firebaseUser) {
+            await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': true }, { merge: true });
+          }
+        } else if (Notification.permission === 'denied') {
+          // Already denied - can't request again
+          console.log('❌ [REG] Notifications already denied by user');
+          setPermissions(prev => ({ ...prev, notifications: 'denied' }));
+        } else {
+          // Request permission
+          const result = await Notification.requestPermission();
+          const mappedResult: PermissionStatus = result === 'default' ? 'prompt' : result as PermissionStatus;
+          setPermissions(prev => ({ ...prev, notifications: mappedResult }));
+          console.log('✅ [REG] Notifications result:', result);
 
-        if (firebaseUser) {
-          await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': result === 'granted' }, { merge: true });
+          if (firebaseUser && result === 'granted') {
+            await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': true }, { merge: true });
+          }
         }
       } catch (e) {
-        console.log('❌ [REG] Notifications denied:', e);
+        console.log('❌ [REG] Notifications error:', e);
         setPermissions(prev => ({ ...prev, notifications: 'denied' }));
       }
 
@@ -1453,9 +1476,21 @@ const OnboardingFlow = () => {
       }
 
       if (type === 'notifications') {
+        if (!('Notification' in window)) {
+          setPermissions(prev => ({ ...prev, notifications: 'unsupported' }));
+          return;
+        }
+
+        if (Notification.permission === 'denied') {
+          // Can't request again if already denied
+          setPermissions(prev => ({ ...prev, notifications: 'denied' }));
+          return;
+        }
+
         const result = await Notification.requestPermission();
-        setPermissions(prev => ({ ...prev, notifications: result as PermissionStatus }));
-        if (firebaseUser) {
+        const mappedResult: PermissionStatus = result === 'default' ? 'prompt' : result as PermissionStatus;
+        setPermissions(prev => ({ ...prev, notifications: mappedResult }));
+        if (firebaseUser && result === 'granted') {
           await setDoc(doc(db, 'users', firebaseUser.uid), { 'permissions.notifications': result === 'granted' }, { merge: true });
         }
       }
