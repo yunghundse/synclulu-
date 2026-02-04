@@ -14,10 +14,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from 'firebase/auth';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth, db, storage } from '@/lib/firebase';
+import { auth, db, storage, googleProvider } from '@/lib/firebase';
 import {
   Mail, Lock, User, Camera, MapPin, Mic, Bell, X,
   ChevronRight, ChevronLeft, Check, Loader2, Eye, EyeOff,
@@ -396,6 +396,7 @@ interface CredentialsStepProps {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   errors: Record<string, string>;
   onNext: () => void;
+  onGoogleSignUp: () => void;
   isLoading: boolean;
   referralValid: boolean | null;
   referrerName: string | null;
@@ -403,7 +404,7 @@ interface CredentialsStepProps {
 }
 
 const CredentialsStep = ({
-  formData, setFormData, errors, onNext, isLoading, referralValid, referrerName, theme
+  formData, setFormData, errors, onNext, onGoogleSignUp, isLoading, referralValid, referrerName, theme
 }: CredentialsStepProps) => {
   const t = themes[theme];
   const [showPassword, setShowPassword] = useState(false);
@@ -557,8 +558,51 @@ const CredentialsStep = ({
         </span>
       </motion.button>
 
+      {/* Divider */}
+      <div className="flex items-center gap-4 my-4">
+        <div className="flex-1 h-px" style={{ background: t.border }} />
+        <span className="text-sm" style={{ color: t.textMuted }}>oder</span>
+        <div className="flex-1 h-px" style={{ background: t.border }} />
+      </div>
+
+      {/* Google Sign Up Button */}
+      <motion.button
+        onClick={onGoogleSignUp}
+        disabled={isLoading}
+        className="w-full py-4 rounded-2xl font-semibold relative overflow-hidden disabled:opacity-40"
+        style={{
+          background: t.cardBg,
+          border: `1px solid ${t.border}`,
+          color: t.text
+        }}
+        whileHover={{ scale: 1.02, borderColor: t.accent }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <span className="relative flex items-center justify-center gap-3">
+          <svg width="20" height="20" viewBox="0 0 24 24">
+            <path
+              fill="#4285F4"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            />
+          </svg>
+          Mit Google registrieren
+        </span>
+      </motion.button>
+
       {/* Login Link */}
-      <p className="text-center text-sm" style={{ color: t.textSecondary }}>
+      <p className="text-center text-sm mt-4" style={{ color: t.textSecondary }}>
         Bereits registriert?{' '}
         <Link to="/login" style={{ color: t.accent }} className="font-semibold hover:underline">
           Anmelden
@@ -1098,6 +1142,113 @@ const OnboardingFlow = () => {
     setCurrentStep('profile');
   };
 
+  // Google Sign Up - creates account and goes directly to permissions
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true);
+    setErrors({});
+
+    try {
+      // Check capacity first
+      const status = await checkCapacity();
+      if (status.isFull) {
+        setShowSoldOut(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Sign in with Google
+      console.log('🔵 [REG] Starting Google Sign-In...');
+      let result;
+
+      try {
+        result = await signInWithPopup(auth, googleProvider);
+      } catch (popupError: any) {
+        if (popupError.code === 'auth/popup-blocked' ||
+            popupError.code === 'auth/popup-closed-by-user') {
+          console.log('Popup blocked, using redirect...');
+          await signInWithRedirect(auth, googleProvider);
+          return; // Redirect will handle the rest
+        }
+        throw popupError;
+      }
+
+      const user = result.user;
+      console.log('✅ [REG] Google user:', user.uid, user.email);
+      setFirebaseUser(user);
+
+      // Check if user already exists in Firestore
+      const existingUserDoc = await getDoc(doc(db, 'users', user.uid));
+
+      if (existingUserDoc.exists()) {
+        // User already registered - check if they completed onboarding
+        const userData = existingUserDoc.data();
+        if (userData.onboardingCompleted) {
+          // Already complete - just login
+          localStorage.setItem('synclulu_consent_accepted', 'true');
+          navigate('/');
+          return;
+        }
+        // Onboarding not complete - continue to permissions
+        setFormData(prev => ({
+          ...prev,
+          email: user.email || '',
+          displayName: user.displayName || '',
+          username: userData.username || `user_${user.uid.slice(0, 8)}`,
+          avatarUrl: user.photoURL || null
+        }));
+        setCurrentStep('permissions');
+      } else {
+        // New user - create Firestore document
+        const username = `user_${user.uid.slice(0, 8)}`;
+
+        await setDoc(doc(db, 'users', user.uid), {
+          id: user.uid,
+          email: user.email,
+          displayName: user.displayName || 'Google User',
+          username,
+          avatarUrl: user.photoURL || null,
+          createdAt: serverTimestamp(),
+          onboardingCompleted: false,
+          level: 1,
+          xp: 0,
+          nebulaStars: referralValid ? GATEKEEPER_CONFIG.referralRewardNewUser : 0,
+          isPremium: false,
+          role: 'user',
+          searchRadius: GATEKEEPER_CONFIG.standardRadius,
+          referredBy: referralValid ? referrerName : null,
+          referredByCode: referralValid ? referralCode : null,
+          permissions: { location: false, microphone: false, notifications: false },
+          authProvider: 'google'
+        });
+
+        setFormData(prev => ({
+          ...prev,
+          email: user.email || '',
+          displayName: user.displayName || '',
+          username,
+          avatarUrl: user.photoURL || null
+        }));
+
+        console.log('✅ [REG] Google user created, going to permissions...');
+        setCurrentStep('permissions');
+      }
+    } catch (err: any) {
+      console.error('❌ [REG] Google Sign-Up error:', err);
+
+      if (err.code === 'auth/popup-closed-by-user') {
+        setErrors({ general: 'Google-Anmeldung abgebrochen' });
+      } else if (err.code === 'auth/account-exists-with-different-credential') {
+        setErrors({ general: 'Ein Account mit dieser E-Mail existiert bereits' });
+      } else if (err.code === 'auth/network-request-failed') {
+        setErrors({ general: 'Netzwerkfehler - bitte prüfe deine Verbindung' });
+      } else {
+        setErrors({ general: `Google-Fehler: ${err.message}` });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleProfileNext = async () => {
     if (!validateProfile()) return;
 
@@ -1403,6 +1554,7 @@ const OnboardingFlow = () => {
                 setFormData={setFormData}
                 errors={errors}
                 onNext={handleCredentialsNext}
+                onGoogleSignUp={handleGoogleSignUp}
                 isLoading={isLoading}
                 referralValid={referralValid}
                 referrerName={referrerName}
