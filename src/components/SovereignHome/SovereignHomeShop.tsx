@@ -41,7 +41,7 @@ import { usePreciseLocation } from '../../hooks/usePreciseLocation';
 
 // Components
 import { RoomCard } from '../SovereignUI/RoomCard';
-import { PermissionOverlay } from '../PermissionOverlay';
+import { PermissionOverlay } from '../PermissionOverlay/PermissionOverlay';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 const FOUNDER_UID = 'MIbamchs82Ve7y0ecX2TpPyymbw1';
