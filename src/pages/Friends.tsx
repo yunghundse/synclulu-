@@ -1,16 +1,16 @@
 /**
- * FRIENDS PAGE v23.0 - SOCIAL HUB
- * Complete Social Experience with all friend features
+ * FRIENDS PAGE v24.0 - CLASSIC SOCIAL HUB
+ * Clean, classic friend overview without radar
  *
  * FEATURES:
  * - Recently Seen: Last interactions
  * - Friend Mood Overview: Current vibes
- * - Proximity Radar: Nearby friends
  * - Best Voice Friends: Sync time ranking
+ * - Quick Friend Grid: All friends at a glance
  * - Navigation to FriendsList & FriendStreaks
  *
- * @design Sovereign Glass-Morphism v23.0
- * @version 23.0.0
+ * @design Sovereign Glass-Morphism v24.0
+ * @version 24.0.0
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -24,25 +24,22 @@ import {
   doc,
   getDoc,
   limit,
-  orderBy,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useStore } from '@/lib/store';
 import {
   ChevronLeft,
-  Radio,
   Mic,
   UserPlus,
-  Clock,
-  Sparkles,
   Users,
   Flame,
   Heart,
   Eye,
   List,
   ChevronRight,
+  Crown,
+  MessageCircle,
 } from 'lucide-react';
-import { StreakCard } from '@/components/SovereignUI/StreakCard';
 
 // ═══════════════════════════════════════
 // CONSTANTS & TYPES
@@ -50,7 +47,6 @@ import { StreakCard } from '@/components/SovereignUI/StreakCard';
 
 const FOUNDER_UID = 'MIbamchs82Ve7y0ecX2TpPyymbw1';
 
-// Mood emojis for friend status
 const MOOD_EMOJIS: Record<string, { emoji: string; label: string; color: string }> = {
   happy: { emoji: '😊', label: 'Happy', color: '#22c55e' },
   chill: { emoji: '😎', label: 'Chill', color: '#3b82f6' },
@@ -74,7 +70,6 @@ interface Friend {
   addedAt?: Date;
   isFounder?: boolean;
   isVerified?: boolean;
-  distance?: number;
   auraColor?: string;
   mood?: string;
   lastSeenActivity?: string;
@@ -156,7 +151,6 @@ const RecentlySeen = ({
   friends: Friend[];
   onFriendClick: (id: string) => void;
 }) => {
-  // Sort by last interaction, most recent first
   const recentFriends = useMemo(
     () =>
       [...friends]
@@ -195,7 +189,6 @@ const RecentlySeen = ({
               transition={{ delay: index * 0.05 }}
               className="w-full flex items-center gap-3 p-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] transition-colors"
             >
-              {/* Avatar */}
               <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                 {friend.avatarUrl ? (
                   <img src={friend.avatarUrl} alt="" className="w-full h-full object-cover" />
@@ -209,7 +202,6 @@ const RecentlySeen = ({
                 )}
               </div>
 
-              {/* Info */}
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-white truncate">
                   {friend.displayName || friend.username}
@@ -219,7 +211,6 @@ const RecentlySeen = ({
                 </p>
               </div>
 
-              {/* Time */}
               <div className="text-right">
                 <p className="text-[9px] text-blue-400 font-medium">
                   {friend.lastInteraction && formatRelativeTime(friend.lastInteraction)}
@@ -248,7 +239,6 @@ const FriendMoodOverview = ({
   friends: Friend[];
   onFriendClick: (id: string) => void;
 }) => {
-  // Group friends by mood
   const moodGroups = useMemo(() => {
     const groups: Record<string, Friend[]> = {};
     friends.forEach((f) => {
@@ -275,7 +265,6 @@ const FriendMoodOverview = ({
         </div>
       </div>
 
-      {/* Mood Grid */}
       <div className="grid grid-cols-4 gap-2">
         {activeMoods.slice(0, 8).map(([mood, moodFriends]) => {
           const moodInfo = MOOD_EMOJIS[mood] || MOOD_EMOJIS.chill;
@@ -300,7 +289,6 @@ const FriendMoodOverview = ({
         })}
       </div>
 
-      {/* Top Mood Friends Preview */}
       <div className="mt-3 pt-3 border-t border-white/5">
         <div className="flex items-center -space-x-2">
           {friends.slice(0, 6).map((friend, index) => (
@@ -333,130 +321,6 @@ const FriendMoodOverview = ({
             </div>
           )}
         </div>
-      </div>
-    </SovereignPanel>
-  );
-};
-
-// ═══════════════════════════════════════
-// PROXIMITY RADAR COMPONENT
-// ═══════════════════════════════════════
-
-const ProximityRadar = ({
-  nearbyFriends,
-  onFriendClick,
-}: {
-  nearbyFriends: Friend[];
-  onFriendClick: (id: string) => void;
-}) => {
-  const topThree = nearbyFriends.slice(0, 3);
-
-  return (
-    <SovereignPanel gradient className="p-5 relative overflow-hidden">
-      {/* Radar Pulse Animation */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {[1, 2, 3].map((ring) => (
-          <motion.div
-            key={ring}
-            className="absolute rounded-full border border-violet-500/20"
-            style={{
-              width: `${ring * 80}px`,
-              height: `${ring * 80}px`,
-            }}
-            animate={{
-              scale: [1, 1.5, 1],
-              opacity: [0.3, 0, 0.3],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              delay: ring * 0.5,
-              ease: 'easeOut',
-            }}
-          />
-        ))}
-        <motion.div
-          className="w-3 h-3 rounded-full bg-violet-500"
-          animate={{
-            boxShadow: [
-              '0 0 10px rgba(139, 92, 246, 0.5)',
-              '0 0 30px rgba(139, 92, 246, 0.8)',
-              '0 0 10px rgba(139, 92, 246, 0.5)',
-            ],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-      </div>
-
-      <div className="flex items-center gap-3 mb-4 relative z-10">
-        <div className="w-10 h-10 rounded-2xl bg-violet-500/20 flex items-center justify-center">
-          <Radio size={20} className="text-violet-400" />
-        </div>
-        <div>
-          <h2 className="text-[11px] font-black text-violet-400 uppercase tracking-widest">
-            Freunde in meiner Nähe
-          </h2>
-          <p className="text-[9px] text-white/40">
-            {topThree.length > 0 ? `${topThree.length} in Reichweite` : 'Radar aktiv...'}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center gap-4 py-6 relative z-10">
-        {topThree.length > 0 ? (
-          topThree.map((friend, index) => (
-            <motion.button
-              key={friend.id}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                triggerHaptic('medium');
-                onFriendClick(friend.id);
-              }}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1, type: 'spring' }}
-              className="relative"
-            >
-              <motion.div
-                className="absolute -inset-1 rounded-full"
-                style={{
-                  background: `linear-gradient(135deg, ${friend.isFounder ? '#fbbf24' : '#a855f7'}, ${friend.isFounder ? '#f59e0b' : '#7c3aed'})`,
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-              />
-              <div
-                className={`relative rounded-full overflow-hidden border-2 border-[#050505] ${
-                  index === 0 ? 'w-16 h-16' : 'w-12 h-12'
-                }`}
-              >
-                {friend.avatarUrl ? (
-                  <img src={friend.avatarUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-violet-500/30 flex items-center justify-center text-white font-bold">
-                    {(friend.displayName || friend.username).charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-              {friend.isActive && (
-                <motion.div
-                  className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-[#050505]"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              )}
-              {friend.distance && (
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/80 text-[7px] text-white/60">
-                  {friend.distance < 1 ? '<1km' : `${Math.round(friend.distance)}km`}
-                </div>
-              )}
-            </motion.button>
-          ))
-        ) : (
-          <div className="text-center py-4">
-            <p className="text-sm text-white/40">Keine Freunde in der Nähe</p>
-          </div>
-        )}
       </div>
     </SovereignPanel>
   );
@@ -561,12 +425,171 @@ const BestVoiceFriends = ({
 };
 
 // ═══════════════════════════════════════
+// QUICK FRIEND OVERVIEW
+// ═══════════════════════════════════════
+
+const QuickFriendOverview = ({
+  friends,
+  onFriendClick,
+  onMessageClick,
+}: {
+  friends: Friend[];
+  onFriendClick: (id: string) => void;
+  onMessageClick: (id: string) => void;
+}) => {
+  const onlineFriends = friends.filter((f) => f.isActive);
+  const offlineFriends = friends.filter((f) => !f.isActive);
+
+  return (
+    <SovereignPanel className="p-4">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-9 h-9 rounded-xl bg-violet-500/20 flex items-center justify-center">
+          <Users size={18} className="text-violet-400" />
+        </div>
+        <div className="flex-1">
+          <h2 className="text-[10px] font-black text-violet-400 uppercase tracking-widest">
+            Alle Freunde
+          </h2>
+          <p className="text-[9px] text-white/40">
+            {onlineFriends.length} online • {offlineFriends.length} offline
+          </p>
+        </div>
+      </div>
+
+      {/* Online Friends */}
+      {onlineFriends.length > 0 && (
+        <div className="mb-4">
+          <p className="text-[8px] text-green-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            Online
+          </p>
+          <div className="space-y-2">
+            {onlineFriends.slice(0, 5).map((friend, index) => (
+              <motion.div
+                key={friend.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex items-center gap-3 p-2 rounded-xl bg-green-500/5 border border-green-500/10"
+              >
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onFriendClick(friend.id);
+                  }}
+                  className="relative flex-shrink-0"
+                >
+                  {friend.isFounder && (
+                    <motion.div
+                      className="absolute -inset-0.5 rounded-full"
+                      style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)' }}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                    />
+                  )}
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-[#050505]">
+                    {friend.avatarUrl ? (
+                      <img src={friend.avatarUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-violet-500/30 flex items-center justify-center text-white font-bold text-sm">
+                        {(friend.displayName || friend.username).charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border border-[#050505]" />
+                </motion.button>
+
+                <button
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onFriendClick(friend.id);
+                  }}
+                  className="flex-1 text-left min-w-0"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-semibold text-white truncate">
+                      {friend.displayName || friend.username}
+                    </span>
+                    {friend.isFounder && <Crown size={10} className="text-amber-400 flex-shrink-0" />}
+                    {friend.mood && MOOD_EMOJIS[friend.mood] && (
+                      <span className="text-[10px]">{MOOD_EMOJIS[friend.mood].emoji}</span>
+                    )}
+                  </div>
+                  <p className="text-[9px] text-white/40">@{friend.username}</p>
+                </button>
+
+                {friend.streakCount > 0 && (
+                  <div className="px-2 py-1 rounded-lg bg-orange-500/10">
+                    <span className="text-[9px] font-bold text-orange-400">🔥 {friend.streakCount}</span>
+                  </div>
+                )}
+
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onMessageClick(friend.id);
+                  }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-violet-500/10"
+                >
+                  <MessageCircle size={14} className="text-violet-400" />
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Offline Friends Preview */}
+      {offlineFriends.length > 0 && (
+        <div>
+          <p className="text-[8px] text-white/30 uppercase tracking-widest mb-2">
+            Offline ({offlineFriends.length})
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {offlineFriends.slice(0, 8).map((friend, index) => (
+              <motion.button
+                key={friend.id}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  triggerHaptic('light');
+                  onFriendClick(friend.id);
+                }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.03 }}
+                className="relative"
+              >
+                <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 opacity-60">
+                  {friend.avatarUrl ? (
+                    <img src={friend.avatarUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-white/5 flex items-center justify-center text-white/40 text-xs font-bold">
+                      {(friend.displayName || friend.username).charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              </motion.button>
+            ))}
+            {offlineFriends.length > 8 && (
+              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[9px] text-white/30">
+                +{offlineFriends.length - 8}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </SovereignPanel>
+  );
+};
+
+// ═══════════════════════════════════════
 // NAVIGATION BUTTONS
 // ═══════════════════════════════════════
 
 const NavigationButtons = ({ navigate }: { navigate: (path: string) => void }) => (
   <div className="grid grid-cols-2 gap-3">
-    {/* Friends List Button */}
     <motion.button
       whileTap={{ scale: 0.97 }}
       onClick={() => {
@@ -591,7 +614,6 @@ const NavigationButtons = ({ navigate }: { navigate: (path: string) => void }) =
       <p className="text-[9px] text-white/40 mt-1">Alle Freunde anzeigen</p>
     </motion.button>
 
-    {/* Streaks Button */}
     <motion.button
       whileTap={{ scale: 0.97 }}
       onClick={() => {
@@ -628,7 +650,6 @@ const Friends = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch friends with extended data
   useEffect(() => {
     async function fetchFriends() {
       if (!user?.id) return;
@@ -687,7 +708,6 @@ const Friends = () => {
                 addedAt: friendshipData[friendId]?.addedAt,
                 isFounder: friendId === FOUNDER_UID,
                 isVerified: data.isVerified || false,
-                distance: Math.random() * 10,
                 auraColor: data.auraColor || '#a855f7',
                 mood: data.mood || moods[Math.floor(Math.random() * moods.length)],
                 lastSeenActivity: data.lastSeenActivity || ['Im Voice-Raum', 'Hat getextet', 'War im Raum', 'Hat gematcht'][Math.floor(Math.random() * 4)],
@@ -697,6 +717,12 @@ const Friends = () => {
             console.error('[Friends] Error fetching friend:', friendId, err);
           }
         }
+
+        // Sort: Online first, then by streak count
+        friendProfiles.sort((a, b) => {
+          if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+          return b.streakCount - a.streakCount;
+        });
 
         setFriends(friendProfiles);
       } catch (error) {
@@ -709,14 +735,16 @@ const Friends = () => {
     fetchFriends();
   }, [user?.id]);
 
-  const nearbyFriends = useMemo(
-    () => [...friends].filter((f) => f.distance !== undefined).sort((a, b) => (a.distance || 99) - (b.distance || 99)),
-    [friends]
-  );
-
   const handleFriendClick = useCallback(
     (friendId: string) => {
       navigate(`/user/${friendId}`);
+    },
+    [navigate]
+  );
+
+  const handleMessageClick = useCallback(
+    (friendId: string) => {
+      navigate(`/messages?userId=${friendId}`);
     },
     [navigate]
   );
@@ -744,7 +772,7 @@ const Friends = () => {
               <ChevronLeft size={20} className="text-white/60" />
             </motion.button>
             <div>
-              <h1 className="text-xl font-bold text-white">Social Hub</h1>
+              <h1 className="text-xl font-bold text-white">Freunde</h1>
               <p className="text-[10px] text-white/40 uppercase tracking-wider">
                 {friends.length} Freunde • {onlineCount} online
               </p>
@@ -776,7 +804,7 @@ const Friends = () => {
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
-          <p className="text-sm text-white/40 mt-4">Lädt Social Hub...</p>
+          <p className="text-sm text-white/40 mt-4">Lädt Freunde...</p>
         </div>
       ) : friends.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
@@ -787,9 +815,9 @@ const Friends = () => {
           >
             <Users size={40} className="text-violet-500" />
           </motion.div>
-          <h3 className="font-semibold text-white mb-2">Dein Hub ist leer</h3>
+          <h3 className="font-semibold text-white mb-2">Noch keine Freunde</h3>
           <p className="text-sm text-white/40 max-w-xs mb-6">
-            Noch keine Aura-Syncs? Entdecke neue Freunde!
+            Entdecke neue Leute und baue dein Netzwerk auf!
           </p>
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -811,11 +839,15 @@ const Friends = () => {
           {/* 2. FRIEND MOOD OVERVIEW */}
           <FriendMoodOverview friends={friends} onFriendClick={handleFriendClick} />
 
-          {/* 3. PROXIMITY RADAR */}
-          <ProximityRadar nearbyFriends={nearbyFriends} onFriendClick={handleFriendClick} />
-
-          {/* 4. BEST VOICE FRIENDS */}
+          {/* 3. BEST VOICE FRIENDS */}
           <BestVoiceFriends friends={friends} onFriendClick={handleFriendClick} />
+
+          {/* 4. QUICK FRIEND OVERVIEW */}
+          <QuickFriendOverview
+            friends={friends}
+            onFriendClick={handleFriendClick}
+            onMessageClick={handleMessageClick}
+          />
 
           {/* 5. NAVIGATION BUTTONS */}
           <NavigationButtons navigate={navigate} />
