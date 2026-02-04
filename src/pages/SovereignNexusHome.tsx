@@ -25,6 +25,7 @@ import {
   Radio,
   ChevronRight,
   Sparkles,
+  Settings,
 } from 'lucide-react';
 
 // Unified Panel System
@@ -521,8 +522,9 @@ export default function SovereignNexusHome() {
             </div>
           </motion.div>
 
-          {/* Action Icons */}
-          <div className="flex items-center gap-3">
+          {/* Action Icons - TRENNUNG: Profil UND Settings separat */}
+          <div className="flex items-center gap-2">
+            {/* Messages */}
             <motion.button
               onClick={() => navigate('/messages')}
               whileHover={{ scale: 1.1 }}
@@ -541,14 +543,26 @@ export default function SovereignNexusHome() {
               )}
             </motion.button>
 
+            {/* Profil-Icon → NUR Profil */}
             <motion.button
-              onClick={() => navigate('/friends')}
+              onClick={() => navigate('/profile')}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="p-2 rounded-xl"
               style={{ background: 'rgba(255, 255, 255, 0.05)' }}
             >
               <User size={18} className="text-white/50" />
+            </motion.button>
+
+            {/* Settings-Zahnrad → NUR Settings */}
+            <motion.button
+              onClick={() => navigate('/settings')}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="p-2 rounded-xl"
+              style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+            >
+              <Settings size={18} className="text-white/50" />
             </motion.button>
           </div>
         </motion.div>

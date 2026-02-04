@@ -613,36 +613,9 @@ const SettingsHub = () => {
         </GlassCard>
 
         {/* ═══════════════════════════════════════ */}
-        {/* DEV INFO - Firebase UID Copy */}
+        {/* SECURITY NOTE: Firebase UID removed from UI */}
+        {/* User IDs should NEVER be shown to users */}
         {/* ═══════════════════════════════════════ */}
-        {user?.id && (
-          <GlassCard>
-            <div className="p-4">
-              <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-gray-100 to-slate-100 dark:from-gray-800/50 dark:to-slate-800/50 flex items-center justify-center">
-                  <Zap size={20} className="text-gray-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="font-medium text-gray-900 dark:text-white text-sm">
-                    Firebase UID
-                  </span>
-                  <p className="text-[10px] text-gray-400 font-mono truncate">
-                    {user.id}
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(user.id);
-                    if ('vibrate' in navigator) navigator.vibrate(10);
-                  }}
-                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <Copy size={18} className="text-gray-500" />
-                </button>
-              </div>
-            </div>
-          </GlassCard>
-        )}
 
         {/* ═══════════════════════════════════════ */}
         {/* VERSION INFO */}

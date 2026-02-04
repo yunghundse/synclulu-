@@ -26,6 +26,7 @@ import Messages from '@/pages/Messages';
 import MessagesNew from '@/pages/MessagesNew';
 import Profile from '@/pages/Profile';
 import ProfileMinimal from '@/pages/ProfileMinimal';
+import ProfileSovereign from '@/pages/ProfileSovereign';
 import Statistics from '@/pages/Statistics';
 import Notifications from '@/pages/Notifications';
 import Premium from '@/pages/Premium';
@@ -262,7 +263,8 @@ function App() {
                 <Route path="/messages" element={<MessagesNew />} />
                 <Route path="/chat" element={<MessagesNew />} />
                 <Route path="/chat/:conversationId" element={<Messages />} />
-                <Route path="/profile" element={<ProfileMinimal />} />
+                <Route path="/profile" element={<ProfileSovereign />} />
+                <Route path="/profile/minimal" element={<ProfileMinimal />} />
                 <Route path="/profile/full" element={<Profile />} />
                 <Route path="/profile/trust-stats" element={<TrustStats />} />
                 <Route path="/voice-stats" element={<VoiceStats />} />

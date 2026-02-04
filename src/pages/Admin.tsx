@@ -345,8 +345,7 @@ const SettingsTab = ({ user, addLog }: SettingsTabProps) => {
               <p className="text-xs text-gray-400">Via Firebase Firestore isAdmin Flag</p>
             </div>
           </div>
-          <p><span className="text-gray-400">Deine User-ID:</span> <code className="bg-gray-700 px-2 py-1 rounded">{user.id}</code></p>
-          <p><span className="text-gray-400">Username:</span> <code className="bg-gray-700 px-2 py-1 rounded">{user.username}</code></p>
+          <p><span className="text-gray-400">Angemeldet als:</span> <code className="bg-gray-700 px-2 py-1 rounded">{user.username || 'Admin'}</code></p>
         </div>
       </div>
 
