@@ -34,6 +34,7 @@ import {
   Sparkles,
   CloudOff,
   Radio,
+  Gamepad2,
 } from 'lucide-react';
 import {
   collection,
@@ -1390,8 +1391,26 @@ export default function HomeSovereign() {
       {/* Banner */}
       <HeaderBanner bannerURL={profile?.bannerURL} />
 
-      {/* Header Row - Settings & Notifications */}
+      {/* Header Row - Game Center, Notifications & Settings */}
       <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
+        {/* Battle Pass / Game Center Button */}
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => { triggerHaptic('medium'); navigate('/battlepass'); }}
+          className="relative w-10 h-10 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1))',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(251, 191, 36, 0.3)',
+          }}
+        >
+          <Trophy size={18} className="text-amber-400" />
+          <motion.div
+            className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400"
+            animate={{ scale: [1, 1.3, 1], opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        </motion.button>
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate('/notifications')}
@@ -1489,21 +1508,7 @@ export default function HomeSovereign() {
         onCreateRoom={() => navigate('/create-room')}
       />
 
-      {/* Create Room FAB */}
-      <motion.button
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.5, type: 'spring' }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => { triggerHaptic('medium'); navigate('/create-room'); }}
-        className="fixed bottom-28 right-5 w-14 h-14 rounded-2xl flex items-center justify-center z-[100]"
-        style={{
-          background: `linear-gradient(135deg, ${accentColor}, ${profile?.isFounder ? '#fde047' : '#c084fc'})`,
-          boxShadow: `0 8px 32px ${accentColor}40`,
-        }}
-      >
-        <Plus size={24} className="text-white" />
-      </motion.button>
+      {/* FAB removed - Create Room now in Navigation */}
 
       {/* XP Overlay */}
       <XPOverlay

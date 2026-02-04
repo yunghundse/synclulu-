@@ -59,6 +59,7 @@ import FriendsList from '@/pages/FriendsList';
 import FriendStreaks from '@/pages/FriendStreaks';
 import VoiceStats from '@/pages/VoiceStats';
 import ProfileVisitors from '@/pages/ProfileVisitors';
+import BattlePass from '@/pages/BattlePass';
 import NexusDashboard from '@/pages/NexusDashboard';
 import LegalCenter from '@/pages/LegalCenter';
 import LegalPopup from '@/pages/LegalPopup';
@@ -281,6 +282,8 @@ function App() {
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/profile-visitors" element={<ProfileVisitors />} />
+                <Route path="/battlepass" element={<BattlePass />} />
+                <Route path="/battle-pass" element={<BattlePass />} />
                 <Route path="/premium" element={<Premium />} />
                 <Route path="/settings" element={<SettingsHub />} />
                 <Route path="/settings/legacy" element={<Settings />} />
