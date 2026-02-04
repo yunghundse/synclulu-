@@ -1,23 +1,25 @@
 /**
  * GlobalDock.tsx
- * Universal Bottom Navigation - Final Legal & UI Architect Edition
+ * Universal Bottom Navigation - Social-Nexus Edition
  *
  * NEUE STRUKTUR:
- * [Home] – [Map] – [Kaugummi] – [Messages] – [Profil]
+ * [Home] – [Map] – [Kaugummi] – [Friends] – [Profil]
  *
  * Features:
- * - Settings aus Nav entfernt (erreichbar über Header-Zahnrad)
- * - Profil-Button hinzugefügt
+ * - Friends Icon hinzugefügt (ersetzt Messages)
+ * - Messages erreichbar über Home Header
  * - Liquid Gum Button in der Mitte
  * - Persistent auf allen Seiten
  * - Active State Tracking
  * - Safe Area Support
+ *
+ * @version 2.0.0 - Social-Nexus Edition
  */
 
 import React, { memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Map, User } from 'lucide-react';
+import { Home, Map, User, Users } from 'lucide-react';
 import { LiquidGumButton } from './LiquidGumButton';
 
 // ═══════════════════════════════════════════════════════════════
@@ -29,6 +31,7 @@ interface NavIconProps {
   label: string;
   icon: React.ReactNode;
   badge?: number;
+  pulsing?: boolean;
 }
 
 const NavIcon = memo(function NavIcon({
@@ -37,6 +40,7 @@ const NavIcon = memo(function NavIcon({
   label,
   icon,
   badge,
+  pulsing = false,
 }: NavIconProps) {
   return (
     <motion.button
@@ -67,6 +71,19 @@ const NavIcon = memo(function NavIcon({
             {badge > 9 ? '9+' : badge}
           </span>
         )}
+
+        {/* Pulsing Dot for active friends */}
+        {pulsing && !badge && (
+          <motion.span
+            className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
+            style={{
+              background: '#22c55e',
+              boxShadow: '0 0 8px #22c55e',
+            }}
+            animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        )}
       </motion.div>
 
       <span
@@ -94,10 +111,12 @@ const NavIcon = memo(function NavIcon({
 // ═══════════════════════════════════════════════════════════════
 interface GlobalDockProps {
   unreadMessages?: number;
+  activeFriendsCount?: number;
 }
 
 export const GlobalDock = memo(function GlobalDock({
   unreadMessages = 0,
+  activeFriendsCount = 0,
 }: GlobalDockProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,7 +126,7 @@ export const GlobalDock = memo(function GlobalDock({
     const path = location.pathname;
     if (path === '/' || path === '/home') return 'home';
     if (path === '/discover' || path === '/map') return 'discover';
-    if (path === '/messages' || path === '/chat' || path.startsWith('/chat/')) return 'messages';
+    if (path === '/friends') return 'friends';
     if (path === '/profile' || path.startsWith('/profile/')) return 'profile';
     return 'home';
   }, [location.pathname]);
@@ -117,7 +136,7 @@ export const GlobalDock = memo(function GlobalDock({
   // Navigation handlers
   const handleHome = useCallback(() => navigate('/'), [navigate]);
   const handleDiscover = useCallback(() => navigate('/discover'), [navigate]);
-  const handleMessages = useCallback(() => navigate('/messages'), [navigate]);
+  const handleFriends = useCallback(() => navigate('/friends'), [navigate]);
   const handleProfile = useCallback(() => navigate('/profile'), [navigate]);
   const handleCreateRoom = useCallback(() => navigate('/create-room'), [navigate]);
 
@@ -161,16 +180,16 @@ export const GlobalDock = memo(function GlobalDock({
             />
           </div>
 
-          {/* MESSAGES / CHAT */}
+          {/* FRIENDS (NEU - ersetzt Messages) */}
           <NavIcon
-            active={activePage === 'messages'}
-            onClick={handleMessages}
-            label="Chat"
-            icon={<MessageCircle size={22} className={activePage === 'messages' ? 'text-violet-400' : 'text-white'} />}
-            badge={unreadMessages}
+            active={activePage === 'friends'}
+            onClick={handleFriends}
+            label="Friends"
+            icon={<Users size={22} className={activePage === 'friends' ? 'text-violet-400' : 'text-white'} />}
+            pulsing={activeFriendsCount > 0}
           />
 
-          {/* PROFILE (NEU - ersetzt Settings) */}
+          {/* PROFILE */}
           <NavIcon
             active={activePage === 'profile'}
             onClick={handleProfile}

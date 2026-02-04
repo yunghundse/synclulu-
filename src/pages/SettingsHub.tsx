@@ -1,10 +1,11 @@
 /**
- * synclulu SETTINGS HUB v1.5
- * "The Glassmorphism Control Hub"
+ * synclulu SETTINGS HUB v2.0
+ * "The Sovereign Control Hub"
  *
  * ARCHITECTURE:
  * ┌─────────────────────────────────┐
- * │  Profile Header (Minimal)       │
+ * │  🖼️ Banner + Avatar Header     │
+ * │  (Wie auf der Profilseite)     │
  * ├─────────────────────────────────┤
  * │  🎨 Creator werden              │
  * │  ✉️  Einladungssystem           │
@@ -19,12 +20,13 @@
  * │  ℹ️  Über & Support             │
  * └─────────────────────────────────┘
  *
- * @design Glassmorphism + Apple HIG
- * @version 1.5.0
+ * @design Sovereign + Glassmorphism
+ * @version 2.0.0 - Social-Nexus Edition
  */
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { db, auth } from '@/lib/firebase';
@@ -37,7 +39,7 @@ import {
   Radar, Bell, BellOff, Palette, Shield, LogOut, HelpCircle,
   FileText, Mail, Sparkles, Gift, Share2, MapPin, Lock,
   Moon, Sun, Globe, Smartphone, Volume2, VolumeX, Zap,
-  UserPlus, Copy, Check, ExternalLink, Star, Heart
+  UserPlus, Copy, Check, ExternalLink, Star, Heart, Edit2
 } from 'lucide-react';
 
 // ═══════════════════════════════════════
@@ -213,7 +215,10 @@ const SettingsHub = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, setUser } = useStore();
-  const avatarUrl = user?.avatarUrl || null;
+  const avatarUrl = user?.avatarUrl || user?.photoURL || null;
+  const bannerUrl = (user as any)?.bannerURL || null;
+  const bio = (user as any)?.bio || '';
+  const isFounder = (user as any)?.role === 'founder' || (user as any)?.isAdmin === true;
   const { isEnabled: radarEnabled, radius, setRadius, toggleRadar } = usePrecisionRadar();
 
   // Settings State
@@ -305,31 +310,125 @@ const SettingsHub = () => {
 
       <div className="px-4 pb-32 space-y-6">
         {/* ═══════════════════════════════════════ */}
-        {/* PROFILE MINI CARD */}
+        {/* SOVEREIGN PROFILE HEADER (Wie auf Profilseite) */}
         {/* ═══════════════════════════════════════ */}
-        <GlassCard
-          onClick={() => navigate('/profile')}
-          gradient="from-purple-500 to-pink-500"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-3xl overflow-hidden"
+          style={{
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+          }}
         >
-          <div className="p-5 flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-purple-500/30 shadow-lg">
-              <img
-                src={avatarUrl}
-                alt="Avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex-1">
-              <h2 className="font-display text-lg font-bold text-gray-900 dark:text-white">
-                {user?.displayName || 'Anonym'}
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                @{user?.username || 'username'}
-              </p>
-            </div>
-            <ChevronRight size={20} className="text-gray-400" />
+          {/* Banner */}
+          <div className="relative h-24 w-full overflow-hidden">
+            {bannerUrl ? (
+              <img src={bannerUrl} alt="Banner" className="w-full h-full object-cover" />
+            ) : (
+              <div
+                className="w-full h-full"
+                style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #16082a 50%, #0d0518 100%)' }}
+              >
+                <motion.div
+                  className="absolute inset-0"
+                  style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(168, 85, 247, 0.15) 0%, transparent 60%)' }}
+                  animate={{ opacity: [0.5, 0.8, 0.5] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+              </div>
+            )}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-12"
+              style={{ background: 'linear-gradient(to top, rgba(5, 5, 5, 0.9), transparent)' }}
+            />
           </div>
-        </GlassCard>
+
+          {/* Avatar & Info */}
+          <div className="relative px-4 pb-4">
+            {/* Avatar - Overlapping Banner */}
+            <div className="relative -mt-10 flex items-end justify-between">
+              <motion.button
+                onClick={() => navigate('/profile')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative"
+              >
+                <motion.div
+                  className="absolute -inset-1 rounded-full"
+                  style={{
+                    background: `linear-gradient(135deg, ${isFounder ? '#fbbf24' : '#a855f7'}, ${isFounder ? '#fde047' : '#c084fc'})`,
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                />
+                <div
+                  className="relative w-16 h-16 rounded-full overflow-hidden"
+                  style={{ border: '3px solid #050505' }}
+                >
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: `linear-gradient(135deg, ${isFounder ? '#fbbf2440' : '#a855f740'}, ${isFounder ? '#fbbf2420' : '#a855f720'})` }}
+                    >
+                      <span className="text-xl font-black text-white/80">
+                        {(user?.displayName || 'A').charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {isFounder && (
+                  <div
+                    className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)', boxShadow: '0 2px 8px rgba(251, 191, 36, 0.4)' }}
+                  >
+                    <Crown size={12} className="text-black" />
+                  </div>
+                )}
+              </motion.button>
+
+              {/* Edit Profile Button */}
+              <motion.button
+                onClick={() => navigate('/profile')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl"
+                style={{
+                  background: `${isFounder ? '#fbbf24' : '#a855f7'}20`,
+                  border: `1px solid ${isFounder ? '#fbbf24' : '#a855f7'}40`,
+                }}
+              >
+                <Edit2 size={14} style={{ color: isFounder ? '#fbbf24' : '#a855f7' }} />
+                <span className="text-xs font-bold" style={{ color: isFounder ? '#fbbf24' : '#a855f7' }}>Profil</span>
+              </motion.button>
+            </div>
+
+            {/* Name & Username */}
+            <div className="mt-3">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-black text-white">
+                  {user?.displayName || 'Anonym'}
+                </h2>
+                {isFounder && (
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[9px] font-bold"
+                    style={{ background: 'rgba(251, 191, 36, 0.2)', color: '#fbbf24' }}
+                  >
+                    FOUNDER
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-white/40">@{user?.username || 'username'}</p>
+            </div>
+
+            {/* Bio Preview */}
+            {bio && (
+              <p className="mt-2 text-sm text-white/60 line-clamp-2">{bio}</p>
+            )}
+          </div>
+        </motion.div>
 
         {/* ═══════════════════════════════════════ */}
         {/* CREATOR & INVITE SECTION */}

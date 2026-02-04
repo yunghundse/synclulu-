@@ -34,17 +34,15 @@ import {
   ImagePlus,
   MapPin,
   Clock,
-  Heart,
   Sparkles,
   Check,
   X,
-  AlertCircle,
-  Eye,
-  EyeOff,
   Activity,
   Radio,
   Lock,
 } from 'lucide-react';
+import { FriendsTrigger } from '../components/SovereignUI/FriendsTrigger';
+import { useFriendsRealtime } from '../hooks/useFriendsRealtime';
 import { doc, getDoc, updateDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
@@ -794,6 +792,9 @@ export default function ProfileSovereign() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // Friends Realtime Hook
+  const { activeCount, totalCount } = useFriendsRealtime({ userId: user?.id });
+
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [activityLocations, setActivityLocations] = useState<ActivityLocation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -1118,6 +1119,16 @@ export default function ProfileSovereign() {
             onClick={() => setShowRatingPanel(true)}
           />
         </div>
+
+        {/* Friends Trigger Button - Prominenter Link zu /friends */}
+        <div className="mt-4">
+          <FriendsTrigger
+            activeCount={activeCount}
+            totalCount={totalCount}
+            onClick={() => navigate('/friends')}
+            accentColor={accentColor}
+          />
+        </div>
       </div>
 
       {/* Stats Row */}
@@ -1203,31 +1214,8 @@ export default function ProfileSovereign() {
         </PanelGroup>
       </div>
 
-      {/* Quick Actions */}
-      <div className="px-5 mt-6 mb-8">
-        <div className="flex gap-3">
-          <motion.button
-            onClick={() => navigate('/invites')}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex-1 p-4 rounded-2xl flex items-center justify-center gap-2"
-            style={{ background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.2)' }}
-          >
-            <Users size={18} className="text-purple-400" />
-            <span className="text-sm font-bold text-purple-400">Einladen</span>
-          </motion.button>
-          <motion.button
-            onClick={() => navigate('/friends')}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex-1 p-4 rounded-2xl flex items-center justify-center gap-2"
-            style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
-          >
-            <Heart size={18} className="text-white/50" />
-            <span className="text-sm font-bold text-white/50">Freunde</span>
-          </motion.button>
-        </div>
-      </div>
+      {/* Clean ending - keine zusätzlichen Buttons mehr */}
+      <div className="h-8" />
 
       {/* Modals */}
       <EmojiPicker

@@ -34,6 +34,7 @@ import Settings from '@/pages/Settings';
 import SettingsHub from '@/pages/SettingsHub';
 import HelpCenter from '@/pages/HelpCenter';
 import StarsApplication from '@/pages/StarsApplication';
+import CreatorApplication from '@/pages/CreatorApplication';
 import StarsDashboard from '@/pages/StarsDashboard';
 import StarsSchedule from '@/pages/StarsSchedule';
 import UserProfile from '@/pages/UserProfile';
@@ -290,7 +291,7 @@ function App() {
                 <Route path="/creator" element={<CreatorDashboard />} />
                 <Route path="/creator/dashboard" element={<CreatorDashboard />} />
                 <Route path="/creator/new-content" element={<NewLockedContent />} />
-                <Route path="/creator-application" element={<StarsApplication />} />
+                <Route path="/creator-application" element={<CreatorApplication />} />
                 <Route path="/impressum" element={<Impressum />} />
                 <Route path="/datenschutz" element={<Datenschutz />} />
                 <Route path="/legal" element={<LegalCenter />} />
