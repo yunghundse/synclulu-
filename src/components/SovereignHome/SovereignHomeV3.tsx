@@ -130,37 +130,67 @@ const QuickStats = memo(function QuickStats({
   activeRooms,
   locationName,
   isLoadingLocation,
+  onRefreshLocation,
+  accuracy,
 }: {
   nearbyCount: number;
   activeRooms: number;
   locationName?: string;
   isLoadingLocation?: boolean;
+  onRefreshLocation?: () => void;
+  accuracy?: number;
 }) {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    if (!onRefreshLocation || isRefreshing) return;
+    setIsRefreshing(true);
+    onRefreshLocation();
+    // Animation für 2 Sekunden
+    setTimeout(() => setIsRefreshing(false), 2000);
+  };
+
   return (
     <div className="absolute top-[140px] left-5 right-5 z-40 space-y-2">
-      {/* Location Display */}
-      <div
-        className="flex items-center gap-2 px-4 py-2.5 rounded-xl"
+      {/* Location Display - Clickable to refresh */}
+      <motion.button
+        onClick={handleRefresh}
+        disabled={isLoadingLocation || isRefreshing}
+        whileTap={{ scale: 0.98 }}
+        className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-left"
         style={{
           background: 'rgba(0, 0, 0, 0.6)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(34, 197, 94, 0.15)',
         }}
       >
-        <MapPin size={14} className="text-emerald-400 flex-shrink-0" />
-        <span className="text-xs text-white/80 truncate">
-          {isLoadingLocation ? (
-            <span className="text-white/40">Standort wird ermittelt...</span>
+        <motion.div
+          animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
+          transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0, ease: "linear" }}
+        >
+          <MapPin size={14} className="text-emerald-400 flex-shrink-0" />
+        </motion.div>
+        <span className="text-xs text-white/80 truncate flex-1">
+          {isLoadingLocation || isRefreshing ? (
+            <span className="text-white/40">📍 Standort wird aktualisiert...</span>
           ) : locationName ? (
             <>
               <span className="text-emerald-400 font-medium">Dein Standort:</span>{' '}
               <span className="text-white">{locationName}</span>
+              {accuracy && (
+                <span className="text-white/30 ml-1">
+                  (±{Math.round(accuracy)}m)
+                </span>
+              )}
             </>
           ) : (
-            <span className="text-white/40">Standort unbekannt</span>
+            <span className="text-white/40">Tippe zum Aktualisieren</span>
           )}
         </span>
-      </div>
+        {!isLoadingLocation && !isRefreshing && (
+          <span className="text-[10px] text-emerald-400/60">↻</span>
+        )}
+      </motion.button>
 
       {/* Stats */}
       <div
@@ -236,11 +266,12 @@ export default function SovereignHomeV3() {
     openSystemSettings,
   } = usePermissionGuard();
 
-  // Location
+  // Location mit Retry-Funktion
   const {
     location: preciseLocation,
     isLoading: locationLoading,
     isDenied: locationDenied,
+    retry: retryLocation,
   } = usePreciseLocation();
 
   const userCoords = preciseLocation
@@ -427,12 +458,14 @@ export default function SovereignHomeV3() {
         onNotificationsClick={() => navigate('/notifications')}
       />
 
-      {/* Quick Stats with Location */}
+      {/* Quick Stats with Location - mit Refresh-Button */}
       <QuickStats
         nearbyCount={nearbyCount}
         activeRooms={mapHotspots.length}
         locationName={locationName}
         isLoadingLocation={locationLoading || isLoadingLocationName}
+        onRefreshLocation={retryLocation}
+        accuracy={preciseLocation?.accuracy}
       />
 
       {/* Full-Screen Map */}

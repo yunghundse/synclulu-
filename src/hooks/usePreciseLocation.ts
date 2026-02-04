@@ -36,6 +36,9 @@ const LOCATION_OPTIONS: PositionOptions = {
   maximumAge: 0,
 };
 
+// Wie oft der Standort automatisch aktualisiert werden soll (in ms)
+const AUTO_REFRESH_INTERVAL = 30000; // Alle 30 Sekunden
+
 // Reverse geocoding using OpenStreetMap Nominatim (free, no API key)
 async function reverseGeocode(
   lat: number,
@@ -241,6 +244,17 @@ export function usePreciseLocation(): UsePreciseLocationResult {
 
     startWatching();
 
+    // Automatische Aktualisierung alle 30 Sekunden für aktuelle Position
+    const refreshInterval = setInterval(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          handleSuccess,
+          (err) => console.log('Auto-refresh location error:', err.message),
+          LOCATION_OPTIONS
+        );
+      }
+    }, AUTO_REFRESH_INTERVAL);
+
     return () => {
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
@@ -248,8 +262,9 @@ export function usePreciseLocation(): UsePreciseLocationResult {
       if (geocodeTimeoutRef.current) {
         clearTimeout(geocodeTimeoutRef.current);
       }
+      clearInterval(refreshInterval);
     };
-  }, [startWatching, hasConsent]);
+  }, [startWatching, hasConsent, handleSuccess]);
 
   return {
     location,
