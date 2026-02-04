@@ -19,6 +19,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import Onboarding from '@/pages/Onboarding';
 import Home from '@/pages/Home';
+import HomeLegacy from '@/pages/HomeLegacy';
 import Discover from '@/pages/Discover';
 import Messages from '@/pages/Messages';
 import Profile from '@/pages/Profile';
@@ -248,7 +249,7 @@ function App() {
             <NotificationToast />
             <XPToast />
             <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomeLegacy />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<ProfileMinimal />} />
