@@ -34,6 +34,29 @@ export function usePermissionGuard(): UsePermissionGuardResult {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  // Track consent status reactively
+  const [hasConsent, setHasConsent] = useState(() => {
+    return typeof window !== 'undefined' &&
+      localStorage.getItem('synclulu_consent_accepted') === 'true';
+  });
+
+  // Listen for consent changes
+  useEffect(() => {
+    const checkConsent = () => {
+      const consent = localStorage.getItem('synclulu_consent_accepted') === 'true';
+      setHasConsent(consent);
+    };
+
+    checkConsent();
+    window.addEventListener('storage', checkConsent);
+    const interval = setInterval(checkConsent, 500);
+
+    return () => {
+      window.removeEventListener('storage', checkConsent);
+      clearInterval(interval);
+    };
+  }, []);
+
   // Check all permissions
   const checkPermissions = useCallback(async (): Promise<boolean> => {
     setIsLoading(true);
@@ -177,24 +200,34 @@ export function usePermissionGuard(): UsePermissionGuardResult {
     }
   }, []);
 
-  // Check permissions on mount
+  // Check permissions only AFTER consent is given
   useEffect(() => {
+    if (!hasConsent) {
+      // No consent yet - don't check permissions (would trigger browser dialogs)
+      setIsLoading(false);
+      return;
+    }
+
+    // Consent given - now we can check permissions
     checkPermissions();
-  }, [checkPermissions]);
+  }, [checkPermissions, hasConsent]);
 
-  // Calculate if blocked
-  const isBlocked = permissions.geolocation === 'denied';
+  // Calculate if blocked - only if consent was given and then denied
+  // Don't block if consent hasn't been given yet
+  const isBlocked = hasConsent && permissions.geolocation === 'denied';
 
-  // Get list of missing permissions
+  // Get list of missing permissions (only after consent)
   const missingPermissions: string[] = [];
-  if (permissions.geolocation !== 'granted') {
-    missingPermissions.push('Standort (GPS)');
-  }
-  if (permissions.microphone !== 'granted') {
-    missingPermissions.push('Mikrofon');
-  }
-  if (permissions.notifications !== 'granted') {
-    missingPermissions.push('Benachrichtigungen');
+  if (hasConsent) {
+    if (permissions.geolocation !== 'granted') {
+      missingPermissions.push('Standort (GPS)');
+    }
+    if (permissions.microphone !== 'granted') {
+      missingPermissions.push('Mikrofon');
+    }
+    if (permissions.notifications !== 'granted') {
+      missingPermissions.push('Benachrichtigungen');
+    }
   }
 
   return {

@@ -111,6 +111,25 @@ function App() {
   });
   const location = useLocation();
 
+  // Listen for consent changes (reactive update when ConsentScreen accepts)
+  useEffect(() => {
+    const checkConsent = () => {
+      const consent = localStorage.getItem('synclulu_consent_accepted') === 'true';
+      setHasAcceptedConsent(consent);
+    };
+
+    // Listen for storage events (cross-tab)
+    window.addEventListener('storage', checkConsent);
+
+    // Poll for same-tab changes
+    const interval = setInterval(checkConsent, 500);
+
+    return () => {
+      window.removeEventListener('storage', checkConsent);
+      clearInterval(interval);
+    };
+  }, []);
+
   // Timeout für Loading - nach 5 Sekunden überspringen
   useEffect(() => {
     const timer = setTimeout(() => {
