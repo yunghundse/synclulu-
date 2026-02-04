@@ -1,0 +1,502 @@
+/**
+ * SOVEREIGN DESIGN SYSTEM v2.0
+ * Midnight Nebula + Glassmorphism 2.0
+ * OLED-optimiert für maximale Tiefe
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   SOVEREIGN COLOR TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Midnight Nebula Base */
+  --sovereign-void: #000000;
+  --sovereign-deep: #050508;
+  --sovereign-dark: #0a0a0f;
+  --sovereign-surface: #111118;
+
+  /* Hyper-Violet Spectrum */
+  --hyper-violet-100: #f3e8ff;
+  --hyper-violet-200: #e9d5ff;
+  --hyper-violet-300: #d8b4fe;
+  --hyper-violet-400: #c084fc;
+  --hyper-violet-500: #a855f7;
+  --hyper-violet-600: #9333ea;
+  --hyper-violet-700: #7c3aed;
+  --hyper-violet-800: #6d28d9;
+  --hyper-violet-glow: rgba(139, 92, 246, 0.6);
+
+  /* Sovereign Gold */
+  --sovereign-gold-100: #fef9c3;
+  --sovereign-gold-200: #fef08a;
+  --sovereign-gold-300: #fde047;
+  --sovereign-gold-400: #facc15;
+  --sovereign-gold-500: #eab308;
+  --sovereign-gold-glow: rgba(234, 179, 8, 0.5);
+
+  /* Aura Colors by Level */
+  --aura-spark: #60a5fa;
+  --aura-flame: #f97316;
+  --aura-nova: #a855f7;
+  --aura-sovereign: linear-gradient(135deg, #fbbf24, #f59e0b, #eab308);
+
+  /* Glassmorphism 2.0 */
+  --glass-blur: 70px;
+  --glass-bg: rgba(10, 10, 15, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --glass-stroke: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* Animation Timing */
+  --sovereign-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --sovereign-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --sovereign-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GPU-ACCELERATED BASE LAYERS
+   ═══════════════════════════════════════════════════════════════ */
+
+.sovereign-gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sovereign-app {
+  background: var(--sovereign-void);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASSMORPHISM 2.0 COMPONENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-stroke);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    transparent 40%,
+    transparent 60%,
+    rgba(255, 255, 255, 0.05)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-card-hover {
+  transition: all 0.4s var(--sovereign-ease);
+}
+
+.glass-card-hover:hover {
+  background: rgba(15, 15, 25, 0.8);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(139, 92, 246, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BIO-RESPONSIVE BREATHING ANIMATION
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes bio-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+}
+
+@keyframes bio-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(139, 92, 246, 0.2),
+      inset 0 0 20px rgba(139, 92, 246, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(139, 92, 246, 0.4),
+      inset 0 0 30px rgba(139, 92, 246, 0.1);
+  }
+}
+
+.bio-responsive {
+  animation: bio-breathe 4s ease-in-out infinite;
+}
+
+.bio-pulse {
+  animation: bio-pulse 3s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AURA SYSTEM - LEVEL-BASED GLOW
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Level 1-10: Spark */
+.aura-spark {
+  --aura-color: var(--aura-spark);
+  --aura-glow: rgba(96, 165, 250, 0.4);
+}
+
+/* Level 11-30: Flame */
+.aura-flame {
+  --aura-color: var(--aura-flame);
+  --aura-glow: rgba(249, 115, 22, 0.5);
+}
+
+/* Level 31-50: Nova */
+.aura-nova {
+  --aura-color: var(--aura-nova);
+  --aura-glow: rgba(168, 85, 247, 0.5);
+}
+
+/* Level 51-100: Sovereign */
+.aura-sovereign {
+  --aura-color: var(--sovereign-gold-400);
+  --aura-glow: rgba(234, 179, 8, 0.6);
+}
+
+/* Aura Orb Base */
+.aura-orb {
+  position: relative;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.2),
+    var(--aura-color) 60%,
+    transparent
+  );
+  box-shadow:
+    0 0 30px var(--aura-glow),
+    0 0 60px var(--aura-glow),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.aura-orb::after {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--aura-glow),
+    transparent 70%
+  );
+  animation: aura-pulse 2s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes aura-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SOVEREIGN GOD-RAY EFFECT (Founder Only)
+   ═══════════════════════════════════════════════════════════════ */
+
+.god-ray {
+  position: relative;
+}
+
+.god-ray::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  width: 200%;
+  height: 300%;
+  transform: translateX(-50%);
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(234, 179, 8, 0.1) 10deg,
+    transparent 20deg,
+    rgba(234, 179, 8, 0.08) 40deg,
+    transparent 50deg,
+    rgba(234, 179, 8, 0.1) 70deg,
+    transparent 80deg,
+    rgba(234, 179, 8, 0.05) 100deg,
+    transparent 110deg
+  );
+  animation: god-ray-rotate 20s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes god-ray-rotate {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT BRIDGE (Sync Connection Effect)
+   ═══════════════════════════════════════════════════════════════ */
+
+.light-bridge {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--hyper-violet-400) 20%,
+    var(--hyper-violet-300) 50%,
+    var(--hyper-violet-400) 80%,
+    transparent
+  );
+  box-shadow:
+    0 0 10px var(--hyper-violet-glow),
+    0 0 20px var(--hyper-violet-glow),
+    0 0 40px var(--hyper-violet-glow);
+  animation: light-bridge-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes light-bridge-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLOATING DOCK NAVIGATION
+   ═══════════════════════════════════════════════════════════════ */
+
+.floating-dock {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 1px rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+}
+
+.dock-item {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: transparent;
+  transition: all 0.3s var(--sovereign-spring);
+  cursor: pointer;
+  position: relative;
+}
+
+.dock-item:hover {
+  background: rgba(139, 92, 246, 0.15);
+  transform: translateY(-8px) scale(1.15);
+}
+
+.dock-item.active {
+  background: linear-gradient(135deg, var(--hyper-violet-600), var(--hyper-violet-700));
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.dock-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hyper-violet-400);
+}
+
+/* Magnetic Hover Effect */
+.dock-magnetic {
+  transition: transform 0.15s var(--sovereign-ease);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ORBITAL PROGRESS RING
+   ═══════════════════════════════════════════════════════════════ */
+
+.orbital-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: conic-gradient(
+    from 0deg,
+    var(--hyper-violet-500) var(--progress, 0%),
+    rgba(255, 255, 255, 0.1) var(--progress, 0%)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PARTICLE SYSTEM BASE
+   ═══════════════════════════════════════════════════════════════ */
+
+.particle-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hyper-violet-400);
+  box-shadow: 0 0 10px var(--hyper-violet-glow);
+  animation: particle-float 3s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DEEP SPACE GRID
+   ═══════════════════════════════════════════════════════════════ */
+
+.deep-space-grid {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 60px 60px, 60px 60px;
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: center 120%;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIBE INDICATORS
+   ═══════════════════════════════════════════════════════════════ */
+
+.vibe-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 20px;
+  font-size: 11px;
+  color: #22c55e;
+}
+
+.vibe-indicator.hot {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  animation: vibe-pulse 1s ease-in-out infinite;
+}
+
+@keyframes vibe-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SOVEREIGN TEXT STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.text-sovereign-gradient {
+  background: linear-gradient(135deg, var(--sovereign-gold-300), var(--sovereign-gold-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-hyper-violet {
+  background: linear-gradient(135deg, var(--hyper-violet-300), var(--hyper-violet-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   120 FPS OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Force GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* Optimize for high refresh rate displays */
+@media (min-resolution: 2dppx) {
+  .glass-card {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}

@@ -34,6 +34,8 @@ import { PermissionOverlay } from '../PermissionOverlay';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { SovereignHeader } from './SovereignHeader';
 import { useNebulaToast } from '../NebulaToast';
+import { AuraOrb } from '../SovereignUI/AuraOrb';
+import { getAscensionTier, getLevelFromXP } from '../../lib/ascensionSystem';
 
 // Types
 interface UserProfile {

@@ -62,6 +62,8 @@ import MaintenanceOverlay from '@/components/MaintenanceOverlay';
 import { NebulaBackground } from '@/components/NebulaBackground';
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 import { ConsentScreen } from '@/components/ConsentScreen/ConsentScreen';
+import { FloatingDock } from '@/components/SovereignUI/FloatingDock';
+import { DeepSpaceGrid } from '@/components/SovereignUI/DeepSpaceGrid';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -239,9 +241,9 @@ function App() {
             <ConsentScreen onAccept={() => setHasAcceptedConsent(true)} />
           )}
 
-          <div className="min-h-screen min-h-[100dvh] bg-[var(--synclulu-bg)] pb-24 theme-transition relative">
-            {/* 🌌 Nebula Animated Background */}
-            <NebulaBackground intensity={0.6} />
+          <div className="min-h-screen min-h-[100dvh] bg-black pb-24 theme-transition relative sovereign-app">
+            {/* 🌌 Deep Space Grid Background - Sovereign Design */}
+            <DeepSpaceGrid intensity="normal" showNebula={true} />
 
             <NotificationToast />
             <XPToast />
@@ -286,7 +288,8 @@ function App() {
             <Route path="/onboarding" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-            <GhostOrbitDock />
+            {/* Sovereign Floating Dock - Neue Navigation */}
+            <FloatingDock />
           </div>
         </NotificationProvider>
       </ThemeProvider>

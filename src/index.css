@@ -1,3 +1,6 @@
+/* Import Sovereign Design System first */
+@import './styles/sovereign-design-system.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
