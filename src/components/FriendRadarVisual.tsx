@@ -1,6 +1,6 @@
 /**
  * FRIEND RADAR VISUAL v1.5
- * "Delulu Vibes Edition"
+ * "synclulu Vibes Edition"
  *
  * DESIGN FEATURES:
  * - Animated radar sweep
@@ -9,7 +9,7 @@
  * - Interactive user selection
  * - Haptic feedback on discoveries
  *
- * @design Apple Maps meets Delulu aesthetic
+ * @design Apple Maps meets synclulu aesthetic
  * @version 1.5.0
  */
 
@@ -72,7 +72,7 @@ const RadarDot: React.FC<RadarDotProps> = ({
 
   // Avatar URL fallback
   const avatarSrc = user.avatarUrl || user.avatar
-    ? `https://storage.googleapis.com/delulu-avatars/${user.avatar || 'default'}.png`
+    ? `https://storage.googleapis.com/synclulu-avatars/${user.avatar || 'default'}.png`
     : `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.id}`;
 
   return (
@@ -203,7 +203,7 @@ const UserInfoCard: React.FC<UserInfoCardProps> = ({ user, onClose, onViewProfil
   if (!user) return null;
 
   const avatarSrc = user.avatarUrl || user.avatar
-    ? `https://storage.googleapis.com/delulu-avatars/${user.avatar || 'default'}.png`
+    ? `https://storage.googleapis.com/synclulu-avatars/${user.avatar || 'default'}.png`
     : `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.id}`;
 
   return (

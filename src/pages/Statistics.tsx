@@ -198,31 +198,31 @@ const Statistics = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 size={32} className="animate-spin text-delulu-violet mx-auto mb-4" />
-          <p className="text-delulu-muted text-sm">Lade Statistiken...</p>
+          <Loader2 size={32} className="animate-spin text-synclulu-violet mx-auto mb-4" />
+          <p className="text-synclulu-muted text-sm">Lade Statistiken...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white safe-top safe-bottom pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white safe-top safe-bottom pb-24">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-gray-100">
         <div className="px-6 py-4 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-delulu-muted hover:bg-gray-200 transition-colors"
+            className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-synclulu-muted hover:bg-gray-200 transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
           <div className="flex-1">
-            <h1 className="font-display text-xl font-bold text-delulu-text">
+            <h1 className="font-display text-xl font-bold text-synclulu-text">
               Meine Statistiken
             </h1>
-            <p className="text-xs text-delulu-muted">Deine Aktivität im Überblick</p>
+            <p className="text-xs text-synclulu-muted">Deine Aktivität im Überblick</p>
           </div>
         </div>
 
@@ -238,8 +238,8 @@ const Statistics = () => {
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                 activeTab === tab.id
-                  ? 'bg-delulu-violet text-white shadow-lg'
-                  : 'bg-gray-100 text-delulu-muted hover:bg-gray-200'
+                  ? 'bg-synclulu-violet text-white shadow-lg'
+                  : 'bg-gray-100 text-synclulu-muted hover:bg-gray-200'
               }`}
             >
               <tab.icon size={16} />
@@ -251,7 +251,7 @@ const Statistics = () => {
 
       {/* Level Card */}
       <div className="px-6 py-4">
-        <div className="relative overflow-hidden bg-gradient-to-br from-delulu-violet to-purple-600 rounded-3xl p-6 text-white shadow-xl">
+        <div className="relative overflow-hidden bg-gradient-to-br from-synclulu-violet to-purple-600 rounded-3xl p-6 text-white shadow-xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
 
@@ -306,19 +306,19 @@ const Statistics = () => {
           {/* Empty state check */}
           {stats.totalTalkTime === 0 && stats.starsReceived === 0 && stats.voiceChatsJoined === 0 && stats.friendsMade === 0 ? (
             <div className="text-center py-12">
-              <div className="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-delulu-soft to-white flex items-center justify-center mb-6 shadow-inner">
-                <BarChart3 size={40} className="text-delulu-muted" />
+              <div className="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-synclulu-soft to-white flex items-center justify-center mb-6 shadow-inner">
+                <BarChart3 size={40} className="text-synclulu-muted" />
               </div>
-              <h3 className="font-display font-bold text-xl text-delulu-text mb-3">
+              <h3 className="font-display font-bold text-xl text-synclulu-text mb-3">
                 {UI_COPY.empty.stats}
               </h3>
-              <p className="text-sm text-delulu-muted mb-8 max-w-xs mx-auto leading-relaxed">
+              <p className="text-sm text-synclulu-muted mb-8 max-w-xs mx-auto leading-relaxed">
                 Hier werden deine Statistiken angezeigt, sobald du anfängst die App zu nutzen.
                 Tritt einem Voice Chat bei oder finde neue Freunde!
               </p>
               <button
                 onClick={() => navigate('/discover')}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-delulu-violet to-purple-600 text-white rounded-2xl font-display font-bold shadow-lg"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-synclulu-violet to-purple-600 text-white rounded-2xl font-display font-bold shadow-lg"
               >
                 <Cloud size={20} />
                 Wölkchen entdecken
@@ -335,20 +335,20 @@ const Statistics = () => {
                     <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-white mb-3`}>
                       {stat.icon}
                     </div>
-                    <p className="text-2xl font-display font-bold text-delulu-text">
+                    <p className="text-2xl font-display font-bold text-synclulu-text">
                       {stat.value}
                     </p>
-                    <p className="text-xs text-delulu-muted mt-1">{stat.label}</p>
+                    <p className="text-xs text-synclulu-muted mt-1">{stat.label}</p>
                     {stat.subtext && (
-                      <p className="text-[10px] text-delulu-muted mt-1">{stat.subtext}</p>
+                      <p className="text-[10px] text-synclulu-muted mt-1">{stat.subtext}</p>
                     )}
                   </div>
                 ))}
               </div>
 
               {/* Info Card */}
-              <div className="bg-gradient-to-r from-delulu-violet/10 to-purple-100 rounded-2xl p-4">
-                <p className="text-sm text-delulu-text">
+              <div className="bg-gradient-to-r from-synclulu-violet/10 to-purple-100 rounded-2xl p-4">
+                <p className="text-sm text-synclulu-text">
                   <span className="font-semibold">Tipp:</span> Je mehr du mit anderen interagierst,
                   desto mehr XP und Sterne verdienst du!
                 </p>
@@ -363,18 +363,18 @@ const Statistics = () => {
         <div className="px-6 space-y-4">
           {/* Weekly Chart */}
           <div className="bg-white rounded-2xl p-5 shadow-sm">
-            <h3 className="font-display font-bold text-delulu-text mb-4 flex items-center gap-2">
-              <BarChart3 size={18} className="text-delulu-violet" />
+            <h3 className="font-display font-bold text-synclulu-text mb-4 flex items-center gap-2">
+              <BarChart3 size={18} className="text-synclulu-violet" />
               Wochenübersicht
             </h3>
 
             {stats.weeklyActivity.every(v => v === 0) ? (
               <div className="text-center py-8">
                 <Calendar size={32} className="mx-auto text-gray-300 mb-3" />
-                <p className="text-sm text-delulu-muted">
+                <p className="text-sm text-synclulu-muted">
                   Noch keine Aktivitätsdaten vorhanden.
                 </p>
-                <p className="text-xs text-delulu-muted mt-1">
+                <p className="text-xs text-synclulu-muted mt-1">
                   Nutze die App regelmäßig, um deine Aktivität zu tracken.
                 </p>
               </div>
@@ -390,12 +390,12 @@ const Statistics = () => {
                         <div className="w-full bg-gray-100 rounded-lg overflow-hidden h-full flex flex-col justify-end">
                           <div
                             className={`w-full rounded-t-lg transition-all duration-500 ${
-                              isToday ? 'bg-delulu-violet' : 'bg-delulu-violet/40'
+                              isToday ? 'bg-synclulu-violet' : 'bg-synclulu-violet/40'
                             }`}
                             style={{ height: `${height}%` }}
                           />
                         </div>
-                        <span className={`text-xs ${isToday ? 'font-bold text-delulu-violet' : 'text-delulu-muted'}`}>
+                        <span className={`text-xs ${isToday ? 'font-bold text-synclulu-violet' : 'text-synclulu-muted'}`}>
                           {day}
                         </span>
                       </div>
@@ -405,14 +405,14 @@ const Statistics = () => {
 
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                   <div>
-                    <p className="text-xs text-delulu-muted">Gesamt diese Woche</p>
-                    <p className="font-bold text-delulu-text">
+                    <p className="text-xs text-synclulu-muted">Gesamt diese Woche</p>
+                    <p className="font-bold text-synclulu-text">
                       {stats.weeklyActivity.reduce((a, b) => a + b, 0)} Minuten
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-delulu-muted">Durchschnitt</p>
-                    <p className="font-bold text-delulu-violet">
+                    <p className="text-xs text-synclulu-muted">Durchschnitt</p>
+                    <p className="font-bold text-synclulu-violet">
                       {(stats.weeklyActivity.reduce((a, b) => a + b, 0) / 7).toFixed(0)}min/Tag
                     </p>
                   </div>
@@ -423,7 +423,7 @@ const Statistics = () => {
 
           {/* Goals */}
           <div className="bg-white rounded-2xl p-5 shadow-sm">
-            <h3 className="font-display font-bold text-delulu-text mb-4 flex items-center gap-2">
+            <h3 className="font-display font-bold text-synclulu-text mb-4 flex items-center gap-2">
               <Target size={18} className="text-green-500" />
               Wochenziele
             </h3>
@@ -436,9 +436,9 @@ const Statistics = () => {
               ].map((goal, index) => (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-delulu-text">{goal.label}</span>
+                    <span className="text-sm text-synclulu-text">{goal.label}</span>
                     <span className={`text-sm font-bold ${
-                      goal.current >= goal.target ? 'text-green-600' : 'text-delulu-muted'
+                      goal.current >= goal.target ? 'text-green-600' : 'text-synclulu-muted'
                     }`}>
                       {goal.current}/{goal.target}
                       {goal.current >= goal.target && ' ✓'}
@@ -486,7 +486,7 @@ const Statistics = () => {
 
           {/* Trust Score */}
           <div className="bg-white rounded-2xl p-5 shadow-sm">
-            <h3 className="font-display font-bold text-delulu-text mb-4 flex items-center gap-2">
+            <h3 className="font-display font-bold text-synclulu-text mb-4 flex items-center gap-2">
               <Zap size={18} className="text-green-500" />
               Trust Score
             </h3>
@@ -519,10 +519,10 @@ const Statistics = () => {
               </div>
 
               <div className="flex-1">
-                <p className="text-sm text-delulu-muted mb-2">
+                <p className="text-sm text-synclulu-muted mb-2">
                   Dein Trust Score basiert auf:
                 </p>
-                <ul className="space-y-1 text-xs text-delulu-text">
+                <ul className="space-y-1 text-xs text-synclulu-text">
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
                     Positive Bewertungen
@@ -543,7 +543,7 @@ const Statistics = () => {
           {/* Friend Network */}
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display font-bold text-delulu-text flex items-center gap-2">
+              <h3 className="font-display font-bold text-synclulu-text flex items-center gap-2">
                 <Users size={18} className="text-blue-500" />
                 Freundesnetzwerk
               </h3>
@@ -551,22 +551,22 @@ const Statistics = () => {
 
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold text-delulu-text">{stats.friendsMade}</p>
-                <p className="text-[10px] text-delulu-muted">Freunde</p>
+                <p className="text-2xl font-bold text-synclulu-text">{stats.friendsMade}</p>
+                <p className="text-[10px] text-synclulu-muted">Freunde</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-blue-500">{stats.followers}</p>
-                <p className="text-[10px] text-delulu-muted">Follower</p>
+                <p className="text-[10px] text-synclulu-muted">Follower</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-purple-500">{stats.following}</p>
-                <p className="text-[10px] text-delulu-muted">Folgst du</p>
+                <p className="text-[10px] text-synclulu-muted">Folgst du</p>
               </div>
             </div>
 
             {stats.friendsMade === 0 && stats.followers === 0 && stats.following === 0 && (
               <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                <p className="text-xs text-delulu-muted">
+                <p className="text-xs text-synclulu-muted">
                   Noch keine Verbindungen. Tritt Voice Chats bei, um Leute kennenzulernen!
                 </p>
               </div>

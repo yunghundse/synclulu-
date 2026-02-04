@@ -1,5 +1,5 @@
 /**
- * DELULU AVATAR UPLOAD v2.0
+ * synclulu AVATAR UPLOAD v2.0
  * "Back to Basics - High Performance"
  *
  * FEATURES:
@@ -302,8 +302,8 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({
       setUser({ ...user, avatarUrl: downloadUrl, avatar: downloadUrl });
 
       // Cache locally
-      localStorage.setItem(`delulu_avatar_${user.id}`, downloadUrl);
-      sessionStorage.setItem('delulu_current_avatar', downloadUrl);
+      localStorage.setItem(`synclulu_avatar_${user.id}`, downloadUrl);
+      sessionStorage.setItem('synclulu_current_avatar', downloadUrl);
 
       setUploadProgress(100);
 
@@ -339,8 +339,8 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({
       });
 
       setUser({ ...user, avatarUrl: null, avatar: null });
-      localStorage.removeItem(`delulu_avatar_${user.id}`);
-      sessionStorage.removeItem('delulu_current_avatar');
+      localStorage.removeItem(`synclulu_avatar_${user.id}`);
+      sessionStorage.removeItem('synclulu_current_avatar');
 
       onUploadComplete?.('');
     } catch (err) {

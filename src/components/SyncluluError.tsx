@@ -1,7 +1,7 @@
 /**
- * Delulu Error Component - Elegant Error Messages
+ * synclulu Error Component - Elegant Error Messages
  *
- * Beautiful error displays in Delulu style
+ * Beautiful error displays in synclulu style
  * Neon-Red/Purple Glow - No standard HTML look
  */
 
@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 type ErrorSeverity = 'error' | 'warning' | 'info';
 
-interface DeluluErrorProps {
+interface SyncluluErrorProps {
   message: string;
   severity?: ErrorSeverity;
   icon?: string;
@@ -54,14 +54,14 @@ const severityConfig = {
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function DeluluError({
+export function SyncluluError({
   message,
   severity = 'error',
   icon,
   onDismiss,
   dismissible = true,
   className = ''
-}: DeluluErrorProps) {
+}: SyncluluErrorProps) {
   const config = severityConfig[severity];
 
   return (
@@ -140,7 +140,7 @@ interface ErrorToastProps {
   severity?: ErrorSeverity;
 }
 
-export function DeluluErrorToast({
+export function SyncluluErrorToast({
   message,
   isVisible,
   onClose,
@@ -161,7 +161,7 @@ export function DeluluErrorToast({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
         >
-          <DeluluError
+          <SyncluluError
             message={message}
             severity={severity}
             onDismiss={onClose}
@@ -181,7 +181,7 @@ interface InlineErrorProps {
   className?: string;
 }
 
-export function DeluluInlineError({ message, className = '' }: InlineErrorProps) {
+export function SyncluluInlineError({ message, className = '' }: InlineErrorProps) {
   if (!message) return null;
 
   return (
@@ -209,7 +209,7 @@ interface FullScreenErrorProps {
   onBack?: () => void;
 }
 
-export function DeluluFullScreenError({
+export function SyncluluFullScreenError({
   title = 'Oops!',
   message,
   icon = '😵',
@@ -331,4 +331,4 @@ export function LoadingCloud({ message = 'Lädt...' }: { message?: string }) {
 // EXPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-export default DeluluError;
+export default SyncluluError;

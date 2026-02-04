@@ -1,5 +1,5 @@
 /**
- * DELULU VOICE CLOUD v2.0
+ * synclulu VOICE CLOUD v2.0
  * "The Magical Cloud Experience"
  *
  * FEATURES:
@@ -617,7 +617,7 @@ const VoiceCloud: React.FC<VoiceCloudProps> = ({ cloudId, onClose }) => {
             Wölkchen entdecken
           </h1>
           <p className="text-gray-400 max-w-md">
-            Tritt einer aktiven Wolke bei und verbinde dich mit anderen Delulu-Usern.
+            Tritt einer aktiven Wolke bei und verbinde dich mit anderen synclulu-Usern.
           </p>
         </div>
 

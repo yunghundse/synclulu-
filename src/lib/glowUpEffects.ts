@@ -1,5 +1,5 @@
 /**
- * DELULU GLOW-UP EFFECTS SYSTEM
+ * synclulu GLOW-UP EFFECTS SYSTEM
  * Visual effects based on level progression (1-500)
  */
 
@@ -202,8 +202,8 @@ export const GLOW_UP_TIERS: GlowUpTier[] = [
   {
     minLevel: 500,
     maxLevel: 500,
-    name: 'Delulu God',
-    nameDE: 'Delulu Gott',
+    name: 'synclulu God',
+    nameDE: 'synclulu Gott',
     emoji: '👑',
     frameStyle: 'border-[10px] border-transparent bg-gradient-conic from-red-500 via-yellow-500 via-green-500 via-blue-500 via-purple-500 to-red-500 p-[5px] animate-spin-slow',
     glowColor: '#FFFFFF',

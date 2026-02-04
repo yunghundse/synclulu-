@@ -1,0 +1,483 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SYNCLULU SOVEREIGN DESIGN SYSTEM v27.0
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Apple × Snapchat × Meta × Google Fusion
+ * Chief Visionary Officer Design Language
+ *
+ * @version 27.0.0
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SYNCLULU THEME VARIABLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─────────────────────────────────────────────────────────────────────────
+     OLED-OPTIMIZED DARK MODE (Primary)
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-bg: #050505;
+  --synclulu-void: #000000;
+  --synclulu-surface-1: #0a0a0a;
+  --synclulu-surface-2: #121212;
+  --synclulu-surface-3: #1a1a1a;
+  --synclulu-surface-elevated: #242424;
+
+  /* Text Hierarchy */
+  --synclulu-text-primary: #f5f5f7;
+  --synclulu-text-secondary: rgba(255, 255, 255, 0.7);
+  --synclulu-text-tertiary: rgba(255, 255, 255, 0.4);
+  --synclulu-text-muted: rgba(255, 255, 255, 0.25);
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     CRYSTALLINE ACCENT PALETTE
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-violet: #8B5CF6;
+  --synclulu-violet-light: #A78BFA;
+  --synclulu-violet-dark: #7C3AED;
+  --synclulu-purple: #A855F7;
+  --synclulu-fuchsia: #D946EF;
+  --synclulu-pink: #EC4899;
+  --synclulu-cyan: #22D3EE;
+  --synclulu-teal: #14B8A6;
+
+  /* Iridescent Gradient (Kristall-Effekt) */
+  --synclulu-iridescent: linear-gradient(
+    135deg,
+    #ff6b6b 0%,
+    #feca57 15%,
+    #48dbfb 30%,
+    #8B5CF6 50%,
+    #ff9ff3 70%,
+    #54a0ff 85%,
+    #5f27cd 100%
+  );
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     GLOW EFFECTS
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-glow-violet: 0 0 20px rgba(139, 92, 246, 0.4);
+  --synclulu-glow-purple: 0 0 20px rgba(168, 85, 247, 0.4);
+  --synclulu-glow-fuchsia: 0 0 20px rgba(217, 70, 239, 0.4);
+  --synclulu-glow-cyan: 0 0 20px rgba(34, 211, 238, 0.4);
+
+  /* Intense Glows (for active states) */
+  --synclulu-glow-violet-intense: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 80px rgba(139, 92, 246, 0.3);
+  --synclulu-glow-crystal:
+    0 0 30px rgba(139, 92, 246, 0.5),
+    0 0 60px rgba(168, 85, 247, 0.3),
+    0 0 100px rgba(217, 70, 239, 0.2);
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     GLASS MORPHISM
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-glass: rgba(255, 255, 255, 0.03);
+  --synclulu-glass-border: rgba(255, 255, 255, 0.05);
+  --synclulu-glass-strong: rgba(255, 255, 255, 0.08);
+  --synclulu-glass-active: rgba(139, 92, 246, 0.15);
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     SEMANTIC COLORS
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-success: #10B981;
+  --synclulu-warning: #F59E0B;
+  --synclulu-error: #EF4444;
+  --synclulu-info: #3B82F6;
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     TIMING & EASING
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --synclulu-ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --synclulu-ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  --synclulu-duration-fast: 150ms;
+  --synclulu-duration-normal: 250ms;
+  --synclulu-duration-slow: 400ms;
+  --synclulu-duration-glacial: 800ms;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOVEREIGN ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Nebula Gradient Flow */
+@keyframes nebula-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-nebula-gradient {
+  animation: nebula-gradient 15s ease infinite;
+}
+
+/* Crystal Shimmer */
+@keyframes crystal-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-crystal-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: crystal-shimmer 3s linear infinite;
+}
+
+/* Iridescent Flow */
+@keyframes iridescent-flow {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.animate-iridescent {
+  animation: iridescent-flow 10s linear infinite;
+}
+
+/* Orbital Pulse */
+@keyframes orbital-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-orbital-pulse {
+  animation: orbital-pulse 2s ease-out infinite;
+}
+
+/* Particle Float */
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-5px) translateX(-3px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-15px) translateX(8px);
+    opacity: 0.5;
+  }
+}
+
+.animate-particle-float {
+  animation: particle-float 8s ease-in-out infinite;
+}
+
+/* Scroll Particles v20 */
+@keyframes scroll-particles-v20 {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 -500px;
+  }
+}
+
+.animate-scroll-particles-v20 {
+  animation: scroll-particles-v20 30s linear infinite;
+}
+
+/* Breathing Glow */
+@keyframes breathing-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.animate-breathing-glow {
+  animation: breathing-glow 3s ease-in-out infinite;
+}
+
+/* Level Up Flash */
+@keyframes level-up-flash {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.animate-level-up {
+  animation: level-up-flash 1.5s ease-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOVEREIGN COMPONENT CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Crystalline Glass Card */
+.sovereign-glass {
+  background: var(--synclulu-glass);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--synclulu-glass-border);
+  border-radius: 24px;
+}
+
+.sovereign-glass:hover {
+  background: var(--synclulu-glass-strong);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+/* Sovereign Button */
+.sovereign-btn {
+  background: linear-gradient(135deg, var(--synclulu-violet) 0%, var(--synclulu-purple) 100%);
+  border-radius: 16px;
+  padding: 14px 28px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--synclulu-duration-fast) var(--synclulu-ease-out-expo),
+              box-shadow var(--synclulu-duration-normal) ease;
+  box-shadow: var(--synclulu-glow-violet);
+}
+
+.sovereign-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+  background-size: 200% 200%;
+  animation: crystal-shimmer 3s linear infinite;
+}
+
+.sovereign-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--synclulu-glow-violet-intense);
+}
+
+.sovereign-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Aura Progress Bar */
+.aura-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.aura-progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--synclulu-violet) 0%,
+    var(--synclulu-purple) 30%,
+    var(--synclulu-fuchsia) 60%,
+    var(--synclulu-pink) 100%
+  );
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+  transition: width 0.5s var(--synclulu-ease-out-expo);
+}
+
+/* Crystal Badge */
+.crystal-badge {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--synclulu-violet-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.crystal-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: crystal-shimmer 4s linear infinite;
+}
+
+/* Ghost Dock Navigation */
+.ghost-dock {
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Dock Item */
+.dock-item {
+  transition: transform var(--synclulu-duration-fast) var(--synclulu-ease-spring);
+}
+
+.dock-item:hover {
+  transform: scale(1.15) translateY(-4px);
+}
+
+.dock-item:active {
+  transform: scale(0.95);
+}
+
+/* Crystal Central Button */
+.crystal-btn-core {
+  background: linear-gradient(135deg, var(--synclulu-violet) 0%, var(--synclulu-purple) 50%, var(--synclulu-fuchsia) 100%);
+  box-shadow:
+    0 8px 32px rgba(139, 92, 246, 0.5),
+    0 0 60px rgba(139, 92, 246, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Map Hotspot Markers */
+.hotspot-marker {
+  background: radial-gradient(circle, var(--synclulu-violet) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: orbital-pulse 2s ease-out infinite;
+}
+
+.hotspot-marker.hot {
+  background: radial-gradient(circle, var(--synclulu-fuchsia) 0%, transparent 70%);
+}
+
+.hotspot-marker.active {
+  background: radial-gradient(circle, var(--synclulu-cyan) 0%, transparent 70%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOVEREIGN TEXT STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.text-sovereign-primary {
+  color: var(--synclulu-text-primary);
+}
+
+.text-sovereign-secondary {
+  color: var(--synclulu-text-secondary);
+}
+
+.text-sovereign-muted {
+  color: var(--synclulu-text-muted);
+}
+
+.text-sovereign-accent {
+  color: var(--synclulu-violet-light);
+}
+
+/* Gradient Text */
+.text-sovereign-gradient {
+  background: linear-gradient(135deg, var(--synclulu-violet-light) 0%, var(--synclulu-fuchsia) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Iridescent Text */
+.text-sovereign-iridescent {
+  background: var(--synclulu-iridescent);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: nebula-gradient 8s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* GPU Acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Prevent text selection on interactive elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Smooth scroll container */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area padding */
+.safe-area-top {
+  padding-top: max(env(safe-area-inset-top), 20px);
+}
+
+.safe-area-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 20px);
+}
+
+/* Touch manipulation */
+.touch-action-pan {
+  touch-action: pan-x pan-y;
+}
+
+.touch-action-none {
+  touch-action: none;
+}
+
+/* Haptic feedback cursor */
+.haptic-touch {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.haptic-touch:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}

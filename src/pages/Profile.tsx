@@ -148,10 +148,10 @@ const Profile = () => {
   const formatRadius = (r: number) => (r >= 1000 ? `${r / 1000}km` : `${r}m`);
 
   return (
-    <div className="px-4 py-6 pb-24 safe-top min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white">
+    <div className="px-4 py-6 pb-24 safe-top min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-2xl font-bold text-delulu-text">
+        <h1 className="font-display text-2xl font-bold text-synclulu-text">
           {t('profile.title')}
         </h1>
         <LanguageSelector compact />
@@ -187,7 +187,7 @@ const Profile = () => {
                 style={{ width: `${Math.min(100, Math.max(0, xpProgress))}%` }}
               />
             </div>
-            <p className="text-xs text-delulu-muted mt-1 text-center">
+            <p className="text-xs text-synclulu-muted mt-1 text-center">
               {xp} / {xpForNextLevel} XP
             </p>
           </div>
@@ -199,7 +199,7 @@ const Profile = () => {
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full text-center font-display text-xl font-bold bg-delulu-soft rounded-xl px-4 py-2"
+                className="w-full text-center font-display text-xl font-bold bg-synclulu-soft rounded-xl px-4 py-2"
                 placeholder={t('profile.editProfile')}
               />
               <textarea
@@ -208,12 +208,12 @@ const Profile = () => {
                 placeholder={t('profile.bioPlaceholder')}
                 maxLength={150}
                 rows={2}
-                className="w-full bg-delulu-soft rounded-xl px-4 py-3 text-sm resize-none text-center"
+                className="w-full bg-synclulu-soft rounded-xl px-4 py-3 text-sm resize-none text-center"
               />
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="flex-1 py-2 rounded-xl border-2 border-delulu-soft font-semibold text-delulu-muted text-sm"
+                  className="flex-1 py-2 rounded-xl border-2 border-synclulu-soft font-semibold text-synclulu-muted text-sm"
                 >
                   {t('common.cancel')}
                 </button>
@@ -227,19 +227,19 @@ const Profile = () => {
             </div>
           ) : (
             <>
-              <h2 className="font-display text-xl font-bold text-delulu-text">
+              <h2 className="font-display text-xl font-bold text-synclulu-text">
                 {user?.displayName || 'Anonymous'}
               </h2>
 
               {/* Username with edit button */}
               <button
                 onClick={() => setShowUsernameEditor(true)}
-                className="flex items-center gap-2 text-sm text-delulu-muted mb-2 hover:text-delulu-violet transition-colors"
+                className="flex items-center gap-2 text-sm text-synclulu-muted mb-2 hover:text-synclulu-violet transition-colors"
               >
                 <AtSign size={14} />
                 <span>{user?.username}</span>
                 {usernameStatus?.canChange ? (
-                  <Edit3 size={12} className="text-delulu-violet" />
+                  <Edit3 size={12} className="text-synclulu-violet" />
                 ) : (
                   <span className="text-[10px] text-amber-500 flex items-center gap-1">
                     <Clock size={10} />
@@ -250,7 +250,7 @@ const Profile = () => {
 
               {/* Birthday - if set */}
               {user?.birthDay && user?.birthMonth && (
-                <div className="flex items-center gap-2 text-sm text-delulu-muted mb-2">
+                <div className="flex items-center gap-2 text-sm text-synclulu-muted mb-2">
                   <Cake size={14} />
                   <span>{user.birthDay}. {getMonthName(user.birthMonth)}</span>
                   {user?.city && (
@@ -263,12 +263,12 @@ const Profile = () => {
                 </div>
               )}
 
-              <p className="text-sm text-delulu-text/70 italic text-center px-4">
+              <p className="text-sm text-synclulu-text/70 italic text-center px-4">
                 {user?.bio || t('profile.noBio')}
               </p>
               <button
                 onClick={() => setIsEditing(true)}
-                className="mt-3 flex items-center gap-2 text-sm text-delulu-violet font-medium"
+                className="mt-3 flex items-center gap-2 text-sm text-synclulu-violet font-medium"
               >
                 <Edit3 size={14} />
                 {t('profile.editProfile')}
@@ -282,7 +282,7 @@ const Profile = () => {
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="glass-card rounded-2xl p-3 text-center">
           <p className="text-xl font-bold gradient-text">{friendCount}</p>
-          <p className="text-[10px] text-delulu-muted uppercase tracking-wide">
+          <p className="text-[10px] text-synclulu-muted uppercase tracking-wide">
             {t('profile.stats.friends')}
           </p>
         </div>
@@ -291,13 +291,13 @@ const Profile = () => {
             <span className="text-yellow-500 text-sm">⭐</span>
             <p className="text-xl font-bold gradient-text">{trustScore.toFixed(1)}</p>
           </div>
-          <p className="text-[10px] text-delulu-muted uppercase tracking-wide">
+          <p className="text-[10px] text-synclulu-muted uppercase tracking-wide">
             {t('profile.stats.trust')}
           </p>
         </div>
         <div className="glass-card rounded-2xl p-3 text-center">
           <p className="text-xl font-bold gradient-text">{totalVoiceMinutes}</p>
-          <p className="text-[10px] text-delulu-muted uppercase tracking-wide">
+          <p className="text-[10px] text-synclulu-muted uppercase tracking-wide">
             {t('profile.stats.voiceMin')}
           </p>
         </div>
@@ -360,7 +360,7 @@ const Profile = () => {
             <div className="flex items-center gap-3">
               <NebulaBadge tier={starProfile.nebulaTier} size="lg" animated />
               <div>
-                <h3 className="font-bold text-delulu-text">Creator Hub</h3>
+                <h3 className="font-bold text-synclulu-text">Creator Hub</h3>
                 <StarCategoryBadge category={starProfile.category} size="sm" />
               </div>
             </div>
@@ -415,9 +415,9 @@ const Profile = () => {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Star size={18} className="text-amber-500" />
-            <span className="font-semibold text-delulu-text text-sm">Deine Sterne heute</span>
+            <span className="font-semibold text-synclulu-text text-sm">Deine Sterne heute</span>
           </div>
-          <span className="text-xs text-delulu-muted">
+          <span className="text-xs text-synclulu-muted">
             {starsRemaining} / {maxStarsPerDay} übrig
           </span>
         </div>
@@ -431,7 +431,7 @@ const Profile = () => {
         </div>
 
         <div className="flex items-center justify-between text-xs">
-          <span className="text-delulu-muted">
+          <span className="text-synclulu-muted">
             {starsGivenToday} Sterne heute vergeben
           </span>
           {!isPremium && (
@@ -452,10 +452,10 @@ const Profile = () => {
           <div className="flex items-center gap-3">
             <span className="text-2xl animate-pulse">🔥</span>
             <div className="flex-1">
-              <p className="font-semibold text-delulu-text">
+              <p className="font-semibold text-synclulu-text">
                 {currentStreak} {t('streak.days')} {t('streak.title')}!
               </p>
-              <p className="text-xs text-delulu-muted">
+              <p className="text-xs text-synclulu-muted">
                 {streakMultiplier}x {t('streak.xpBoost')}
               </p>
             </div>
@@ -465,7 +465,7 @@ const Profile = () => {
 
       {/* Visibility Selector */}
       <div className="glass-card rounded-2xl p-4 mb-4">
-        <p className="text-xs font-semibold text-delulu-muted uppercase tracking-wide mb-3">
+        <p className="text-xs font-semibold text-synclulu-muted uppercase tracking-wide mb-3">
           {t('visibility.title')}
         </p>
         <div className="space-y-2">
@@ -475,14 +475,14 @@ const Profile = () => {
               onClick={() => handleVisibilityChange(mode)}
               className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
                 visibilityMode === mode
-                  ? 'bg-delulu-violet/10 border-2 border-delulu-violet'
-                  : 'bg-delulu-soft/50 border-2 border-transparent'
+                  ? 'bg-synclulu-violet/10 border-2 border-synclulu-violet'
+                  : 'bg-synclulu-soft/50 border-2 border-transparent'
               }`}
             >
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center ${
                   visibilityMode === mode
-                    ? 'bg-delulu-violet'
+                    ? 'bg-synclulu-violet'
                     : 'border-2 border-gray-300'
                 }`}
               >
@@ -491,10 +491,10 @@ const Profile = () => {
                 )}
               </div>
               <div className="flex-1 text-left">
-                <p className="font-medium text-delulu-text text-sm">
+                <p className="font-medium text-synclulu-text text-sm">
                   {t(`visibility.${mode}.title`)}
                 </p>
-                <p className="text-xs text-delulu-muted">
+                <p className="text-xs text-synclulu-muted">
                   {t(`visibility.${mode}.description`)}
                 </p>
               </div>
@@ -509,16 +509,16 @@ const Profile = () => {
           onClick={handleFriendRadarToggle}
           className="w-full flex items-center gap-4"
         >
-          <div className="w-12 h-12 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
-            <MapPin size={20} className="text-delulu-violet" />
+          <div className="w-12 h-12 rounded-xl bg-synclulu-violet/10 flex items-center justify-center">
+            <MapPin size={20} className="text-synclulu-violet" />
           </div>
           <div className="flex-1 text-left">
-            <p className="font-semibold text-delulu-text">{t('friendRadar.title')}</p>
-            <p className="text-xs text-delulu-muted">{t('friendRadar.description')}</p>
+            <p className="font-semibold text-synclulu-text">{t('friendRadar.title')}</p>
+            <p className="text-xs text-synclulu-muted">{t('friendRadar.description')}</p>
           </div>
           <div
             className={`w-14 h-8 rounded-full p-1 transition-colors ${
-              friendRadarEnabled ? 'bg-delulu-violet' : 'bg-gray-300'
+              friendRadarEnabled ? 'bg-synclulu-violet' : 'bg-gray-300'
             }`}
           >
             <div
@@ -534,12 +534,12 @@ const Profile = () => {
       <div className="glass-card rounded-2xl p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-synclulu-violet/10 flex items-center justify-center">
               <span className="text-xl">🎯</span>
             </div>
             <div>
-              <p className="font-semibold text-delulu-text">{t('radius.title')}</p>
-              <p className="text-xs text-delulu-muted">{t('radius.description')}</p>
+              <p className="font-semibold text-synclulu-text">{t('radius.title')}</p>
+              <p className="text-xs text-synclulu-muted">{t('radius.description')}</p>
             </div>
           </div>
           <span className="text-xl font-bold gradient-text">
@@ -554,9 +554,9 @@ const Profile = () => {
             step="100"
             value={searchRadius}
             onChange={(e) => handleRadiusChange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-delulu-violet"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-synclulu-violet"
           />
-          <div className="flex justify-between text-xs text-delulu-muted mt-1">
+          <div className="flex justify-between text-xs text-synclulu-muted mt-1">
             <span>100m</span>
             <span>5km</span>
           </div>
@@ -571,11 +571,11 @@ const Profile = () => {
               <Star size={24} className="text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-delulu-text">Creator werden</h3>
-              <p className="text-xs text-delulu-muted">Teile deine Stimme mit der Community</p>
+              <h3 className="font-bold text-lg text-synclulu-text">Creator werden</h3>
+              <p className="text-xs text-synclulu-muted">Teile deine Stimme mit der Community</p>
             </div>
           </div>
-          <p className="text-sm text-delulu-text/80 mb-4">
+          <p className="text-sm text-synclulu-text/80 mb-4">
             Werde ein verifizierter Star und hoste eigene Live-Events, verdiene Sterne und baue deine Community auf.
           </p>
           <button
@@ -600,7 +600,7 @@ const Profile = () => {
             <Sparkles size={20} className="text-violet-500" />
             <h3 className="font-bold text-lg gradient-text">{t('premium.title')}</h3>
           </div>
-          <p className="text-sm text-delulu-text/80 mb-4">{t('premium.upsell')}</p>
+          <p className="text-sm text-synclulu-text/80 mb-4">{t('premium.upsell')}</p>
           <button
             disabled
             className="w-full py-3 rounded-xl bg-gray-300 text-gray-500 font-semibold cursor-not-allowed"
@@ -624,22 +624,22 @@ const Profile = () => {
           className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100"
         >
           <div className="flex items-center gap-3">
-            <Globe size={18} className="text-delulu-muted" />
-            <span className="font-medium text-delulu-text">{t('settings.language')}</span>
+            <Globe size={18} className="text-synclulu-muted" />
+            <span className="font-medium text-synclulu-text">{t('settings.language')}</span>
           </div>
-          <ChevronRight size={18} className="text-delulu-muted" />
+          <ChevronRight size={18} className="text-synclulu-muted" />
         </button>
         <button
           onClick={() => navigate('/blocked-users')}
           className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100"
         >
           <div className="flex items-center gap-3">
-            <Shield size={18} className="text-delulu-muted" />
-            <span className="font-medium text-delulu-text">{t('settings.blockedUsers')}</span>
+            <Shield size={18} className="text-synclulu-muted" />
+            <span className="font-medium text-synclulu-text">{t('settings.blockedUsers')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-delulu-muted">{blockedUsers.length}</span>
-            <ChevronRight size={18} className="text-delulu-muted" />
+            <span className="text-sm text-synclulu-muted">{blockedUsers.length}</span>
+            <ChevronRight size={18} className="text-synclulu-muted" />
           </div>
         </button>
         <button
@@ -647,30 +647,30 @@ const Profile = () => {
           className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100"
         >
           <div className="flex items-center gap-3">
-            <BarChart3 size={18} className="text-delulu-muted" />
-            <span className="font-medium text-delulu-text">{t('settings.myStats')}</span>
+            <BarChart3 size={18} className="text-synclulu-muted" />
+            <span className="font-medium text-synclulu-text">{t('settings.myStats')}</span>
           </div>
-          <ChevronRight size={18} className="text-delulu-muted" />
+          <ChevronRight size={18} className="text-synclulu-muted" />
         </button>
         <button
           onClick={() => navigate('/notifications')}
           className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100"
         >
           <div className="flex items-center gap-3">
-            <Bell size={18} className="text-delulu-muted" />
-            <span className="font-medium text-delulu-text">{t('settings.notifications')}</span>
+            <Bell size={18} className="text-synclulu-muted" />
+            <span className="font-medium text-synclulu-text">{t('settings.notifications')}</span>
           </div>
-          <ChevronRight size={18} className="text-delulu-muted" />
+          <ChevronRight size={18} className="text-synclulu-muted" />
         </button>
         <button
           onClick={() => navigate('/help')}
           className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <HelpCircle size={18} className="text-delulu-muted" />
-            <span className="font-medium text-delulu-text">{t('settings.help')}</span>
+            <HelpCircle size={18} className="text-synclulu-muted" />
+            <span className="font-medium text-synclulu-text">{t('settings.help')}</span>
           </div>
-          <ChevronRight size={18} className="text-delulu-muted" />
+          <ChevronRight size={18} className="text-synclulu-muted" />
         </button>
       </div>
 
@@ -685,8 +685,8 @@ const Profile = () => {
       </button>
 
       {/* Version */}
-      <p className="text-center text-xs text-delulu-muted mt-6">
-        delulu v2.0 • butterbread ☁️
+      <p className="text-center text-xs text-synclulu-muted mt-6">
+        synclulu v2.0 • butterbread ☁️
       </p>
 
       {/* Language Modal */}
@@ -694,14 +694,14 @@ const Profile = () => {
         <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-md p-6 animate-slide-up">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-xl font-bold text-delulu-text">
+              <h2 className="font-display text-xl font-bold text-synclulu-text">
                 {t('settings.language')}
               </h2>
               <button
                 onClick={() => setShowLanguageModal(false)}
-                className="w-10 h-10 rounded-xl bg-delulu-soft flex items-center justify-center"
+                className="w-10 h-10 rounded-xl bg-synclulu-soft flex items-center justify-center"
               >
-                <X size={20} className="text-delulu-muted" />
+                <X size={20} className="text-synclulu-muted" />
               </button>
             </div>
             <LanguageSelector />

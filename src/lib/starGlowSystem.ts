@@ -1,5 +1,5 @@
 /**
- * DELULU STAR-GLOW SYSTEM v2.0
+ * synclulu STAR-GLOW SYSTEM v2.0
  * "Emotional Engineering at its Finest"
  *
  * EFFECTS:

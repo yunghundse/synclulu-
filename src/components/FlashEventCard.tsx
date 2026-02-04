@@ -94,7 +94,7 @@ const FlashEventCard = ({ event, onJoin }: FlashEventCardProps) => {
           {/* Event info */}
           <div className="flex-1 text-left">
             <div className="flex items-center gap-2">
-              <span className="font-display font-bold text-delulu-text">
+              <span className="font-display font-bold text-synclulu-text">
                 {event.name}
               </span>
               {urgency === 'high' && (
@@ -104,15 +104,15 @@ const FlashEventCard = ({ event, onJoin }: FlashEventCardProps) => {
               )}
             </div>
             <div className="flex items-center gap-3 mt-1">
-              <span className="flex items-center gap-1 text-xs text-delulu-muted">
+              <span className="flex items-center gap-1 text-xs text-synclulu-muted">
                 <Clock size={10} />
                 {timeLeft}
               </span>
-              <span className="flex items-center gap-1 text-xs text-delulu-muted">
+              <span className="flex items-center gap-1 text-xs text-synclulu-muted">
                 <MapPin size={10} />
                 {formatDistance(event.distance)}
               </span>
-              <span className="flex items-center gap-1 text-xs text-delulu-muted">
+              <span className="flex items-center gap-1 text-xs text-synclulu-muted">
                 <Users size={10} />
                 {event.activeUsers}
               </span>

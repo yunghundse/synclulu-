@@ -1,5 +1,5 @@
 /**
- * DELULU SANCTUARY MODAL v3.5
+ * synclulu SANCTUARY MODAL v3.5
  * "Deine Wolke. Dein Schutzraum. ✨"
  *
  * DESIGN PHILOSOPHY:
@@ -97,7 +97,7 @@ const SanctuaryToggle: React.FC<{
         relative w-14 h-8 rounded-full transition-all duration-300 ease-out
         ${checked
           ? 'bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-violet-500/50'
-          : 'bg-[var(--delulu-surface)] border border-[var(--delulu-border)]'
+          : 'bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)]'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         focus:outline-none focus:ring-2 focus:ring-violet-500/50
@@ -131,7 +131,7 @@ const SanctuaryToggle: React.FC<{
           absolute top-1 w-6 h-6 rounded-full shadow-md
           ${checked
             ? 'bg-white'
-            : 'bg-[var(--delulu-muted)]'
+            : 'bg-[var(--synclulu-muted)]'
           }
         `}
         animate={{
@@ -171,7 +171,7 @@ const ConsentCard: React.FC<{
         p-4 rounded-2xl border transition-all duration-300
         ${checked
           ? 'bg-violet-500/10 border-violet-500/30'
-          : 'bg-[var(--delulu-card)] border-[var(--delulu-border)]'
+          : 'bg-[var(--synclulu-card)] border-[var(--synclulu-border)]'
         }
       `}
     >
@@ -179,7 +179,7 @@ const ConsentCard: React.FC<{
         {/* Icon */}
         <div className={`
           w-10 h-10 rounded-xl flex items-center justify-center
-          ${checked ? 'bg-violet-500/20' : 'bg-[var(--delulu-surface)]'}
+          ${checked ? 'bg-violet-500/20' : 'bg-[var(--synclulu-surface)]'}
           transition-colors duration-300
         `}>
           {item.icon}
@@ -188,7 +188,7 @@ const ConsentCard: React.FC<{
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-semibold text-[var(--delulu-text)]">
+            <h4 className="font-semibold text-[var(--synclulu-text)]">
               {item.title}
             </h4>
             {item.required && (
@@ -197,7 +197,7 @@ const ConsentCard: React.FC<{
               </span>
             )}
           </div>
-          <p className="text-sm text-[var(--delulu-muted)] leading-relaxed">
+          <p className="text-sm text-[var(--synclulu-muted)] leading-relaxed">
             {item.description}
           </p>
         </div>
@@ -325,7 +325,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-3xl bg-[var(--delulu-bg)] shadow-2xl theme-transition"
+          className="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-3xl bg-[var(--synclulu-bg)] shadow-2xl theme-transition"
         >
           {/* ═══════════════════════════════════════ */}
           {/* INTRO STEP */}
@@ -335,7 +335,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
               {/* Close button */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[var(--delulu-surface)] flex items-center justify-center text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] transition-colors"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[var(--synclulu-surface)] flex items-center justify-center text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)] transition-colors"
               >
                 <X size={20} />
               </button>
@@ -364,11 +364,11 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
               </motion.div>
 
               {/* Title */}
-              <h2 className="font-display text-2xl font-bold text-[var(--delulu-text)] mb-2">
+              <h2 className="font-display text-2xl font-bold text-[var(--synclulu-text)] mb-2">
                 Deine Wolke. Dein Schutzraum. ✨
               </h2>
-              <p className="text-[var(--delulu-muted)] mb-8 max-w-sm mx-auto">
-                Delulu ist ein sicherer Ort für echte Verbindungen.
+              <p className="text-[var(--synclulu-muted)] mb-8 max-w-sm mx-auto">
+                synclulu ist ein sicherer Ort für echte Verbindungen.
                 Gemeinsam schützen wir unsere Community.
               </p>
 
@@ -389,7 +389,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
                     <div className={`w-12 h-12 rounded-2xl bg-${item.color}-500/10 flex items-center justify-center`}>
                       <item.icon size={24} className={`text-${item.color}-500`} />
                     </div>
-                    <span className="text-xs font-medium text-[var(--delulu-muted)]">
+                    <span className="text-xs font-medium text-[var(--synclulu-muted)]">
                       {item.label}
                     </span>
                   </motion.div>
@@ -415,9 +415,9 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
           {step === 'consents' && (
             <div className="flex flex-col max-h-[90vh]">
               {/* Header */}
-              <div className="p-6 pb-4 border-b border-[var(--delulu-border)]">
+              <div className="p-6 pb-4 border-b border-[var(--synclulu-border)]">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="font-display text-xl font-bold text-[var(--delulu-text)]">
+                  <h2 className="font-display text-xl font-bold text-[var(--synclulu-text)]">
                     Community Vereinbarung
                   </h2>
                   <button
@@ -427,7 +427,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
                     Alle akzeptieren
                   </button>
                 </div>
-                <p className="text-sm text-[var(--delulu-muted)]">
+                <p className="text-sm text-[var(--synclulu-muted)]">
                   Bitte bestätige die folgenden Punkte, um beizutreten.
                 </p>
               </div>
@@ -451,7 +451,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
               </div>
 
               {/* Footer */}
-              <div className="p-6 pt-4 border-t border-[var(--delulu-border)]">
+              <div className="p-6 pt-4 border-t border-[var(--synclulu-border)]">
                 <motion.button
                   whileHover={allRequiredAccepted ? { scale: 1.02 } : {}}
                   whileTap={allRequiredAccepted ? { scale: 0.98 } : {}}
@@ -462,7 +462,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
                     transition-all duration-300
                     ${allRequiredAccepted
                       ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
-                      : 'bg-[var(--delulu-surface)] text-[var(--delulu-muted)] grayscale cursor-not-allowed'
+                      : 'bg-[var(--synclulu-surface)] text-[var(--synclulu-muted)] grayscale cursor-not-allowed'
                     }
                   `}
                 >
@@ -483,7 +483,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
                   )}
                 </motion.button>
 
-                <p className="text-center text-xs text-[var(--delulu-muted)] mt-3">
+                <p className="text-center text-xs text-[var(--synclulu-muted)] mt-3">
                   Mit dem Beitritt akzeptierst du unsere{' '}
                   <a href="/datenschutz" className="text-violet-500 underline">
                     Datenschutzerklärung
@@ -511,7 +511,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-display text-2xl font-bold text-[var(--delulu-text)] mb-2"
+                className="font-display text-2xl font-bold text-[var(--synclulu-text)] mb-2"
               >
                 Willkommen im Sanctuary! 🌟
               </motion.h2>
@@ -520,7 +520,7 @@ const SanctuaryModal: React.FC<SanctuaryModalProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-[var(--delulu-muted)]"
+                className="text-[var(--synclulu-muted)]"
               >
                 Du bist jetzt Teil unserer geschützten Community.
               </motion.p>

@@ -60,7 +60,7 @@ const Toggle: React.FC<ToggleProps> = ({ enabled, onChange, disabled }) => (
       relative w-12 h-7 rounded-full transition-all duration-200
       ${enabled
         ? 'bg-violet-500'
-        : 'bg-[var(--delulu-surface)]'
+        : 'bg-[var(--synclulu-surface)]'
       }
       ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     `}
@@ -108,13 +108,13 @@ const SafetyScoreDisplay: React.FC<SafetyScoreProps> = ({ score }) => {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Shield size={20} className={getScoreColor()} />
-          <span className="font-medium text-[var(--delulu-text)]">Safety Score</span>
+          <span className="font-medium text-[var(--synclulu-text)]">Safety Score</span>
         </div>
         <span className={`text-2xl font-bold ${getScoreColor()}`}>{score}</span>
       </div>
 
       {/* Progress Bar */}
-      <div className="relative h-2 rounded-full bg-[var(--delulu-surface)] overflow-hidden">
+      <div className="relative h-2 rounded-full bg-[var(--synclulu-surface)] overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${score}%` }}
@@ -130,7 +130,7 @@ const SafetyScoreDisplay: React.FC<SafetyScoreProps> = ({ score }) => {
 
       <div className="flex items-center justify-between mt-2">
         <span className={`text-sm ${getScoreColor()}`}>{getScoreLabel()}</span>
-        <span className="text-xs text-[var(--delulu-muted)]">von 100</span>
+        <span className="text-xs text-[var(--synclulu-muted)]">von 100</span>
       </div>
     </div>
   );
@@ -239,11 +239,11 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
   }
 
   return (
-    <div className="bg-[var(--delulu-bg)] min-h-full theme-transition">
+    <div className="bg-[var(--synclulu-bg)] min-h-full theme-transition">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[var(--delulu-bg)]/80 backdrop-blur-xl border-b border-[var(--delulu-border)]">
+      <div className="sticky top-0 z-10 bg-[var(--synclulu-bg)]/80 backdrop-blur-xl border-b border-[var(--synclulu-border)]">
         <div className="flex items-center justify-between p-4">
-          <h2 className="text-xl font-semibold text-[var(--delulu-text)]">
+          <h2 className="text-xl font-semibold text-[var(--synclulu-text)]">
             Sicherheit & Aura
           </h2>
           {onClose && (
@@ -266,7 +266,7 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
             {/* Score History Toggle */}
             <button
               onClick={() => setShowHistory(!showHistory)}
-              className="w-full mt-3 py-2 flex items-center justify-between text-sm text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] transition-colors"
+              className="w-full mt-3 py-2 flex items-center justify-between text-sm text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)] transition-colors"
             >
               <span>Score-Verlauf anzeigen</span>
               <motion.div
@@ -289,7 +289,7 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                       scoreHistory.map(change => (
                         <div
                           key={change.id}
-                          className="flex items-center justify-between p-3 rounded-xl bg-[var(--delulu-card)] border border-[var(--delulu-border)]"
+                          className="flex items-center justify-between p-3 rounded-xl bg-[var(--synclulu-card)] border border-[var(--synclulu-border)]"
                         >
                           <div className="flex items-center gap-3">
                             <div className={`
@@ -299,19 +299,19 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                               {change.change > 0 ? '+' : ''}{change.change}
                             </div>
                             <div>
-                              <p className="text-sm text-[var(--delulu-text)]">{change.reason}</p>
-                              <p className="text-xs text-[var(--delulu-muted)]">
+                              <p className="text-sm text-[var(--synclulu-text)]">{change.reason}</p>
+                              <p className="text-xs text-[var(--synclulu-muted)]">
                                 {change.createdAt.toLocaleDateString('de-DE')}
                               </p>
                             </div>
                           </div>
-                          <span className="text-sm font-medium text-[var(--delulu-text)]">
+                          <span className="text-sm font-medium text-[var(--synclulu-text)]">
                             {change.newScore}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-center text-sm text-[var(--delulu-muted)] py-4">
+                      <p className="text-center text-sm text-[var(--synclulu-muted)] py-4">
                         Keine Score-Änderungen
                       </p>
                     )}
@@ -323,7 +323,7 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
         )}
 
         {/* Verification Status */}
-        <section className="rounded-2xl bg-[var(--delulu-card)] border border-[var(--delulu-border)] overflow-hidden">
+        <section className="rounded-2xl bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] overflow-hidden">
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               {profile?.isAdult ? (
@@ -336,10 +336,10 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                 </div>
               )}
               <div>
-                <h3 className="font-medium text-[var(--delulu-text)]">
+                <h3 className="font-medium text-[var(--synclulu-text)]">
                   {profile?.isAdult ? 'Verifiziert (18+)' : 'Geschütztes Profil'}
                 </h3>
-                <p className="text-xs text-[var(--delulu-muted)]">
+                <p className="text-xs text-[var(--synclulu-muted)]">
                   {profile?.verificationMethod === 'ID_DOCUMENT_HASH'
                     ? 'Via Ausweis-Verifikation'
                     : profile?.verificationMethod === 'AI_ESTIMATION'
@@ -349,7 +349,7 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                 </p>
               </div>
             </div>
-            <div className="px-3 py-1 rounded-full bg-[var(--delulu-surface)] text-xs text-[var(--delulu-muted)]">
+            <div className="px-3 py-1 rounded-full bg-[var(--synclulu-surface)] text-xs text-[var(--synclulu-muted)]">
               {profile?.isMinorProtected ? 'Minor-Schutz aktiv' : 'Erwachsenen-Pool'}
             </div>
           </div>
@@ -357,11 +357,11 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
 
         {/* Radar Settings */}
         <section className="space-y-4">
-          <h3 className="text-sm font-medium text-[var(--delulu-muted)] uppercase tracking-wider px-1">
+          <h3 className="text-sm font-medium text-[var(--synclulu-muted)] uppercase tracking-wider px-1">
             Radar-Einstellungen
           </h3>
 
-          <div className="rounded-2xl bg-[var(--delulu-card)] border border-[var(--delulu-border)] divide-y divide-[var(--delulu-border)]">
+          <div className="rounded-2xl bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] divide-y divide-[var(--synclulu-border)]">
             {/* Radar Toggle */}
             <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -369,8 +369,8 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                   <Radio size={20} className="text-violet-500" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-[var(--delulu-text)]">Radar aktiv</h4>
-                  <p className="text-xs text-[var(--delulu-muted)]">
+                  <h4 className="font-medium text-[var(--synclulu-text)]">Radar aktiv</h4>
+                  <p className="text-xs text-[var(--synclulu-muted)]">
                     Auf dem Radar anderer sichtbar sein
                   </p>
                 </div>
@@ -389,8 +389,8 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                   <Ghost size={20} className="text-gray-500" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-[var(--delulu-text)]">Ghost-Mode</h4>
-                  <p className="text-xs text-[var(--delulu-muted)]">
+                  <h4 className="font-medium text-[var(--synclulu-text)]">Ghost-Mode</h4>
+                  <p className="text-xs text-[var(--synclulu-muted)]">
                     Komplett unsichtbar werden
                   </p>
                 </div>
@@ -406,11 +406,11 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
 
         {/* Visibility Settings */}
         <section className="space-y-4">
-          <h3 className="text-sm font-medium text-[var(--delulu-muted)] uppercase tracking-wider px-1">
+          <h3 className="text-sm font-medium text-[var(--synclulu-muted)] uppercase tracking-wider px-1">
             Wer kann mich sehen?
           </h3>
 
-          <div className="rounded-2xl bg-[var(--delulu-card)] border border-[var(--delulu-border)] divide-y divide-[var(--delulu-border)]">
+          <div className="rounded-2xl bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] divide-y divide-[var(--synclulu-border)]">
             {[
               { value: 'ALL' as VisibilityGender, icon: <Users size={20} />, label: 'Alle', desc: 'Jeder kann dich sehen' },
               { value: 'FEMALE_ONLY' as VisibilityGender, icon: <UserCheck size={20} />, label: 'Nur Frauen', desc: 'Sicherheits-Feature' },
@@ -420,14 +420,14 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                 key={option.value}
                 onClick={() => handleVisibilityChange(option.value)}
                 disabled={isSaving}
-                className="w-full p-4 flex items-center justify-between hover:bg-[var(--delulu-surface)] transition-colors"
+                className="w-full p-4 flex items-center justify-between hover:bg-[var(--synclulu-surface)] transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className={`
                     w-10 h-10 rounded-full flex items-center justify-center
                     ${visibleTo === option.value
                       ? 'bg-violet-500/10 text-violet-500'
-                      : 'bg-[var(--delulu-surface)] text-[var(--delulu-muted)]'
+                      : 'bg-[var(--synclulu-surface)] text-[var(--synclulu-muted)]'
                     }
                   `}>
                     {option.icon}
@@ -436,11 +436,11 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
                     <h4 className={`font-medium ${
                       visibleTo === option.value
                         ? 'text-violet-500'
-                        : 'text-[var(--delulu-text)]'
+                        : 'text-[var(--synclulu-text)]'
                     }`}>
                       {option.label}
                     </h4>
-                    <p className="text-xs text-[var(--delulu-muted)]">{option.desc}</p>
+                    <p className="text-xs text-[var(--synclulu-muted)]">{option.desc}</p>
                   </div>
                 </div>
                 {visibleTo === option.value && (
@@ -457,8 +457,8 @@ const PrivacyDashboard: React.FC<PrivacyDashboardProps> = ({ onClose }) => {
             <Info size={20} className="text-violet-500 flex-shrink-0 mt-0.5" />
             <div>
               <h4 className="font-medium text-violet-500 mb-1">Deine Privatsphäre</h4>
-              <p className="text-xs text-[var(--delulu-muted)]">
-                Delulu speichert niemals dein Geburtsdatum oder Ausweisdaten.
+              <p className="text-xs text-[var(--synclulu-muted)]">
+                synclulu speichert niemals dein Geburtsdatum oder Ausweisdaten.
                 Wir nutzen nur verschlüsselte Hashes um dein Alter zu verifizieren.
                 Dein Standort wird nur während du die App nutzt verarbeitet.
               </p>

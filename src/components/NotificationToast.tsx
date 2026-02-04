@@ -55,7 +55,7 @@ const NotificationToast = () => {
   const getIcon = (type: AppNotification['type']) => {
     switch (type) {
       case 'friend_request':
-        return <UserPlus size={24} className="text-delulu-violet" />;
+        return <UserPlus size={24} className="text-synclulu-violet" />;
       case 'friend_accepted':
         return <Check size={24} className="text-green-500" />;
       case 'star_received':
@@ -63,7 +63,7 @@ const NotificationToast = () => {
       case 'room_invite':
         return <Users size={24} className="text-blue-500" />;
       default:
-        return <Bell size={24} className="text-delulu-violet" />;
+        return <Bell size={24} className="text-synclulu-violet" />;
     }
   };
 
@@ -103,13 +103,13 @@ const NotificationToast = () => {
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-delulu-text text-sm">
+              <p className="font-bold text-synclulu-text text-sm">
                 {currentToast.title}
               </p>
-              <p className="text-sm text-delulu-muted mt-0.5 line-clamp-2">
+              <p className="text-sm text-synclulu-muted mt-0.5 line-clamp-2">
                 {currentToast.message}
               </p>
-              <p className="text-xs text-delulu-violet mt-1 font-medium">
+              <p className="text-xs text-synclulu-violet mt-1 font-medium">
                 Tippe zum Ansehen →
               </p>
             </div>
@@ -129,7 +129,7 @@ const NotificationToast = () => {
           {/* Progress bar */}
           <div className="mt-3 h-1 bg-white/30 rounded-full overflow-hidden">
             <div
-              className="h-full bg-delulu-violet rounded-full animate-shrink"
+              className="h-full bg-synclulu-violet rounded-full animate-shrink"
               style={{ animationDuration: '5s' }}
             />
           </div>

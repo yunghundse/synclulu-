@@ -34,7 +34,7 @@ const UserCard = ({ user }: UserCardProps) => {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="font-semibold text-delulu-text truncate">
+          <p className="font-semibold text-synclulu-text truncate">
             {isAnonymous ? 'Anonym' : user.displayName || user.username}
           </p>
           {isAnonymous && (
@@ -44,18 +44,18 @@ const UserCard = ({ user }: UserCardProps) => {
           )}
         </div>
         <div className="flex items-center gap-3 mt-1">
-          <span className="flex items-center gap-1 text-xs text-delulu-muted">
+          <span className="flex items-center gap-1 text-xs text-synclulu-muted">
             <MapPin size={12} />
             {formatDistance(user.distance)}
           </span>
-          <span className="text-xs text-delulu-muted">
+          <span className="text-xs text-synclulu-muted">
             Aktiv vor {getTimeAgo(user.lastSeen)}
           </span>
         </div>
       </div>
 
       {/* Action */}
-      <button className="w-10 h-10 rounded-xl bg-delulu-violet/10 flex items-center justify-center text-delulu-violet hover:bg-delulu-violet hover:text-white transition-colors">
+      <button className="w-10 h-10 rounded-xl bg-synclulu-violet/10 flex items-center justify-center text-synclulu-violet hover:bg-synclulu-violet hover:text-white transition-colors">
         <MessageCircle size={18} />
       </button>
     </div>

@@ -28,12 +28,12 @@ export const DATENSCHUTZERKLAERUNG = {
 
 **Stand: ${PRIVACY_POLICY_DATE} | Version ${PRIVACY_POLICY_VERSION}**
 
-Der Schutz Ihrer personenbezogenen Daten ist uns ein besonderes Anliegen. Diese Datenschutzerklärung informiert Sie über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten innerhalb unserer App "Delulu" (nachfolgend "App" oder "Dienst").
+Der Schutz Ihrer personenbezogenen Daten ist uns ein besonderes Anliegen. Diese Datenschutzerklärung informiert Sie über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten innerhalb unserer App "synclulu" (nachfolgend "App" oder "Dienst").
 
 Verantwortlicher im Sinne der DSGVO:
 [FIRMENNAME EINFÜGEN]
 [ADRESSE EINFÜGEN]
-E-Mail: privacy@delulu.app
+E-Mail: privacy@synclulu.app
   `,
 
   // ═══════════════════════════════════════
@@ -243,8 +243,8 @@ Sie haben das Recht, sich bei einer Aufsichtsbehörde zu beschweren.
 ## 8. Kontakt
 
 Bei Fragen zum Datenschutz wenden Sie sich an:
-- E-Mail: privacy@delulu.app
-- Datenschutzbeauftragter: dpo@delulu.app
+- E-Mail: privacy@synclulu.app
+- Datenschutzbeauftragter: dpo@synclulu.app
 
 ---
 

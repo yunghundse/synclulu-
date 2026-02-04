@@ -86,7 +86,7 @@ const stateConfig: Record<
     icon: Compass,
     title: 'Standort-Vakuum',
     message: 'Bitte GPS aktivieren.',
-    submessage: 'Delulu braucht deinen Standort, um Hotspots in der Nähe zu zeigen.',
+    submessage: 'synclulu braucht deinen Standort, um Hotspots in der Nähe zu zeigen.',
     gradient: 'from-red-500 to-orange-600',
     actionLabel: 'GPS prüfen',
   },

@@ -1,5 +1,5 @@
 /**
- * DELULU GLOW-UP AVATAR COMPONENT
+ * synclulu GLOW-UP AVATAR COMPONENT
  * Avatar with level-based visual effects
  */
 

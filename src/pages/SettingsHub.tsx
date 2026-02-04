@@ -1,5 +1,5 @@
 /**
- * DELULU SETTINGS HUB v1.5
+ * synclulu SETTINGS HUB v1.5
  * "The Glassmorphism Control Hub"
  *
  * ARCHITECTURE:
@@ -238,7 +238,7 @@ const SettingsHub = () => {
           setNotifications(data.notifications !== false);
           setSoundEnabled(data.soundEnabled !== false);
           setDarkMode(data.darkMode === true);
-          setReferralCode(data.referralCode || `DELULU-${user.id.slice(0, 6).toUpperCase()}`);
+          setReferralCode(data.referralCode || `synclulu-${user.id.slice(0, 6).toUpperCase()}`);
           setIsCreator(data.isCreator === true);
         }
       } catch (error) {
@@ -263,7 +263,7 @@ const SettingsHub = () => {
   const handleCopyCode = async () => {
     try {
       await navigator.clipboard.writeText(
-        `Hey! Komm zu Delulu 💫 Nutze meinen Code: ${referralCode}\nhttps://delulu.app/join/${referralCode}`
+        `Hey! Komm zu synclulu 💫 Nutze meinen Code: ${referralCode}\nhttps://synclulu.app/join/${referralCode}`
       );
       setCopied(true);
       if ('vibrate' in navigator) navigator.vibrate([10, 50, 10]);
@@ -470,7 +470,7 @@ const SettingsHub = () => {
                 icon={<Radar size={20} className="text-cyan-500" />}
                 iconBg="bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30"
                 label="Friend Radar"
-                description="Entdecke Delulu-User in deiner Nähe"
+                description="Entdecke synclulu-User in deiner Nähe"
                 toggle
                 isOn={radarEnabled}
                 onToggle={toggleRadar}
@@ -585,7 +585,7 @@ const SettingsHub = () => {
               iconBg="bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30"
               label="App bewerten"
               description="Hilf uns mit einer Bewertung"
-              onClick={() => window.open('https://apps.apple.com/app/delulu', '_blank')}
+              onClick={() => window.open('https://apps.apple.com/app/synclulu', '_blank')}
             />
 
             <SettingsRow
@@ -613,11 +613,43 @@ const SettingsHub = () => {
         </GlassCard>
 
         {/* ═══════════════════════════════════════ */}
+        {/* DEV INFO - Firebase UID Copy */}
+        {/* ═══════════════════════════════════════ */}
+        {user?.id && (
+          <GlassCard>
+            <div className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-gray-100 to-slate-100 dark:from-gray-800/50 dark:to-slate-800/50 flex items-center justify-center">
+                  <Zap size={20} className="text-gray-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="font-medium text-gray-900 dark:text-white text-sm">
+                    Firebase UID
+                  </span>
+                  <p className="text-[10px] text-gray-400 font-mono truncate">
+                    {user.id}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(user.id);
+                    if ('vibrate' in navigator) navigator.vibrate(10);
+                  }}
+                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <Copy size={18} className="text-gray-500" />
+                </button>
+              </div>
+            </div>
+          </GlassCard>
+        )}
+
+        {/* ═══════════════════════════════════════ */}
         {/* VERSION INFO */}
         {/* ═══════════════════════════════════════ */}
         <div className="text-center py-6">
           <p className="text-xs text-gray-400">
-            Delulu v1.5.0 • Made with 💜 in Germany
+            synclulu v1.5.0 • Made with 💜 in Germany
           </p>
           <p className="text-[10px] text-gray-300 mt-1">
             Build 2024.01.15

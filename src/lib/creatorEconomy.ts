@@ -1,10 +1,10 @@
 /**
- * DELULU CREATOR ECONOMY - "THE GOLDMINE"
+ * synclulu CREATOR ECONOMY - "THE GOLDMINE"
  * ========================================
  * Silicon Valley-grade monetization system
  *
  * Features:
- * - Delulu Gems (Internal Currency)
+ * - synclulu Gems (Internal Currency)
  * - Creator Tiers & Subscriptions
  * - Virtual Gifts & Tips
  * - Revenue Share (70/30 Creator/Platform)
@@ -68,7 +68,7 @@ export interface CreatorProfile {
   updatedAt: Date;
 }
 
-export interface DeluluGems {
+export interface syncluluGems {
   userId: string;
   balance: number;
   totalPurchased: number;
@@ -138,7 +138,7 @@ export const CREATOR_TIERS: Record<CreatorTier, {
     perks: ['Erweiterte Analytics', 'Exklusive Räume (3)', 'Abo-Modell'],
   },
   star: {
-    name: 'Delulu Star',
+    name: 'synclulu Star',
     emoji: '💫',
     minFollowers: 1000,
     revenueShare: 0.70, // 70%
@@ -169,7 +169,7 @@ export const VIRTUAL_GIFTS: VirtualGift[] = [
   // Legendary Tier
   { id: 'unicorn', name: 'Einhorn', emoji: '🦄', price: 1500, tier: 'legendary', animation: 'unicorn-magic' },
   { id: 'galaxy', name: 'Galaxie', emoji: '🌌', price: 3000, tier: 'legendary', animation: 'galaxy-spin' },
-  { id: 'delulu-special', name: 'Delulu Supreme', emoji: '💜', price: 5000, tier: 'legendary', animation: 'supreme-entrance' },
+  { id: 'synclulu-special', name: 'synclulu Supreme', emoji: '💜', price: 5000, tier: 'legendary', animation: 'supreme-entrance' },
 ];
 
 export const GEM_PACKAGES = [
@@ -188,7 +188,7 @@ export const GEM_PACKAGES = [
 /**
  * Get user's gem balance
  */
-export const getGemBalance = async (userId: string): Promise<DeluluGems | null> => {
+export const getGemBalance = async (userId: string): Promise<syncluluGems | null> => {
   try {
     const gemsDoc = await getDoc(doc(db, 'gems', userId));
     if (!gemsDoc.exists()) return null;
@@ -201,7 +201,7 @@ export const getGemBalance = async (userId: string): Promise<DeluluGems | null> 
         ...t,
         createdAt: t.createdAt?.toDate() || new Date(),
       })),
-    } as DeluluGems;
+    } as syncluluGems;
   } catch (error) {
     console.error('Error getting gem balance:', error);
     return null;
@@ -211,8 +211,8 @@ export const getGemBalance = async (userId: string): Promise<DeluluGems | null> 
 /**
  * Initialize gems for new user
  */
-export const initializeGems = async (userId: string): Promise<DeluluGems> => {
-  const gems: DeluluGems = {
+export const initializeGems = async (userId: string): Promise<syncluluGems> => {
+  const gems: syncluluGems = {
     userId,
     balance: 0,
     totalPurchased: 0,

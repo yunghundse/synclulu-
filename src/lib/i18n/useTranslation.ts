@@ -54,7 +54,7 @@ export function useTranslation() {
     (newLanguage: Language) => {
       setLanguage(newLanguage);
       // Persist to localStorage
-      localStorage.setItem('delulu-language', newLanguage);
+      localStorage.setItem('synclulu-language', newLanguage);
     },
     [setLanguage]
   );

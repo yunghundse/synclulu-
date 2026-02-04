@@ -1,5 +1,5 @@
 /**
- * DELULU PRESENCE SYSTEM
+ * synclulu PRESENCE SYSTEM
  * Online-Status, Besucher-Tracking & Echtzeit-Präsenz
  */
 

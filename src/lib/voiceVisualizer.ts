@@ -1,5 +1,5 @@
 /**
- * DELULU VOICE VISUALIZER v2.0
+ * synclulu VOICE VISUALIZER v2.0
  * "The Living Sound System"
  *
  * ARCHITECTURE:

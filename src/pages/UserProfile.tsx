@@ -163,8 +163,8 @@ const UserProfile = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white flex items-center justify-center">
-        <Loader2 size={32} className="animate-spin text-delulu-violet" />
+      <div className="min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white flex items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-synclulu-violet" />
       </div>
     );
   }
@@ -172,24 +172,24 @@ const UserProfile = () => {
   // If user not found in database, show basic profile with ID
   if (!userData) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white safe-top pb-24">
+      <div className="min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white safe-top pb-24">
         <div className="px-6 pt-6">
           <button
             onClick={() => navigate(-1)}
             className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
           >
-            <ArrowLeft size={20} className="text-delulu-text" />
+            <ArrowLeft size={20} className="text-synclulu-text" />
           </button>
 
           {/* Basic Profile when no data found */}
           <div className="text-center py-8">
-            <div className="w-28 h-28 mx-auto rounded-full bg-delulu-violet/10 flex items-center justify-center mb-4">
+            <div className="w-28 h-28 mx-auto rounded-full bg-synclulu-violet/10 flex items-center justify-center mb-4">
               <span className="text-4xl">👤</span>
             </div>
-            <h1 className="font-display text-xl font-bold text-delulu-text mb-2">
-              Delulu Nutzer
+            <h1 className="font-display text-xl font-bold text-synclulu-text mb-2">
+              synclulu Nutzer
             </h1>
-            <p className="text-sm text-delulu-muted mb-6">
+            <p className="text-sm text-synclulu-muted mb-6">
               Profil wird geladen...
             </p>
 
@@ -197,7 +197,7 @@ const UserProfile = () => {
             <button
               onClick={handleAddFriend}
               disabled={isAddingFriend || isPending}
-              className="w-full max-w-xs mx-auto py-4 bg-delulu-violet text-white rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full max-w-xs mx-auto py-4 bg-synclulu-violet text-white rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isAddingFriend ? (
                 <Loader2 size={20} className="animate-spin" />
@@ -226,14 +226,14 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white safe-top pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white safe-top pb-24">
       {/* Header */}
       <div className="px-6 pt-6">
         <button
           onClick={() => navigate(-1)}
           className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
         >
-          <ArrowLeft size={20} className="text-delulu-text" />
+          <ArrowLeft size={20} className="text-synclulu-text" />
         </button>
       </div>
 
@@ -244,7 +244,7 @@ const UserProfile = () => {
           <div className={`w-28 h-28 rounded-full flex items-center justify-center text-4xl ${
             userData.isCreator
               ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white'
-              : 'bg-delulu-violet/10'
+              : 'bg-synclulu-violet/10'
           }`}>
             {userData.avatar || '👤'}
           </div>
@@ -261,27 +261,27 @@ const UserProfile = () => {
         </div>
 
         {/* Name & Username */}
-        <h1 className="font-display text-2xl font-bold text-delulu-text mb-1">
+        <h1 className="font-display text-2xl font-bold text-synclulu-text mb-1">
           {userData.displayName}
         </h1>
-        <p className="text-delulu-muted mb-2">@{userData.username}</p>
+        <p className="text-synclulu-muted mb-2">@{userData.username}</p>
 
         {/* Level Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-delulu-violet/10 rounded-full mb-4">
-          <Award size={16} className="text-delulu-violet" />
-          <span className="font-semibold text-delulu-violet">Level {userData.level}</span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-synclulu-violet/10 rounded-full mb-4">
+          <Award size={16} className="text-synclulu-violet" />
+          <span className="font-semibold text-synclulu-violet">Level {userData.level}</span>
         </div>
 
         {/* Bio */}
         {userData.bio && (
-          <p className="text-sm text-delulu-text max-w-xs mx-auto mb-4">
+          <p className="text-sm text-synclulu-text max-w-xs mx-auto mb-4">
             {userData.bio}
           </p>
         )}
 
         {/* Birthday & City */}
         {userData.showBirthdateOnProfile && userData.birthDay && userData.birthMonth && (
-          <p className="text-xs text-delulu-muted flex items-center justify-center gap-2 mb-1">
+          <p className="text-xs text-synclulu-muted flex items-center justify-center gap-2 mb-1">
             <Cake size={12} />
             <span>{userData.birthDay}. {getMonthName(userData.birthMonth)}</span>
             {userData.city && (
@@ -295,7 +295,7 @@ const UserProfile = () => {
         )}
 
         {/* Join Date */}
-        <p className="text-xs text-delulu-muted flex items-center justify-center gap-1">
+        <p className="text-xs text-synclulu-muted flex items-center justify-center gap-1">
           <Calendar size={12} />
           Dabei seit {formatDate(userData.joinedAt)}
         </p>
@@ -305,19 +305,19 @@ const UserProfile = () => {
       <div className="px-6 mb-6">
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white rounded-2xl p-4 text-center shadow-sm">
-            <Users size={20} className="mx-auto text-delulu-violet mb-2" />
-            <p className="font-bold text-delulu-text">{userData.friendsCount}</p>
-            <p className="text-xs text-delulu-muted">Freunde</p>
+            <Users size={20} className="mx-auto text-synclulu-violet mb-2" />
+            <p className="font-bold text-synclulu-text">{userData.friendsCount}</p>
+            <p className="text-xs text-synclulu-muted">Freunde</p>
           </div>
           <div className="bg-white rounded-2xl p-4 text-center shadow-sm">
             <Mic size={20} className="mx-auto text-green-500 mb-2" />
-            <p className="font-bold text-delulu-text">{userData.roomsJoined}</p>
-            <p className="text-xs text-delulu-muted">Räume</p>
+            <p className="font-bold text-synclulu-text">{userData.roomsJoined}</p>
+            <p className="text-xs text-synclulu-muted">Räume</p>
           </div>
           <div className="bg-white rounded-2xl p-4 text-center shadow-sm">
             <Star size={20} className="mx-auto text-amber-500 mb-2" />
-            <p className="font-bold text-delulu-text">{Math.floor(userData.minutesTalked / 60)}h</p>
-            <p className="text-xs text-delulu-muted">Gesprochen</p>
+            <p className="font-bold text-synclulu-text">{Math.floor(userData.minutesTalked / 60)}h</p>
+            <p className="text-xs text-synclulu-muted">Gesprochen</p>
           </div>
         </div>
       </div>
@@ -328,7 +328,7 @@ const UserProfile = () => {
           <div className="flex gap-3">
             <button
               onClick={handleMessage}
-              className="flex-1 py-4 bg-delulu-violet text-white rounded-2xl font-semibold flex items-center justify-center gap-2"
+              className="flex-1 py-4 bg-synclulu-violet text-white rounded-2xl font-semibold flex items-center justify-center gap-2"
             >
               <MessageCircle size={20} />
               Nachricht
@@ -351,7 +351,7 @@ const UserProfile = () => {
           <button
             onClick={handleAddFriend}
             disabled={isAddingFriend}
-            className="w-full py-4 bg-delulu-violet text-white rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-4 bg-synclulu-violet text-white rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isAddingFriend ? (
               <Loader2 size={20} className="animate-spin" />

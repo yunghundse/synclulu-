@@ -36,7 +36,7 @@ export const GATEKEEPER_CONFIG = {
   referralPremiumDays: 1,                // Gratis Premium-Tage
 
   // Founder Settings
-  founderEmail: 'jan@delulu.app',        // Auto-founder bei dieser Email
+  founderEmail: 'jan@synclulu.app',        // Auto-founder bei dieser Email
   founderRadius: 40000000,               // 40.000 km = Global
 
   // Premium Radius
@@ -270,7 +270,7 @@ export async function createReferralCode(
   // Update user with their referral code
   await updateDoc(doc(db, 'users', userId), {
     referralCode: code,
-    referralLink: `https://delulu.app/join/${code}`
+    referralLink: `https://synclulu.app/join/${code}`
   });
 
   return code;
@@ -368,7 +368,7 @@ export function extractReferralCode(): string | null {
 
   if (urlCode) {
     // Store in localStorage for persistence
-    localStorage.setItem('delulu_referral_code', urlCode.toUpperCase());
+    localStorage.setItem('synclulu_referral_code', urlCode.toUpperCase());
     return urlCode.toUpperCase();
   }
 
@@ -376,19 +376,19 @@ export function extractReferralCode(): string | null {
   const pathMatch = window.location.pathname.match(/\/(?:join|invite)\/([A-Z0-9-]+)/i);
   if (pathMatch) {
     const code = pathMatch[1].toUpperCase();
-    localStorage.setItem('delulu_referral_code', code);
+    localStorage.setItem('synclulu_referral_code', code);
     return code;
   }
 
   // Check localStorage
-  return localStorage.getItem('delulu_referral_code');
+  return localStorage.getItem('synclulu_referral_code');
 }
 
 /**
  * Clear stored referral code
  */
 export function clearStoredReferralCode(): void {
-  localStorage.removeItem('delulu_referral_code');
+  localStorage.removeItem('synclulu_referral_code');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

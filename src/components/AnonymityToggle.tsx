@@ -72,10 +72,10 @@ const AnonymityToggle = ({
             <Shield size={24} className={isAnonymous ? 'text-white' : 'text-gray-500'} />
           </div>
           <div>
-            <h3 className="font-display font-bold text-delulu-text">
+            <h3 className="font-display font-bold text-synclulu-text">
               Globale Anonymität
             </h3>
-            <p className="text-xs text-delulu-muted">
+            <p className="text-xs text-synclulu-muted">
               {isAnonymous ? 'Dein Profil ist geschützt' : 'Du bist sichtbar'}
             </p>
           </div>
@@ -148,14 +148,14 @@ const AnonymityToggle = ({
         <div className="space-y-3">
           <button
             onClick={() => setShowInfo(!showInfo)}
-            className="flex items-center gap-2 text-sm text-delulu-violet hover:underline"
+            className="flex items-center gap-2 text-sm text-synclulu-violet hover:underline"
           >
             <Info size={14} />
             Was bedeutet das?
           </button>
 
           {showInfo && (
-            <div className="p-4 bg-delulu-soft/50 rounded-xl text-sm text-delulu-muted space-y-2 animate-in slide-in-from-top-2">
+            <div className="p-4 bg-synclulu-soft/50 rounded-xl text-sm text-synclulu-muted space-y-2 animate-in slide-in-from-top-2">
               <p><strong>🔒 Wenn aktiv:</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>Dein Profilbild wird auf der Karte verschleiert</li>
@@ -176,8 +176,8 @@ const AnonymityToggle = ({
       )}
 
       {/* Preview */}
-      <div className="mt-4 pt-4 border-t border-delulu-soft">
-        <p className="text-xs text-delulu-muted mb-3">Vorschau auf der Karte:</p>
+      <div className="mt-4 pt-4 border-t border-synclulu-soft">
+        <p className="text-xs text-synclulu-muted mb-3">Vorschau auf der Karte:</p>
         <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
           {/* Avatar preview */}
           <div className="relative">
@@ -188,7 +188,7 @@ const AnonymityToggle = ({
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-delulu-violet flex items-center justify-center text-white text-xl">
+                <div className="w-full h-full bg-synclulu-violet flex items-center justify-center text-white text-xl">
                   {user?.displayName?.charAt(0) || '?'}
                 </div>
               )}
@@ -204,13 +204,13 @@ const AnonymityToggle = ({
 
           {/* Info preview */}
           <div>
-            <p className="font-semibold text-delulu-text">
+            <p className="font-semibold text-synclulu-text">
               {isAnonymous
                 ? user?.anonymousAlias || 'Wanderer_' + Math.floor(Math.random() * 9999)
                 : user?.displayName || 'Dein Name'
               }
             </p>
-            <p className="text-xs text-delulu-muted">
+            <p className="text-xs text-synclulu-muted">
               {isAnonymous ? '🔒 Geschützt' : `@${user?.username || 'handle'}`}
             </p>
           </div>

@@ -295,15 +295,15 @@ const CloudView = ({ users, onUserClick, onCloudClick }: CloudViewProps) => {
       {/* Hovered cloud info */}
       {hoveredCloud && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-lg">
-          <p className="text-sm font-semibold text-delulu-text">
+          <p className="text-sm font-semibold text-synclulu-text">
             {clouds.find(c => c.id === hoveredCloud)?.users.length} User
           </p>
-          <p className="text-xs text-delulu-muted">Tippen zum Beitreten</p>
+          <p className="text-xs text-synclulu-muted">Tippen zum Beitreten</p>
         </div>
       )}
 
       {/* User count badge */}
-      <div className="absolute top-3 right-3 bg-delulu-violet text-white px-3 py-1.5 rounded-xl shadow-lg">
+      <div className="absolute top-3 right-3 bg-synclulu-violet text-white px-3 py-1.5 rounded-xl shadow-lg">
         <span className="text-xs font-bold">{users.length} in der Nähe</span>
       </div>
     </div>

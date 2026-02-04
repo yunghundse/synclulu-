@@ -1,5 +1,5 @@
 /**
- * DELULU MAGIC INVITE SYSTEM
+ * synclulu MAGIC INVITE SYSTEM
  * "The Growth Engine" - Clubhouse-inspired exclusive invite experience
  *
  * Features:
@@ -33,7 +33,7 @@ const MILESTONES = [
   { count: 1, label: 'Early Adopter Badge', icon: '🌟', reward: '50 XP + Badge' },
   { count: 3, label: 'Social Butterfly', icon: '🦋', reward: '150 XP + 3 Tage Premium' },
   { count: 5, label: 'Inner Circle', icon: '💫', reward: '300 XP + Exklusiver Avatar' },
-  { count: 10, label: 'Delulu Legend', icon: '👑', reward: '500 XP + Lifetime Badge' },
+  { count: 10, label: 'synclulu Legend', icon: '👑', reward: '500 XP + Lifetime Badge' },
 ];
 
 // ═══════════════════════════════════════
@@ -79,7 +79,7 @@ const GoldenTicket: React.FC<GoldenTicketProps> = ({
     if ('vibrate' in navigator) {
       navigator.vibrate([20, 10, 20, 10, 40]);
     }
-    await shareReferralLink(code, 'delulu_user');
+    await shareReferralLink(code, 'synclulu_user');
     onShare();
   };
 
@@ -208,8 +208,8 @@ const GoldenTicket: React.FC<GoldenTicketProps> = ({
 
         {/* Divider with ticket notches */}
         <div className="relative h-4 my-2">
-          <div className="absolute left-0 w-4 h-4 bg-delulu-bg rounded-full -translate-x-1/2" />
-          <div className="absolute right-0 w-4 h-4 bg-delulu-bg rounded-full translate-x-1/2" />
+          <div className="absolute left-0 w-4 h-4 bg-synclulu-bg rounded-full -translate-x-1/2" />
+          <div className="absolute right-0 w-4 h-4 bg-synclulu-bg rounded-full translate-x-1/2" />
           <div className="absolute inset-x-6 top-1/2 border-t border-dashed border-gray-700" />
         </div>
 

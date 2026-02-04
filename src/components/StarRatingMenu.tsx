@@ -116,10 +116,10 @@ const StarRatingMenu = ({
             <div className="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
               <Check size={40} className="text-green-500" />
             </div>
-            <h3 className="text-xl font-bold text-delulu-text mb-2">
+            <h3 className="text-xl font-bold text-synclulu-text mb-2">
               Danke! ⭐
             </h3>
-            <p className="text-sm text-delulu-muted">
+            <p className="text-sm text-synclulu-muted">
               Du hast {selectedStars} {selectedStars === 1 ? 'Stern' : 'Sterne'} vergeben
             </p>
 
@@ -145,10 +145,10 @@ const StarRatingMenu = ({
           <>
             {/* Header */}
             <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-delulu-text mb-1">
+              <h3 className="text-xl font-bold text-synclulu-text mb-1">
                 Wie war's mit {targetUsername}?
               </h3>
-              <p className="text-sm text-delulu-muted">
+              <p className="text-sm text-synclulu-muted">
                 Vergib 1-5 Sterne für diesen Voice-Chat
               </p>
             </div>
@@ -176,7 +176,7 @@ const StarRatingMenu = ({
             </div>
 
             {/* Star Label */}
-            <p className="text-center text-lg font-medium text-delulu-text mb-6 h-7">
+            <p className="text-center text-lg font-medium text-synclulu-text mb-6 h-7">
               {activeStars > 0 && starLabels[activeStars]}
             </p>
 
@@ -206,7 +206,7 @@ const StarRatingMenu = ({
             </button>
 
             {/* Daily Limit Info */}
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-delulu-muted">
+            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-synclulu-muted">
               <Star size={14} className="text-amber-400" />
               <span>
                 {remainingStars} von {dailyLimit} Sternen übrig heute
@@ -272,7 +272,7 @@ export const StarRatingDisplay = ({
           />
         ))}
       </div>
-      <span className={`${sizes[size].text} text-delulu-muted`}>
+      <span className={`${sizes[size].text} text-synclulu-muted`}>
         {averageRating.toFixed(1)} ({totalRatings})
       </span>
     </div>

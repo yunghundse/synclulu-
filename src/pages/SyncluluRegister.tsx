@@ -1,12 +1,12 @@
 /**
- * DELULU REGISTER v3.0 - Glassmorphism Edition
+ * synclulu REGISTER v3.0 - Glassmorphism Edition
  *
  * "The Cloud is Exclusive - Only the Chosen Ones Enter"
  *
  * FEATURES:
  * - 10-User Hard Cap with Sold-Out Overlay
  * - Referral System with 5-Star Rewards
- * - Founder Auto-Detection (jan@delulu.app)
+ * - Founder Auto-Detection (jan@synclulu.app)
  * - Apple-Standard Glassmorphism UI
  * - Animated Background Nebula
  *
@@ -34,7 +34,7 @@ import {
   extractReferralCode,
   GATEKEEPER_CONFIG
 } from '@/lib/gatekeeperSystem';
-import { DeluluError, DeluluInlineError, LoadingCloud } from '@/components/DeluluError';
+import { SyncluluError, SyncluluInlineError, LoadingCloud } from '@/components/SyncluluError';
 import { SoldOutOverlay } from '@/components/SoldOutOverlay';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -272,7 +272,7 @@ const GlassInput = ({
       />
       {suffix && <div className="pr-4">{suffix}</div>}
     </div>
-    {error && <DeluluInlineError message={error} className="mt-1" />}
+    {error && <SyncluluInlineError message={error} className="mt-1" />}
   </div>
 );
 
@@ -366,7 +366,7 @@ const PasswordStrength = ({ password }: PasswordStrengthProps) => {
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 
-const DeluluRegister = () => {
+const syncluluRegister = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -810,7 +810,7 @@ const DeluluRegister = () => {
             {/* Global Error */}
             <AnimatePresence>
               {globalError && (
-                <DeluluError
+                <SyncluluError
                   message={globalError}
                   severity="error"
                   onDismiss={() => setGlobalError(null)}
@@ -921,4 +921,4 @@ const DeluluRegister = () => {
   );
 };
 
-export default DeluluRegister;
+export default syncluluRegister;

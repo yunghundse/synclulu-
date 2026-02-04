@@ -1,5 +1,5 @@
 /**
- * DELULU AVATAR HOOK
+ * synclulu AVATAR HOOK
  * Provides consistent avatar handling across the app
  * - Automatic caching
  * - Optimistic updates

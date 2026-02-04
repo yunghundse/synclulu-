@@ -315,11 +315,11 @@ export function AdminUserManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--delulu-bg)] text-[var(--delulu-text)] p-6">
+    <div className="min-h-screen bg-[var(--synclulu-bg)] text-[var(--synclulu-text)] p-6">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-2">User Management</h1>
-        <p className="text-[var(--delulu-text-secondary)]">
+        <p className="text-[var(--synclulu-text-secondary)]">
           Verwalte Benutzer, Rollen und Premium-Status
         </p>
       </div>
@@ -333,7 +333,7 @@ export function AdminUserManagement() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Username suchen..."
-            className="flex-1 px-4 py-3 bg-[var(--delulu-surface)] border border-[var(--delulu-border)] rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
+            className="flex-1 px-4 py-3 bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)] rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
           />
           <motion.button
             onClick={handleSearch}
@@ -354,7 +354,7 @@ export function AdminUserManagement() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 filter === f
                   ? 'bg-purple-500/20 border border-purple-500/50 text-purple-400'
-                  : 'bg-[var(--delulu-surface)] border border-[var(--delulu-border)] text-[var(--delulu-text-secondary)]'
+                  : 'bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)] text-[var(--synclulu-text-secondary)]'
               }`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -394,7 +394,7 @@ export function AdminUserManagement() {
           </AnimatePresence>
 
           {users.length === 0 && (
-            <div className="text-center py-10 text-[var(--delulu-text-secondary)]">
+            <div className="text-center py-10 text-[var(--synclulu-text-secondary)]">
               Keine Benutzer gefunden
             </div>
           )}
@@ -403,7 +403,7 @@ export function AdminUserManagement() {
           {hasMore && !loading && (
             <motion.button
               onClick={() => loadUsers(false)}
-              className="w-full py-3 rounded-xl bg-[var(--delulu-surface)] border border-[var(--delulu-border)] text-[var(--delulu-text-secondary)]"
+              className="w-full py-3 rounded-xl bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)] text-[var(--synclulu-text-secondary)]"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
             >
@@ -451,7 +451,7 @@ function UserRow({
           ? 'border-yellow-500/50 bg-gradient-to-r from-yellow-500/10 to-purple-500/10'
           : isTargetAdmin
             ? 'border-purple-500/30 bg-purple-500/5'
-            : 'border-[var(--delulu-border)] bg-[var(--delulu-surface)]'
+            : 'border-[var(--synclulu-border)] bg-[var(--synclulu-surface)]'
       }`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -462,7 +462,7 @@ function UserRow({
         {/* User Info */}
         <div className="flex items-center gap-4 flex-1 min-w-0">
           {/* Avatar */}
-          <div className="w-12 h-12 rounded-full bg-[var(--delulu-soft)] flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="w-12 h-12 rounded-full bg-[var(--synclulu-soft)] flex items-center justify-center overflow-hidden flex-shrink-0">
             {user.photoURL ? (
               <img
                 src={user.photoURL}
@@ -480,11 +480,11 @@ function UserRow({
               <span className="font-semibold truncate">{user.username}</span>
               <RoleBadge role={user.role} isPremium={user.isPremium} size="sm" />
             </div>
-            <p className="text-sm text-[var(--delulu-text-secondary)] truncate">
+            <p className="text-sm text-[var(--synclulu-text-secondary)] truncate">
               {user.email}
             </p>
             {user.lastSeen && (
-              <p className="text-xs text-[var(--delulu-muted)]">
+              <p className="text-xs text-[var(--synclulu-muted)]">
                 Zuletzt: {user.lastSeen.toLocaleDateString('de-DE')}
               </p>
             )}
@@ -565,7 +565,7 @@ function ToggleSwitch({ label, enabled, onChange, color }: ToggleSwitchProps) {
       onClick={onChange}
       className="flex items-center gap-2"
     >
-      <span className="text-xs text-[var(--delulu-text-secondary)]">{label}</span>
+      <span className="text-xs text-[var(--synclulu-text-secondary)]">{label}</span>
       <motion.div
         className={`w-10 h-6 rounded-full p-1 transition-colors ${
           enabled ? colors[color] : 'bg-gray-600'

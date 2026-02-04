@@ -410,7 +410,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
       )}
 
       {/* Main Container */}
-      <div className="bg-[var(--delulu-card)] rounded-2xl p-4 border border-[var(--delulu-border)] theme-transition">
+      <div className="bg-[var(--synclulu-card)] rounded-2xl p-4 border border-[var(--synclulu-border)] theme-transition">
 
         {/* Error Display */}
         {error && (
@@ -475,16 +475,16 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
                   {/* Time */}
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    <span className="font-mono text-[var(--delulu-text)]">
+                    <span className="font-mono text-[var(--synclulu-text)]">
                       {formatTime(recordingTime)}
                     </span>
-                    <span className="text-[var(--delulu-muted)] text-sm">
+                    <span className="text-[var(--synclulu-muted)] text-sm">
                       / {formatTime(maxDuration)}
                     </span>
                   </div>
                 </div>
               ) : (
-                <p className="text-[var(--delulu-muted)] text-sm">
+                <p className="text-[var(--synclulu-muted)] text-sm">
                   Halten zum Aufnehmen (max {maxDuration}s)
                 </p>
               )}
@@ -494,7 +494,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
           /* Preview State */
           <div className="space-y-4">
             {/* Waveform Preview */}
-            <div className="flex items-center gap-2 h-12 bg-[var(--delulu-surface)] rounded-xl px-4">
+            <div className="flex items-center gap-2 h-12 bg-[var(--synclulu-surface)] rounded-xl px-4">
               <button
                 onClick={() => {
                   const audio = new Audio(audioUrl!);
@@ -516,7 +516,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
                 ))}
               </div>
 
-              <span className="font-mono text-sm text-[var(--delulu-muted)]">
+              <span className="font-mono text-sm text-[var(--synclulu-muted)]">
                 {formatTime(recordingTime)}
               </span>
             </div>
@@ -536,7 +536,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
                       <p className="text-sm font-medium text-amber-600 dark:text-amber-400">
                         Inhalt geprüft
                       </p>
-                      <p className="text-xs text-[var(--delulu-muted)] mt-1">
+                      <p className="text-xs text-[var(--synclulu-muted)] mt-1">
                         {safetyResult.reason || 'Einige Wörter könnten als unangemessen betrachtet werden.'}
                       </p>
                       {safetyResult.flaggedWords && safetyResult.flaggedWords.length > 0 && (
@@ -550,7 +550,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
                   <div className="flex gap-2 mt-3">
                     <button
                       onClick={cancelRecording}
-                      className="flex-1 px-3 py-2 rounded-lg bg-[var(--delulu-surface)] text-[var(--delulu-text)] text-sm hover:bg-[var(--delulu-card)] transition-colors"
+                      className="flex-1 px-3 py-2 rounded-lg bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] text-sm hover:bg-[var(--synclulu-card)] transition-colors"
                     >
                       Bearbeiten
                     </button>
@@ -570,7 +570,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
               <div className="flex items-center justify-between">
                 <button
                   onClick={cancelRecording}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--delulu-surface)] text-[var(--delulu-muted)] hover:bg-red-500/10 hover:text-red-500 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--synclulu-surface)] text-[var(--synclulu-muted)] hover:bg-red-500/10 hover:text-red-500 transition-colors"
                 >
                   <Trash2 size={18} />
                   Löschen
@@ -602,7 +602,7 @@ const VoiceMemoRecorder: React.FC<VoiceMemoRecorderProps> = ({
             )}
 
             {/* Expiry Note */}
-            <p className="text-center text-xs text-[var(--delulu-muted)] flex items-center justify-center gap-1">
+            <p className="text-center text-xs text-[var(--synclulu-muted)] flex items-center justify-center gap-1">
               <Clock size={12} />
               Verfällt in 24 Stunden
             </p>

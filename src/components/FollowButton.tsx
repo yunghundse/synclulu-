@@ -63,8 +63,8 @@ const FollowButton = ({
         disabled={isLoading}
         className={`
           flex items-center font-semibold rounded-xl
-          bg-delulu-violet text-white
-          hover:bg-delulu-violet-dark active:scale-95
+          bg-synclulu-violet text-white
+          hover:bg-synclulu-violet-dark active:scale-95
           transition-all duration-200
           disabled:opacity-50 disabled:cursor-not-allowed
           ${sizeClasses[size]}
@@ -95,7 +95,7 @@ const FollowButton = ({
           ? 'border-red-300 bg-red-50 text-red-600 hover:bg-red-100'
           : isMutual
             ? 'border-green-300 bg-green-50 text-green-700'
-            : 'border-delulu-violet/30 bg-delulu-violet/5 text-delulu-violet'
+            : 'border-synclulu-violet/30 bg-synclulu-violet/5 text-synclulu-violet'
         }
         ${sizeClasses[size]}
       `}

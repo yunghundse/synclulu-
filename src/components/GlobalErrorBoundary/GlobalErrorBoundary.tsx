@@ -198,7 +198,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             {/* Cloud Logo */}
             <div className="mt-8 text-center">
               <span className="text-4xl">☁️</span>
-              <p className="text-white/30 text-xs mt-2">Delulu v23.0</p>
+              <p className="text-white/30 text-xs mt-2">synclulu v23.0</p>
             </div>
           </motion.div>
         </div>

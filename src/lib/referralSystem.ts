@@ -1,5 +1,5 @@
 /**
- * DELULU DIGITAL OPERATING SYSTEM
+ * synclulu DIGITAL OPERATING SYSTEM
  * Referral System - 5 Exclusive Invite Links per User
  */
 
@@ -37,7 +37,7 @@ export interface UserReferralData {
 
 /**
  * Generate a unique referral code
- * Format: DELULU-XXXXX (5 alphanumeric characters)
+ * Format: synclulu-XXXXX (5 alphanumeric characters)
  */
 const generateReferralCode = (): string => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed confusing chars (0,O,1,I)
@@ -45,7 +45,7 @@ const generateReferralCode = (): string => {
   for (let i = 0; i < 5; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return `DELULU-${code}`;
+  return `synclulu-${code}`;
 };
 
 /**
@@ -336,8 +336,8 @@ export const copyReferralLink = async (code: string): Promise<boolean> => {
 export const shareReferralLink = async (code: string, username: string): Promise<boolean> => {
   const url = getReferralUrl(code);
   const shareData = {
-    title: 'Komm zu delulu! 🌟',
-    text: `${username} lädt dich zu delulu ein - dem hyperlocal Community Network! Nutze meinen exklusiven Einladungslink:`,
+    title: 'Komm zu synclulu! 🌟',
+    text: `${username} lädt dich zu synclulu ein - dem hyperlocal Community Network! Nutze meinen exklusiven Einladungslink:`,
     url,
   };
 

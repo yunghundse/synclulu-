@@ -1,5 +1,5 @@
 /**
- * DeluluApp.tsx
+ * syncluluApp.tsx
  * ☁️ NEBULA-SOVEREIGN v21.0 - Unified App Controller
  *
  * The One Component to Rule Them All:
@@ -517,16 +517,16 @@ const RoomView: React.FC<{
 RoomView.displayName = 'RoomView';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MAIN DELULU APP COMPONENT
+// MAIN synclulu APP COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 
-interface DeluluAppProps {
+interface syncluluAppProps {
   initialLocation?: Coordinates;
   onRoomJoin?: (roomId: string) => void;
   onRoomLeave?: () => void;
 }
 
-export const DeluluApp: React.FC<DeluluAppProps> = memo(({
+export const syncluluApp: React.FC<syncluluAppProps> = memo(({
   initialLocation,
   onRoomJoin,
   onRoomLeave,
@@ -562,7 +562,7 @@ export const DeluluApp: React.FC<DeluluAppProps> = memo(({
           });
         }
       } catch (error) {
-        console.error('[DeluluApp] Error fetching profile:', error);
+        console.error('[syncluluApp] Error fetching profile:', error);
       }
     }
 
@@ -598,7 +598,7 @@ export const DeluluApp: React.FC<DeluluAppProps> = memo(({
 
       setAvailableRooms(rooms);
     } catch (error) {
-      console.error('[DeluluApp] Error fetching rooms:', error);
+      console.error('[syncluluApp] Error fetching rooms:', error);
       setAvailableRooms([]);
     } finally {
       setLoadingRooms(false);
@@ -644,7 +644,7 @@ export const DeluluApp: React.FC<DeluluAppProps> = memo(({
 
       setFriends(friendProfiles);
     } catch (error) {
-      console.error('[DeluluApp] Error fetching friends:', error);
+      console.error('[syncluluApp] Error fetching friends:', error);
       setFriends([]);
     } finally {
       setLoadingFriends(false);
@@ -668,7 +668,7 @@ export const DeluluApp: React.FC<DeluluAppProps> = memo(({
   // Create room
   const handleCreateRoom = useCallback(() => {
     // This would open a room creation modal or navigate to room creation
-    console.log('[DeluluApp] Create room requested');
+    console.log('[syncluluApp] Create room requested');
     // For now, just log - integrate with existing room creation logic
   }, []);
 
@@ -726,7 +726,7 @@ export const DeluluApp: React.FC<DeluluAppProps> = memo(({
             loading={loadingFriends}
             onBack={() => setView('profile')}
             onSelectFriend={(friendId) => {
-              console.log('[DeluluApp] Friend selected:', friendId);
+              console.log('[syncluluApp] Friend selected:', friendId);
             }}
           />
         )}
@@ -750,6 +750,6 @@ export const DeluluApp: React.FC<DeluluAppProps> = memo(({
   );
 });
 
-DeluluApp.displayName = 'DeluluApp';
+syncluluApp.displayName = 'syncluluApp';
 
-export default DeluluApp;
+export default syncluluApp;

@@ -88,7 +88,10 @@ const geoToPosition = (
 // User Position Marker
 const UserMarker = memo(function UserMarker() {
   return (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+    <div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 will-change-transform"
+      style={{ transform: 'translate(-50%, -50%) translateZ(0)' }}
+    >
       {/* Outer Pulse */}
       <motion.div
         className="absolute inset-0 rounded-full"
@@ -146,11 +149,11 @@ const HotspotMarker = memo(function HotspotMarker({
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       whileTap={{ scale: 0.9 }}
-      className="absolute z-10"
+      className="absolute z-10 will-change-transform"
       style={{
         left: `${position.x}%`,
         top: `${position.y}%`,
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -50%) translateZ(0)',
       }}
     >
       {/* Selection Ring */}
@@ -267,15 +270,15 @@ const MapGrid = memo(function MapGrid() {
   );
 });
 
-// Radar Sweep Animation
+// Radar Sweep Animation - GPU Accelerated
 const RadarSweep = memo(function RadarSweep() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <motion.div
-        className="absolute left-1/2 top-1/2 w-full h-full origin-center"
+        className="absolute left-1/2 top-1/2 w-full h-full origin-center will-change-transform"
         style={{
           background: 'conic-gradient(from 0deg, transparent 0deg, rgba(139, 92, 246, 0.15) 30deg, transparent 60deg)',
-          transform: 'translate(-50%, -50%)',
+          transform: 'translate(-50%, -50%) translateZ(0)',
         }}
         animate={{ rotate: 360 }}
         transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}

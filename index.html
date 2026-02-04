@@ -12,7 +12,7 @@
     <!-- Early theme detection to prevent flash -->
     <script>
       (function() {
-        const stored = localStorage.getItem('delulu-theme');
+        const stored = localStorage.getItem('synclulu-theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isDark = stored === 'dark' || (stored !== 'light' && prefersDark);
         document.documentElement.classList.add(isDark ? 'dark' : 'light');
@@ -35,9 +35,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Satoshi Font alternative via CSS with Inter Black (900) for Nebula System -->
+    <!-- Satoshi Font - Premium Typography -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+    <style>
+      /* Luxury Typography System */
+      .font-satoshi { font-family: 'Satoshi', 'SF Pro Display', 'Inter', -apple-system, sans-serif; }
+      .luxury-heading {
+        font-family: 'Satoshi', 'SF Pro Display', sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+      .luxury-title {
+        font-family: 'Satoshi', 'SF Pro Display', sans-serif;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+    </style>
 
-    <title>delulu – Connect in the Clouds</title>
+    <title>synclulu – Connect in the Clouds</title>
     <meta name="description" content="Echte Begegnungen in deiner Nachbarschaft. Hyperlokal. Anonym. Algorithmus-frei." />
 
     <!-- Structured Data - Copyright -->
@@ -45,7 +61,7 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Delulu",
+      "name": "synclulu",
       "description": "Echte Begegnungen in deiner Nachbarschaft",
       "author": {
         "@type": "Organization",

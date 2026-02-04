@@ -40,7 +40,7 @@ const ChatGatekeeper = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-delulu-violet to-purple-600 p-6 text-white">
+        <div className="relative bg-gradient-to-br from-synclulu-violet to-purple-600 p-6 text-white">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
@@ -74,30 +74,30 @@ const ChatGatekeeper = ({
             onClick={() => setSelectedMode('anonymous')}
             className={`w-full p-5 rounded-2xl border-2 text-left transition-all duration-200 ${
               selectedMode === 'anonymous'
-                ? 'border-delulu-violet bg-delulu-violet/5 shadow-lg scale-[1.02]'
-                : 'border-gray-200 hover:border-delulu-violet/50 hover:bg-gray-50'
+                ? 'border-synclulu-violet bg-synclulu-violet/5 shadow-lg scale-[1.02]'
+                : 'border-gray-200 hover:border-synclulu-violet/50 hover:bg-gray-50'
             }`}
           >
             <div className="flex items-start gap-4">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                 selectedMode === 'anonymous'
-                  ? 'bg-delulu-violet text-white'
+                  ? 'bg-synclulu-violet text-white'
                   : 'bg-gray-100 text-gray-500'
               }`}>
                 <EyeOff size={24} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-display font-bold text-lg text-delulu-text">
+                  <h3 className="font-display font-bold text-lg text-synclulu-text">
                     Anonym
                   </h3>
                   <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-semibold rounded-full">
                     EMPFOHLEN
                   </span>
                 </div>
-                <p className="text-sm text-delulu-muted mt-1">
+                <p className="text-sm text-synclulu-muted mt-1">
                   Dein Profilbild wird verschleiert und du erscheinst als
-                  <span className="font-semibold text-delulu-violet ml-1">
+                  <span className="font-semibold text-synclulu-violet ml-1">
                     "{user?.anonymousAlias || 'Wanderer_' + Math.floor(Math.random() * 9999)}"
                   </span>
                 </p>
@@ -109,7 +109,7 @@ const ChatGatekeeper = ({
                 </div>
               </div>
               {selectedMode === 'anonymous' && (
-                <div className="w-6 h-6 rounded-full bg-delulu-violet flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-synclulu-violet flex items-center justify-center">
                   <Sparkles size={14} className="text-white" />
                 </div>
               )}
@@ -121,14 +121,14 @@ const ChatGatekeeper = ({
             onClick={() => setSelectedMode('public')}
             className={`w-full p-5 rounded-2xl border-2 text-left transition-all duration-200 ${
               selectedMode === 'public'
-                ? 'border-delulu-violet bg-delulu-violet/5 shadow-lg scale-[1.02]'
-                : 'border-gray-200 hover:border-delulu-violet/50 hover:bg-gray-50'
+                ? 'border-synclulu-violet bg-synclulu-violet/5 shadow-lg scale-[1.02]'
+                : 'border-gray-200 hover:border-synclulu-violet/50 hover:bg-gray-50'
             }`}
           >
             <div className="flex items-start gap-4">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                 selectedMode === 'public'
-                  ? 'bg-delulu-violet text-white'
+                  ? 'bg-synclulu-violet text-white'
                   : 'bg-gray-100 text-gray-500'
               }`}>
                 {user?.avatarUrl ? (
@@ -142,12 +142,12 @@ const ChatGatekeeper = ({
                 )}
               </div>
               <div className="flex-1">
-                <h3 className="font-display font-bold text-lg text-delulu-text">
+                <h3 className="font-display font-bold text-lg text-synclulu-text">
                   Öffentlich
                 </h3>
-                <p className="text-sm text-delulu-muted mt-1">
+                <p className="text-sm text-synclulu-muted mt-1">
                   Du erscheinst als
-                  <span className="font-semibold text-delulu-text ml-1">
+                  <span className="font-semibold text-synclulu-text ml-1">
                     @{user?.username || 'dein_name'}
                   </span>
                   {' '}mit deinem echten Profilbild
@@ -160,7 +160,7 @@ const ChatGatekeeper = ({
                 </div>
               </div>
               {selectedMode === 'public' && (
-                <div className="w-6 h-6 rounded-full bg-delulu-violet flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-synclulu-violet flex items-center justify-center">
                   <Sparkles size={14} className="text-white" />
                 </div>
               )}
@@ -176,10 +176,10 @@ const ChatGatekeeper = ({
                 onChange={(e) => setRememberChoice(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-delulu-violet transition-colors" />
+              <div className="w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-synclulu-violet transition-colors" />
               <div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
             </div>
-            <span className="text-sm text-delulu-muted">
+            <span className="text-sm text-synclulu-muted">
               Auswahl für diesen Chat merken (24h)
             </span>
           </label>
@@ -195,7 +195,7 @@ const ChatGatekeeper = ({
               flex items-center justify-center gap-2
               transition-all duration-200
               ${selectedMode
-                ? 'bg-gradient-to-r from-delulu-violet to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
+                ? 'bg-gradient-to-r from-synclulu-violet to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }
             `}
@@ -216,7 +216,7 @@ const ChatGatekeeper = ({
             {selectedMode && <ChevronRight size={20} />}
           </button>
 
-          <p className="text-center text-xs text-delulu-muted mt-4">
+          <p className="text-center text-xs text-synclulu-muted mt-4">
             Du kannst deine Identität jederzeit in den Einstellungen ändern
           </p>
         </div>

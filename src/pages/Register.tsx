@@ -632,7 +632,7 @@ const Register = () => {
                   type="text"
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  placeholder="DELULU-XXXXX"
+                  placeholder="synclulu-XXXXX"
                   maxLength={12}
                   className={`w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 rounded-xl focus:outline-none transition-all text-gray-900 font-mono ${
                     referralValid === true

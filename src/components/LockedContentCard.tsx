@@ -1,5 +1,5 @@
 /**
- * DELULU LOCKED CONTENT CARD
+ * synclulu LOCKED CONTENT CARD
  * "Secret Bubble" with blur effect and unlock options
  */
 

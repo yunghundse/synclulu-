@@ -186,7 +186,7 @@ const VoiceMemoPlayer: React.FC<VoiceMemoPlayerProps> = ({
           relative max-w-[280px] rounded-2xl p-4
           ${isOwn
             ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white'
-            : 'bg-[var(--delulu-card)] text-[var(--delulu-text)] border border-[var(--delulu-border)]'
+            : 'bg-[var(--synclulu-card)] text-[var(--synclulu-text)] border border-[var(--synclulu-border)]'
           }
         `}
       >
@@ -218,10 +218,10 @@ const VoiceMemoPlayer: React.FC<VoiceMemoPlayerProps> = ({
           {/* Header */}
           <div className="flex items-center gap-2 mb-3">
             <Cloud size={16} className={isOwn ? 'text-white/80' : 'text-violet-500'} />
-            <span className={`text-xs font-medium ${isOwn ? 'text-white/80' : 'text-[var(--delulu-muted)]'}`}>
+            <span className={`text-xs font-medium ${isOwn ? 'text-white/80' : 'text-[var(--synclulu-muted)]'}`}>
               Cloud-Memo
             </span>
-            <span className={`text-xs ml-auto flex items-center gap-1 ${isOwn ? 'text-white/60' : 'text-[var(--delulu-muted)]'}`}>
+            <span className={`text-xs ml-auto flex items-center gap-1 ${isOwn ? 'text-white/60' : 'text-[var(--synclulu-muted)]'}`}>
               <Clock size={10} />
               {timeRemaining}
             </span>
@@ -267,7 +267,7 @@ const VoiceMemoPlayer: React.FC<VoiceMemoPlayerProps> = ({
             </div>
 
             {/* Duration */}
-            <span className={`text-sm font-mono ${isOwn ? 'text-white/80' : 'text-[var(--delulu-muted)]'}`}>
+            <span className={`text-sm font-mono ${isOwn ? 'text-white/80' : 'text-[var(--synclulu-muted)]'}`}>
               {formatDuration(memo.duration)}
             </span>
           </div>

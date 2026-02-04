@@ -1,5 +1,5 @@
 /**
- * DELULU NEW LOCKED CONTENT
+ * synclulu NEW LOCKED CONTENT
  * Create "Secret Bubbles" - locked content for monetization
  */
 
@@ -288,7 +288,7 @@ const NewLockedContent = () => {
               </div>
               <div className="flex-1 text-left">
                 <p className="font-semibold">Mit Coins</p>
-                <p className="text-sm text-white/60">User zahlen Delulu Coins</p>
+                <p className="text-sm text-white/60">User zahlen synclulu Coins</p>
               </div>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                 unlockMethods.includes('coins') ? 'bg-amber-500' : 'bg-white/20'

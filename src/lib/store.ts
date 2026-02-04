@@ -1,5 +1,5 @@
 /**
- * DELULU STORE
+ * synclulu STORE
  * "Permanent Identity" - State management with persistence
  *
  * KEY FEATURES:
@@ -15,7 +15,7 @@ import { Language } from './i18n/translations';
 
 // Detect browser language
 const getBrowserLanguage = (): Language => {
-  const stored = localStorage.getItem('delulu-language') as Language;
+  const stored = localStorage.getItem('synclulu-language') as Language;
   if (stored && ['de', 'en', 'es', 'fr', 'pt'].includes(stored)) {
     return stored;
   }
@@ -125,7 +125,7 @@ export const useStore = create<AppState>()(
       setActiveChat: (activeChat) => set({ activeChat }),
       setIsLoading: (isLoading) => set({ isLoading }),
       setLanguage: (language) => {
-        localStorage.setItem('delulu-language', language);
+        localStorage.setItem('synclulu-language', language);
         set({ language });
       },
       showXPGain: (amount, reason) =>
@@ -151,7 +151,7 @@ export const useStore = create<AppState>()(
       setNewsTicker: (newsTicker) => set({ newsTicker }),
     }),
     {
-      name: 'delulu-store', // LocalStorage key
+      name: 'synclulu-store', // LocalStorage key
       storage: createJSONStorage(() => localStorage),
       // PERMANENT IDENTITY: Only persist user identity data (including avatar)
       partialize: (state) => ({

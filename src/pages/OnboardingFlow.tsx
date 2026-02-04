@@ -1,5 +1,5 @@
 /**
- * DELULU ONBOARDING FLOW v5.0
+ * synclulu ONBOARDING FLOW v5.0
  * "From Stranger to Dreamer in 3 Steps"
  *
  * FEATURES:
@@ -220,7 +220,7 @@ const Header = ({ theme, onExit, showBack, onBack }: HeaderProps) => {
             WebkitTextFillColor: 'transparent'
           }}
         >
-          Delulu
+          synclulu
         </span>
       </div>
 

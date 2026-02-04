@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.delulu',
-  appName: 'Delulu',
+  appId: 'app.synclulu',
+  appName: 'synclulu',
   webDir: 'dist',
   ios: {
     minVersion: '15.0',

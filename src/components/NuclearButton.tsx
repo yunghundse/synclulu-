@@ -250,28 +250,28 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-md mx-auto bg-[var(--delulu-card)] rounded-3xl border border-[var(--delulu-border)] shadow-2xl z-50 overflow-hidden theme-transition"
+              className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-md mx-auto bg-[var(--synclulu-card)] rounded-3xl border border-[var(--synclulu-border)] shadow-2xl z-50 overflow-hidden theme-transition"
             >
               {/* Header */}
-              <div className="p-4 border-b border-[var(--delulu-border)] flex items-center justify-between">
+              <div className="p-4 border-b border-[var(--synclulu-border)] flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
                     <ShieldAlert size={20} className="text-red-500" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[var(--delulu-text)]">
+                    <h3 className="font-semibold text-[var(--synclulu-text)]">
                       {targetUserName} melden
                     </h3>
-                    <p className="text-xs text-[var(--delulu-muted)]">
+                    <p className="text-xs text-[var(--synclulu-muted)]">
                       Wähle einen Grund für die Meldung
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={handleClose}
-                  className="p-2 rounded-full hover:bg-[var(--delulu-surface)] transition-colors"
+                  className="p-2 rounded-full hover:bg-[var(--synclulu-surface)] transition-colors"
                 >
-                  <X size={20} className="text-[var(--delulu-muted)]" />
+                  <X size={20} className="text-[var(--synclulu-muted)]" />
                 </button>
               </div>
 
@@ -290,10 +290,10 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                   >
                     <Check size={32} className="text-emerald-500" />
                   </motion.div>
-                  <h4 className="font-semibold text-[var(--delulu-text)] mb-2">
+                  <h4 className="font-semibold text-[var(--synclulu-text)] mb-2">
                     Meldung gespeichert
                   </h4>
-                  <p className="text-sm text-[var(--delulu-muted)]">
+                  <p className="text-sm text-[var(--synclulu-muted)]">
                     Der Vorfall wurde sicher dokumentiert. Unser Team wird ihn prüfen.
                   </p>
                 </motion.div>
@@ -316,7 +316,7 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                           w-full p-4 rounded-xl border text-left transition-all
                           ${selectedType === option.type
                             ? severityColors[option.severity]
-                            : 'border-[var(--delulu-border)] hover:bg-[var(--delulu-surface)]'
+                            : 'border-[var(--synclulu-border)] hover:bg-[var(--synclulu-surface)]'
                           }
                         `}
                       >
@@ -325,7 +325,7 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                             flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center
                             ${selectedType === option.type
                               ? severityColors[option.severity]
-                              : 'bg-[var(--delulu-surface)]'
+                              : 'bg-[var(--synclulu-surface)]'
                             }
                           `}>
                             {option.icon}
@@ -335,7 +335,7 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                               <span className={`font-medium ${
                                 selectedType === option.type
                                   ? ''
-                                  : 'text-[var(--delulu-text)]'
+                                  : 'text-[var(--synclulu-text)]'
                               }`}>
                                 {option.label}
                               </span>
@@ -345,7 +345,7 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-[var(--delulu-muted)] mt-1">
+                            <p className="text-xs text-[var(--synclulu-muted)] mt-1">
                               {option.description}
                             </p>
                           </div>
@@ -367,17 +367,17 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder="Optionale Beschreibung des Vorfalls..."
-                          className="w-full p-3 rounded-xl bg-[var(--delulu-surface)] border border-[var(--delulu-border)] text-[var(--delulu-text)] placeholder-[var(--delulu-muted)] resize-none h-24 focus:outline-none focus:ring-2 focus:ring-red-500/30"
+                          className="w-full p-3 rounded-xl bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)] text-[var(--synclulu-text)] placeholder-[var(--synclulu-muted)] resize-none h-24 focus:outline-none focus:ring-2 focus:ring-red-500/30"
                         />
                       </motion.div>
                     )}
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="p-4 border-t border-[var(--delulu-border)] flex gap-3">
+                  <div className="p-4 border-t border-[var(--synclulu-border)] flex gap-3">
                     <button
                       onClick={handleClose}
-                      className="flex-1 py-3 rounded-xl bg-[var(--delulu-surface)] text-[var(--delulu-text)] font-medium hover:bg-[var(--delulu-border)] transition-colors"
+                      className="flex-1 py-3 rounded-xl bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] font-medium hover:bg-[var(--synclulu-border)] transition-colors"
                     >
                       Abbrechen
                     </button>
@@ -389,7 +389,7 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                         flex items-center justify-center gap-2
                         ${selectedType
                           ? 'bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600'
-                          : 'bg-[var(--delulu-surface)] text-[var(--delulu-muted)] cursor-not-allowed'
+                          : 'bg-[var(--synclulu-surface)] text-[var(--synclulu-muted)] cursor-not-allowed'
                         }
                       `}
                     >
@@ -410,7 +410,7 @@ const NuclearButton: React.FC<NuclearButtonProps> = ({
                   {/* Quick Report Buttons */}
                   {!selectedType && (
                     <div className="px-4 pb-4">
-                      <p className="text-xs text-center text-[var(--delulu-muted)] mb-2">
+                      <p className="text-xs text-center text-[var(--synclulu-muted)] mb-2">
                         Oder schnell melden:
                       </p>
                       <div className="flex gap-2">

@@ -1,5 +1,5 @@
 /**
- * DELULU USERNAME SYSTEM
+ * synclulu USERNAME SYSTEM
  * Username change limit: 30 days between changes
  * "Solid Identity" - Your username is your brand
  */

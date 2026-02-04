@@ -11,7 +11,7 @@
  * - Expansion animations with messaging
  * - User markers within the aura
  *
- * @author Delulu Engineering
+ * @author synclulu Engineering
  * @version 2.0.0
  */
 

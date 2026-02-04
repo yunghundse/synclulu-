@@ -1,5 +1,5 @@
 /**
- * DELULU COPY PROTECTION SYSTEM
+ * synclulu COPY PROTECTION SYSTEM
  * Schutzmechanismen gegen Scraping, Kopieren & AI-Training
  *
  * Copyright © 2025-2026 Butterbread UG. Alle Rechte vorbehalten.
@@ -93,7 +93,7 @@ export const initializeCopyProtection = () => {
     // Add watermark (safe)
     addWatermark();
 
-    console.log('%c🛡️ Delulu Copy Protection Active', 'color: #A78BFA; font-size: 14px; font-weight: bold;');
+    console.log('%c🛡️ synclulu Copy Protection Active', 'color: #A78BFA; font-size: 14px; font-weight: bold;');
   } catch (error) {
     console.warn('Copy protection initialization failed:', error);
     // Don't block app loading if protection fails
@@ -121,7 +121,7 @@ const injectAIOptOutMetaTags = () => {
   script.textContent = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    'name': 'Delulu',
+    'name': 'synclulu',
     'author': {
       '@type': 'Organization',
       'name': 'Butterbread UG',
@@ -132,7 +132,7 @@ const injectAIOptOutMetaTags = () => {
       'name': 'Butterbread UG',
     },
     'copyrightYear': '2025',
-    'license': 'https://delulu.app/terms',
+    'license': 'https://synclulu.app/terms',
     'usageInfo': 'All content is protected by copyright. AI training, scraping, and unauthorized reproduction is prohibited.',
   });
   document.head.appendChild(script);
@@ -311,7 +311,7 @@ const logScraperAttempt = (details: string) => {
  */
 const addWatermark = () => {
   const watermark = document.createElement('div');
-  watermark.id = 'delulu-watermark';
+  watermark.id = 'synclulu-watermark';
   watermark.style.cssText = `
     position: fixed;
     pointer-events: none;

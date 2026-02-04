@@ -143,7 +143,7 @@ export async function generateDeviceFingerprint(): Promise<string> {
     if (ctx) {
       ctx.textBaseline = 'top';
       ctx.font = '14px Arial';
-      ctx.fillText('Delulu Aegis 🛡️', 2, 2);
+      ctx.fillText('synclulu Aegis 🛡️', 2, 2);
       components.push(canvas.toDataURL().slice(-50));
     }
   } catch {

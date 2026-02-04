@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * DELULU NATIVE THEME SYSTEM - Apple-Standard Dark/Light Mode
+ * synclulu NATIVE THEME SYSTEM - Apple-Standard Dark/Light Mode
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * Features:
@@ -26,7 +26,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = 'delulu-theme';
+const THEME_STORAGE_KEY = 'synclulu-theme';
 
 // Get system preference
 const getSystemTheme = (): 'light' | 'dark' => {

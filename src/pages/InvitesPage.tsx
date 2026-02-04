@@ -63,7 +63,7 @@ const QRModal: React.FC<QRModalProps> = ({ code, onClose }) => {
   useEffect(() => {
     const generateQR = async () => {
       try {
-        const url = await QRCode.toDataURL(`https://delulu.app/join/${code}`, {
+        const url = await QRCode.toDataURL(`https://synclulu.app/join/${code}`, {
           width: 256,
           margin: 2,
           color: {
@@ -91,31 +91,31 @@ const QRModal: React.FC<QRModalProps> = ({ code, onClose }) => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-[var(--delulu-card)] rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[var(--delulu-border)]"
+        className="bg-[var(--synclulu-card)] rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[var(--synclulu-border)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-[var(--delulu-text)]">QR-Code scannen</h3>
+          <h3 className="text-xl font-bold text-[var(--synclulu-text)]">QR-Code scannen</h3>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[var(--delulu-bg)] flex items-center justify-center hover:opacity-80 transition-opacity"
+            className="w-8 h-8 rounded-full bg-[var(--synclulu-bg)] flex items-center justify-center hover:opacity-80 transition-opacity"
           >
-            <X size={16} className="text-[var(--delulu-muted)]" />
+            <X size={16} className="text-[var(--synclulu-muted)]" />
           </button>
         </div>
 
-        <div className="bg-gradient-to-br from-[var(--delulu-accent)]/10 to-pink-500/10 rounded-2xl p-6 flex items-center justify-center mb-4">
+        <div className="bg-gradient-to-br from-[var(--synclulu-accent)]/10 to-pink-500/10 rounded-2xl p-6 flex items-center justify-center mb-4">
           {qrDataUrl ? (
             <img src={qrDataUrl} alt="QR Code" className="w-48 h-48 rounded-xl" />
           ) : (
-            <div className="w-48 h-48 bg-[var(--delulu-bg)] animate-pulse rounded-xl" />
+            <div className="w-48 h-48 bg-[var(--synclulu-bg)] animate-pulse rounded-xl" />
           )}
         </div>
 
-        <p className="text-center text-[var(--delulu-muted)] text-sm mb-2">
+        <p className="text-center text-[var(--synclulu-muted)] text-sm mb-2">
           Lass deine Freunde diesen Code scannen
         </p>
-        <p className="text-center font-mono text-lg font-bold text-[var(--delulu-accent)]">
+        <p className="text-center font-mono text-lg font-bold text-[var(--synclulu-accent)]">
           {code}
         </p>
       </motion.div>
@@ -156,20 +156,20 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend }) => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-3 p-3 bg-[var(--delulu-card)] rounded-2xl shadow-sm border border-[var(--delulu-border)]"
+      className="flex items-center gap-3 p-3 bg-[var(--synclulu-card)] rounded-2xl shadow-sm border border-[var(--synclulu-border)]"
     >
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--delulu-accent)]/20 to-pink-500/20 flex items-center justify-center overflow-hidden">
+      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--synclulu-accent)]/20 to-pink-500/20 flex items-center justify-center overflow-hidden">
         {friend.avatar ? (
           <img src={friend.avatar} alt="" className="w-full h-full object-cover" />
         ) : (
-          <Users size={20} className="text-[var(--delulu-accent)]" />
+          <Users size={20} className="text-[var(--synclulu-accent)]" />
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-[var(--delulu-text)] truncate">
+        <p className="font-semibold text-[var(--synclulu-text)] truncate">
           {friend.displayName || friend.username || 'Anonym'}
         </p>
-        <p className="text-xs text-[var(--delulu-muted)]">
+        <p className="text-xs text-[var(--synclulu-muted)]">
           {friend.invitedAt.toLocaleDateString('de-DE')}
         </p>
       </div>
@@ -194,8 +194,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({ milestone, currentCount }
   <div
     className={`relative p-4 rounded-2xl border transition-all ${
       milestone.unlocked
-        ? 'bg-gradient-to-br from-[var(--delulu-accent)]/10 to-pink-500/10 border-[var(--delulu-accent)]/30 shadow-lg'
-        : 'bg-[var(--delulu-card)] border-[var(--delulu-border)] opacity-60'
+        ? 'bg-gradient-to-br from-[var(--synclulu-accent)]/10 to-pink-500/10 border-[var(--synclulu-accent)]/30 shadow-lg'
+        : 'bg-[var(--synclulu-card)] border-[var(--synclulu-border)] opacity-60'
     }`}
   >
     {milestone.unlocked && (
@@ -206,15 +206,15 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({ milestone, currentCount }
 
     <div className="flex items-center gap-3 mb-2">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-        milestone.unlocked ? 'bg-[var(--delulu-accent)] text-white' : 'bg-[var(--delulu-bg)] text-[var(--delulu-muted)]'
+        milestone.unlocked ? 'bg-[var(--synclulu-accent)] text-white' : 'bg-[var(--synclulu-bg)] text-[var(--synclulu-muted)]'
       }`}>
         {milestone.icon}
       </div>
       <div>
-        <p className={`font-bold ${milestone.unlocked ? 'text-[var(--delulu-text)]' : 'text-[var(--delulu-muted)]'}`}>
+        <p className={`font-bold ${milestone.unlocked ? 'text-[var(--synclulu-text)]' : 'text-[var(--synclulu-muted)]'}`}>
           {milestone.count} Freunde
         </p>
-        <p className={`text-xs ${milestone.unlocked ? 'text-[var(--delulu-accent)]' : 'text-[var(--delulu-muted)]'}`}>
+        <p className={`text-xs ${milestone.unlocked ? 'text-[var(--synclulu-accent)]' : 'text-[var(--synclulu-muted)]'}`}>
           {milestone.reward}
         </p>
       </div>
@@ -222,14 +222,14 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({ milestone, currentCount }
 
     {!milestone.unlocked && (
       <div className="mt-2">
-        <div className="h-1.5 bg-[var(--delulu-bg)] rounded-full overflow-hidden">
+        <div className="h-1.5 bg-[var(--synclulu-bg)] rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(100, (currentCount / milestone.count) * 100)}%` }}
-            className="h-full bg-[var(--delulu-accent)] rounded-full"
+            className="h-full bg-[var(--synclulu-accent)] rounded-full"
           />
         </div>
-        <p className="text-[10px] text-[var(--delulu-muted)] mt-1 text-right">
+        <p className="text-[10px] text-[var(--synclulu-muted)] mt-1 text-right">
           {currentCount}/{milestone.count}
         </p>
       </div>
@@ -273,7 +273,7 @@ const InvitesPage = () => {
         const userDoc = await getDoc(doc(db, 'users', user.id));
         if (userDoc.exists()) {
           const data = userDoc.data();
-          setInviteCode(data.referralCode || `DELULU-${user.id.slice(0, 6).toUpperCase()}`);
+          setInviteCode(data.referralCode || `synclulu-${user.id.slice(0, 6).toUpperCase()}`);
           setRemainingInvites(data.remainingInvites ?? 5);
           setTotalInvites(data.totalInvites ?? 5);
         }
@@ -325,10 +325,10 @@ const InvitesPage = () => {
   const activeFriendsCount = friends.filter(f => f.status !== 'pending').length;
 
   return (
-    <div className="min-h-screen bg-[var(--delulu-bg)] theme-transition">
+    <div className="min-h-screen bg-[var(--synclulu-bg)] theme-transition">
       {/* Background Effect */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--delulu-accent)]/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--synclulu-accent)]/5 via-transparent to-transparent" />
       </div>
 
       {/* Header */}
@@ -337,22 +337,22 @@ const InvitesPage = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] shadow-sm border border-[var(--delulu-border)] flex items-center justify-center hover:opacity-80 transition-opacity"
+            className="w-10 h-10 rounded-xl bg-[var(--synclulu-card)] shadow-sm border border-[var(--synclulu-border)] flex items-center justify-center hover:opacity-80 transition-opacity"
           >
-            <ChevronLeft size={20} className="text-[var(--delulu-muted)]" />
+            <ChevronLeft size={20} className="text-[var(--synclulu-muted)]" />
           </motion.button>
           <div>
-            <h1 className="font-display text-2xl font-bold text-[var(--delulu-text)]">
+            <h1 className="font-display text-2xl font-bold text-[var(--synclulu-text)]">
               Einladungen
             </h1>
-            <p className="text-sm text-[var(--delulu-muted)]">
+            <p className="text-sm text-[var(--synclulu-muted)]">
               Lade Freunde ein & erhalte Rewards
             </p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 p-1 bg-[var(--delulu-card)] rounded-2xl border border-[var(--delulu-border)]">
+        <div className="flex gap-2 p-1 bg-[var(--synclulu-card)] rounded-2xl border border-[var(--synclulu-border)]">
           {[
             { key: 'card', label: 'Ticket', icon: Gift },
             { key: 'friends', label: 'Freunde', icon: Users },
@@ -369,8 +369,8 @@ const InvitesPage = () => {
                 }}
                 className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
                   isActive
-                    ? 'bg-[var(--delulu-accent)] text-white shadow-md'
-                    : 'text-[var(--delulu-muted)] hover:text-[var(--delulu-text)]'
+                    ? 'bg-[var(--synclulu-accent)] text-white shadow-md'
+                    : 'text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)]'
                 }`}
               >
                 <Icon size={16} />
@@ -385,7 +385,7 @@ const InvitesPage = () => {
       <div className="px-4 pb-32">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-10 h-10 border-4 border-[var(--delulu-accent)] border-t-transparent rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-[var(--synclulu-accent)] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <>
@@ -410,17 +410,17 @@ const InvitesPage = () => {
 
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-[var(--delulu-card)] rounded-2xl p-4 text-center shadow-sm border border-[var(--delulu-border)]">
-                      <p className="text-2xl font-bold text-[var(--delulu-accent)]">{friends.length}</p>
-                      <p className="text-[10px] text-[var(--delulu-muted)] uppercase tracking-wider">Eingeladen</p>
+                    <div className="bg-[var(--synclulu-card)] rounded-2xl p-4 text-center shadow-sm border border-[var(--synclulu-border)]">
+                      <p className="text-2xl font-bold text-[var(--synclulu-accent)]">{friends.length}</p>
+                      <p className="text-[10px] text-[var(--synclulu-muted)] uppercase tracking-wider">Eingeladen</p>
                     </div>
-                    <div className="bg-[var(--delulu-card)] rounded-2xl p-4 text-center shadow-sm border border-[var(--delulu-border)]">
+                    <div className="bg-[var(--synclulu-card)] rounded-2xl p-4 text-center shadow-sm border border-[var(--synclulu-border)]">
                       <p className="text-2xl font-bold text-green-500">{activeFriendsCount}</p>
-                      <p className="text-[10px] text-[var(--delulu-muted)] uppercase tracking-wider">Aktiv</p>
+                      <p className="text-[10px] text-[var(--synclulu-muted)] uppercase tracking-wider">Aktiv</p>
                     </div>
-                    <div className="bg-[var(--delulu-card)] rounded-2xl p-4 text-center shadow-sm border border-[var(--delulu-border)]">
+                    <div className="bg-[var(--synclulu-card)] rounded-2xl p-4 text-center shadow-sm border border-[var(--synclulu-border)]">
                       <p className="text-2xl font-bold text-amber-500">{remainingInvites}</p>
-                      <p className="text-[10px] text-[var(--delulu-muted)] uppercase tracking-wider">Übrig</p>
+                      <p className="text-[10px] text-[var(--synclulu-muted)] uppercase tracking-wider">Übrig</p>
                     </div>
                   </div>
                 </motion.div>
@@ -437,11 +437,11 @@ const InvitesPage = () => {
                 >
                   {friends.length === 0 ? (
                     <div className="text-center py-16">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-[var(--delulu-card)] flex items-center justify-center border border-[var(--delulu-border)]">
-                        <Users size={32} className="text-[var(--delulu-muted)]" />
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-[var(--synclulu-card)] flex items-center justify-center border border-[var(--synclulu-border)]">
+                        <Users size={32} className="text-[var(--synclulu-muted)]" />
                       </div>
-                      <p className="text-[var(--delulu-muted)] mb-2">Noch keine Einladungen</p>
-                      <p className="text-sm text-[var(--delulu-muted)] opacity-60">
+                      <p className="text-[var(--synclulu-muted)] mb-2">Noch keine Einladungen</p>
+                      <p className="text-sm text-[var(--synclulu-muted)] opacity-60">
                         Teile deinen Code und lade Freunde ein!
                       </p>
                     </div>
@@ -462,7 +462,7 @@ const InvitesPage = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-4"
                 >
-                  <div className="bg-gradient-to-r from-[var(--delulu-accent)] to-pink-500 rounded-2xl p-4 text-white">
+                  <div className="bg-gradient-to-r from-[var(--synclulu-accent)] to-pink-500 rounded-2xl p-4 text-white">
                     <div className="flex items-center gap-3 mb-2">
                       <Sparkles size={24} />
                       <div>

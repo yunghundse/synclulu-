@@ -66,7 +66,7 @@ const ProfileVisitors = ({
     return (
       <div className="glass-card rounded-2xl p-4 text-center">
         <Eye size={24} className="mx-auto text-gray-300 mb-2" />
-        <p className="text-sm text-delulu-muted">Noch keine Besucher</p>
+        <p className="text-sm text-synclulu-muted">Noch keine Besucher</p>
       </div>
     );
   }
@@ -83,8 +83,8 @@ const ProfileVisitors = ({
               <Eye size={20} className="text-purple-500" />
             </div>
             <div>
-              <h3 className="font-semibold text-delulu-text">Wolken-Besucher</h3>
-              <p className="text-xs text-delulu-muted">
+              <h3 className="font-semibold text-synclulu-text">Wolken-Besucher</h3>
+              <p className="text-xs text-synclulu-muted">
                 {stats.todayVisits} heute • {stats.totalVisits} gesamt
               </p>
             </div>
@@ -135,10 +135,10 @@ const ProfileVisitors = ({
 
                 {/* Info */}
                 <div className="flex-1 text-left min-w-0">
-                  <p className="font-medium text-delulu-text truncate">
+                  <p className="font-medium text-synclulu-text truncate">
                     {visit.isAnonymous ? 'Jemand Mysteriöses' : visit.visitorUsername}
                   </p>
-                  <div className="flex items-center gap-1 text-xs text-delulu-muted">
+                  <div className="flex items-center gap-1 text-xs text-synclulu-muted">
                     <Clock size={12} />
                     <span>{formatLastSeen(visit.visitedAt)}</span>
                   </div>
@@ -154,7 +154,7 @@ const ProfileVisitors = ({
         ) : (
           <div className="text-center py-4">
             <Users size={24} className="mx-auto text-gray-300 mb-2" />
-            <p className="text-sm text-delulu-muted">Keine Besucher anzeigbar</p>
+            <p className="text-sm text-synclulu-muted">Keine Besucher anzeigbar</p>
           </div>
         )}
 
@@ -218,8 +218,8 @@ export const VisitorNotificationToast = ({
 
       {/* Content */}
       <div className="flex-1 text-left">
-        <p className="font-semibold text-delulu-text">Wolken-Besuch ✨</p>
-        <p className="text-sm text-delulu-muted">
+        <p className="font-semibold text-synclulu-text">Wolken-Besuch ✨</p>
+        <p className="text-sm text-synclulu-muted">
           {isAnonymous
             ? 'Jemand hat einen Blick in deine Wolke geworfen...'
             : `${visitorUsername} hat dein Profil besucht`}

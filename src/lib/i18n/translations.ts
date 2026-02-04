@@ -1,5 +1,5 @@
 /**
- * delulu i18n - Multi-language Support
+ * synclulu i18n - Multi-language Support
  * Languages: DE, EN, ES, FR, PT
  */
 

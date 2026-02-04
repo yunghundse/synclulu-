@@ -1,5 +1,5 @@
 /**
- * DELULU BETA COUNTER SYSTEM
+ * synclulu BETA COUNTER SYSTEM
  * FOMO-Engine mit Live-Countdown der Beta-Plätze
  */
 

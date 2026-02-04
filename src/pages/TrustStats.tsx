@@ -289,12 +289,12 @@ const TrustStats = () => {
   const handleShare = async () => {
     if (!metrics) return;
 
-    const shareText = `🛡️ Mein Trust Score bei Delulu: ${metrics.safetyScore}/100\n✨ Rank: ${interactionRank?.rank || 'Newcomer'}\n\nJoin me: https://delulu.app`;
+    const shareText = `🛡️ Mein Trust Score bei synclulu: ${metrics.safetyScore}/100\n✨ Rank: ${interactionRank?.rank || 'Newcomer'}\n\nJoin me: https://synclulu.app`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Mein Delulu Trust Badge',
+          title: 'Mein synclulu Trust Badge',
           text: shareText,
         });
       } catch (e) {
@@ -501,7 +501,7 @@ const TrustStats = () => {
             <p className="text-2xl font-bold">
               {metrics.accountAge} Tage
             </p>
-            <p className="text-sm text-white/60">bei Delulu</p>
+            <p className="text-sm text-white/60">bei synclulu</p>
           </div>
         )}
       </div>

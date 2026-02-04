@@ -79,7 +79,7 @@ const HeaderAnonymToggle = ({ onToggle }: HeaderAnonymToggleProps) => {
             />
           ) : (
             <div className={`
-              w-full h-full bg-gradient-to-br from-delulu-violet to-purple-600
+              w-full h-full bg-gradient-to-br from-synclulu-violet to-purple-600
               flex items-center justify-center text-white text-xl font-bold
               transition-all duration-300
               ${isAnonymous ? 'blur-sm' : ''}

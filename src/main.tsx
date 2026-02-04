@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
+import './styles/sovereign-design.css';
 
 // Copy Protection & Anti-Scraping (Production only)
 // NOTE: Temporarily disabled aggressive protection due to false positives

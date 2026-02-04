@@ -20,12 +20,12 @@ const LanguageSelector = ({ compact = false }: LanguageSelectorProps) => {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-delulu-soft hover:bg-delulu-soft/80 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-synclulu-soft hover:bg-synclulu-soft/80 transition-colors"
         >
           <span className="text-lg">{currentLanguage.flag}</span>
           <ChevronDown
             size={16}
-            className={`text-delulu-muted transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`text-synclulu-muted transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
@@ -41,16 +41,16 @@ const LanguageSelector = ({ compact = false }: LanguageSelectorProps) => {
                   <button
                     key={code}
                     onClick={() => handleSelect(code)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-delulu-soft transition-colors ${
-                      language === code ? 'bg-delulu-soft' : ''
+                    className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-synclulu-soft transition-colors ${
+                      language === code ? 'bg-synclulu-soft' : ''
                     }`}
                   >
                     <span className="text-lg">{lang.flag}</span>
-                    <span className="font-medium text-delulu-text flex-1 text-left">
+                    <span className="font-medium text-synclulu-text flex-1 text-left">
                       {lang.native}
                     </span>
                     {language === code && (
-                      <Check size={16} className="text-delulu-violet" />
+                      <Check size={16} className="text-synclulu-violet" />
                     )}
                   </button>
                 )
@@ -71,17 +71,17 @@ const LanguageSelector = ({ compact = false }: LanguageSelectorProps) => {
             onClick={() => handleSelect(code)}
             className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all ${
               language === code
-                ? 'bg-delulu-violet/10 border-2 border-delulu-violet'
-                : 'bg-delulu-soft border-2 border-transparent hover:border-delulu-violet/20'
+                ? 'bg-synclulu-violet/10 border-2 border-synclulu-violet'
+                : 'bg-synclulu-soft border-2 border-transparent hover:border-synclulu-violet/20'
             }`}
           >
             <span className="text-2xl">{lang.flag}</span>
             <div className="flex-1 text-left">
-              <p className="font-semibold text-delulu-text">{lang.native}</p>
-              <p className="text-xs text-delulu-muted">{lang.name}</p>
+              <p className="font-semibold text-synclulu-text">{lang.native}</p>
+              <p className="text-xs text-synclulu-muted">{lang.name}</p>
             </div>
             {language === code && (
-              <div className="w-6 h-6 rounded-full bg-delulu-violet flex items-center justify-center">
+              <div className="w-6 h-6 rounded-full bg-synclulu-violet flex items-center justify-center">
                 <Check size={14} className="text-white" />
               </div>
             )}

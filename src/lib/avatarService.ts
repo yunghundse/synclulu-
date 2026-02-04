@@ -1,5 +1,5 @@
 /**
- * DELULU AVATAR SERVICE - PERMANENT IDENTITY SYSTEM
+ * synclulu AVATAR SERVICE - PERMANENT IDENTITY SYSTEM
  * =================================================
  * Enterprise-grade profile picture persistence with:
  * - Firebase Storage integration
@@ -42,7 +42,7 @@ export interface UploadProgress {
 // LOCAL CACHE (IndexedDB + localStorage)
 // ═══════════════════════════════════════
 
-const CACHE_KEY = 'delulu_avatar_cache';
+const CACHE_KEY = 'synclulu_avatar_cache';
 const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 /**

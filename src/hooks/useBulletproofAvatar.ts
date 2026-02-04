@@ -8,7 +8,7 @@
  * 3. Works across all components consistently
  * 4. Falls back gracefully: Context → Session → Local → Server → Default
  *
- * @author Delulu Engineering
+ * @author synclulu Engineering
  */
 
 import { useMemo, useEffect, useCallback } from 'react';

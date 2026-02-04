@@ -1,5 +1,5 @@
 /**
- * DELULU APP - Main Application Router
+ * synclulu APP - Main Application Router
  * @version 3.0.0 - Clean Production Build
  */
 
@@ -43,20 +43,23 @@ import ResetPassword from '@/pages/ResetPassword';
 import InvitesPage from '@/pages/InvitesPage';
 import RadarPage from '@/pages/RadarPage';
 import RegisterInvite from '@/pages/RegisterInvite';
-import DeluluRegister from '@/pages/DeluluRegister';
+import SyncluluRegister from '@/pages/SyncluluRegister';
 import OnboardingFlow from '@/pages/OnboardingFlow';
 import DevicesSettings from '@/pages/DevicesSettings';
 import TrustStats from '@/pages/TrustStats';
 import Friends from '@/pages/Friends';
 import VoiceStats from '@/pages/VoiceStats';
+import NexusDashboard from '@/pages/NexusDashboard';
+import LegalCenter from '@/pages/LegalCenter';
 
 // Components
-import BottomNav from '@/components/BottomNav';
+import GhostOrbitDock from '@/components/GhostOrbitDock';
 import LoadingScreen from '@/components/LoadingScreen';
 import NotificationToast from '@/components/NotificationToast';
 import MaintenanceOverlay from '@/components/MaintenanceOverlay';
 import { NebulaBackground } from '@/components/NebulaBackground';
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
+import { ConsentScreen } from '@/components/ConsentScreen/ConsentScreen';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -101,6 +104,9 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminCheckDone, setAdminCheckDone] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
+  const [hasAcceptedConsent, setHasAcceptedConsent] = useState(() => {
+    return localStorage.getItem('synclulu_consent_accepted') === 'true';
+  });
   const location = useLocation();
 
   // Timeout für Loading - nach 5 Sekunden überspringen
@@ -141,14 +147,15 @@ function App() {
   const isLoginPath = location.pathname === '/login';
   const isLegalPath = ['/impressum', '/datenschutz'].includes(location.pathname);
 
-  if (isMaintenanceMode && !isAdmin && !isAdminPath && !isLoginPath && !isLegalPath) {
-    return (
-      <MaintenanceOverlay
-        message={maintenanceMessage}
-        estimatedEnd={maintenanceEstimatedEnd}
-      />
-    );
-  }
+  // TEMPORARILY DISABLED FOR TESTING
+  // if (isMaintenanceMode && !isAdmin && !isAdminPath && !isLoginPath && !isLegalPath) {
+  //   return (
+  //     <MaintenanceOverlay
+  //       message={maintenanceMessage}
+  //       estimatedEnd={maintenanceEstimatedEnd}
+  //     />
+  //   );
+  // }
 
   // Not logged in - Public routes
   if (!isAuthenticated) {
@@ -159,10 +166,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<OnboardingFlow />} />
           <Route path="/signup" element={<OnboardingFlow />} />
-          <Route path="/register-legacy" element={<DeluluRegister />} />
+          <Route path="/register-legacy" element={<SyncluluRegister />} />
           <Route path="/join/:code" element={<RegisterInvite />} />
           <Route path="/join" element={<RegisterInvite />} />
-          <Route path="/invite/:code" element={<DeluluRegister />} />
+          <Route path="/invite/:code" element={<SyncluluRegister />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
@@ -194,7 +201,12 @@ function App() {
     <GlobalErrorBoundary>
       <ThemeProvider>
         <NotificationProvider>
-          <div className="min-h-screen min-h-[100dvh] bg-[var(--delulu-bg)] pb-24 theme-transition relative">
+          {/* 🛡️ First-Start Consent Screen */}
+          {!hasAcceptedConsent && (
+            <ConsentScreen onAccept={() => setHasAcceptedConsent(true)} />
+          )}
+
+          <div className="min-h-screen min-h-[100dvh] bg-[var(--synclulu-bg)] pb-24 theme-transition relative">
             {/* 🌌 Nebula Animated Background */}
             <NebulaBackground intensity={0.6} />
 
@@ -233,11 +245,13 @@ function App() {
             <Route path="/creator-application" element={<StarsApplication />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
-            <Route path="/legal" element={<Impressum />} />
+            <Route path="/legal" element={<LegalCenter />} />
+            <Route path="/legal-center" element={<LegalCenter />} />
+            <Route path="/nexus-admin" element={<NexusDashboard />} />
             <Route path="/onboarding" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-            <BottomNav />
+            <GhostOrbitDock />
           </div>
         </NotificationProvider>
       </ThemeProvider>

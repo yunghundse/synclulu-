@@ -17,7 +17,7 @@
  * It's a self-regulating feedback loop ensuring constant "magic density"
  * (interactions per square kilometer)
  *
- * @author Delulu Engineering
+ * @author synclulu Engineering
  * @version 2.0.0 - Silicon Valley Edition
  */
 

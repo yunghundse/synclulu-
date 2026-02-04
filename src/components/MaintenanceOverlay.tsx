@@ -1,9 +1,9 @@
 /**
- * DELULU MAINTENANCE OVERLAY - GODMODE EDITION
+ * synclulu MAINTENANCE OVERLAY - GODMODE EDITION
  * ═══════════════════════════════════════════════════════════════
  * "THE MORTAL BARRIER" - Keeps the peasants out while gods work
  *
- * @author The Architects of Delulu
+ * @author The Architects of synclulu
  * @version 2.0.0 - REALITY BENDING EDITION
  */
 
@@ -11,17 +11,17 @@ import { useState, useEffect } from 'react';
 import { Cloud, Sparkles, Stars, Zap, RefreshCw } from 'lucide-react';
 
 // ═══════════════════════════════════════
-// DELULU MESSAGES - Pure Chaos Energy
+// synclulu MESSAGES - Pure Chaos Energy
 // ═══════════════════════════════════════
 
-const DELULU_MESSAGES = [
+const synclulu_MESSAGES = [
   "Die Realität wird gerade neu gerendert. Gedulde dich, Sterblicher. 🌌",
   "Wir polieren gerade die Sterne. Deine App ist gleich noch glanzvoller. ✨",
   "Eure Gebete wurden erhört, die Admins sind im Godmode-Update. 🙏",
   "Das Multiversum wird gerade rebalanced. Ein Moment Geduld. ⚖️",
   "Die Matrix bekommt ein Upgrade. Neo wäre neidisch. 💊",
   "Wir fügen mehr Glitzer hinzu. Kann nicht schaden. 💎",
-  "Die Delulu-Energie wird aufgeladen. Stand by. ⚡",
+  "Die synclulu-Energie wird aufgeladen. Stand by. ⚡",
   "Quantenverschränkung in Progress. Nicht die Katze stören. 🐱",
   "Das Universum macht einen Powernap. Gleich geht's weiter. 😴",
   "Wir bauen gerade eine Brücke zum Mond. Fast fertig. 🌙",
@@ -42,7 +42,7 @@ const MaintenanceOverlay = ({ message, estimatedEnd }: MaintenanceOverlayProps) 
     const interval = setInterval(() => {
       setIsGlitching(true);
       setTimeout(() => {
-        setCurrentMessageIndex((prev) => (prev + 1) % DELULU_MESSAGES.length);
+        setCurrentMessageIndex((prev) => (prev + 1) % synclulu_MESSAGES.length);
         setIsGlitching(false);
       }, 200);
     }, 8000);
@@ -78,7 +78,7 @@ const MaintenanceOverlay = ({ message, estimatedEnd }: MaintenanceOverlayProps) 
     return () => clearInterval(interval);
   }, [estimatedEnd]);
 
-  const displayMessage = message || DELULU_MESSAGES[currentMessageIndex];
+  const displayMessage = message || synclulu_MESSAGES[currentMessageIndex];
 
   return (
     <div className="fixed inset-0 z-[9999] overflow-hidden">
@@ -237,7 +237,7 @@ const MaintenanceOverlay = ({ message, estimatedEnd }: MaintenanceOverlayProps) 
         {/* Bottom Tagline */}
         <div className="absolute bottom-8 left-0 right-0 text-center">
           <p className="text-purple-500/40 text-xs tracking-widest uppercase">
-            Delulu Digital Operating System • v∞.0
+            synclulu Digital Operating System • v∞.0
           </p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 /**
- * DELULU AVATAR CACHE SYSTEM
+ * synclulu AVATAR CACHE SYSTEM
  * "Zero-Loss" Profile Picture Persistence
  *
  * Ensures avatars:
@@ -13,10 +13,10 @@
 // CACHE KEYS
 // ═══════════════════════════════════════
 
-const AVATAR_CACHE_KEY = 'delulu_avatar_cache';
-const AVATAR_URL_PREFIX = 'delulu_avatar_';
+const AVATAR_CACHE_KEY = 'synclulu_avatar_cache';
+const AVATAR_URL_PREFIX = 'synclulu_avatar_';
 const CACHE_EXPIRY_HOURS = 168; // 7 days - longer persistence
-const PERSISTENT_AVATAR_KEY = 'delulu_avatar_permanent'; // Never expires
+const PERSISTENT_AVATAR_KEY = 'synclulu_avatar_permanent'; // Never expires
 
 // ═══════════════════════════════════════
 // TYPES
@@ -210,7 +210,7 @@ export const preloadAvatars = async (users: { id: string; avatarUrl?: string }[]
 // SESSION STORAGE (For immediate updates)
 // ═══════════════════════════════════════
 
-const SESSION_AVATAR_KEY = 'delulu_session_avatar';
+const SESSION_AVATAR_KEY = 'synclulu_session_avatar';
 
 /**
  * Store current user's avatar in session (survives page refresh within session)

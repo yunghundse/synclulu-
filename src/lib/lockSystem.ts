@@ -1,5 +1,5 @@
 /**
- * DELULU LOCK SYSTEM
+ * synclulu LOCK SYSTEM
  * "Secret Bubbles" & Locked Content Monetization
  */
 

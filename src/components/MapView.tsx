@@ -172,7 +172,7 @@ const MapView = ({ users, radius, onUserClick, flashEvents = [] }: MapViewProps)
                 <text
                   x={u.x + 12}
                   y={u.y - 8}
-                  className="text-[8px] font-bold fill-delulu-text"
+                  className="text-[8px] font-bold fill-synclulu-text"
                 >
                   {levelInfo.emoji}
                 </text>
@@ -209,13 +209,13 @@ const MapView = ({ users, radius, onUserClick, flashEvents = [] }: MapViewProps)
 
       {/* Radius label */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
-        <span className="text-xs font-medium text-delulu-muted">
+        <span className="text-xs font-medium text-synclulu-muted">
           {radius >= 1000 ? `${(radius/1000).toFixed(1)}km` : `${radius}m`} Radius
         </span>
       </div>
 
       {/* User count */}
-      <div className="absolute top-2 right-2 bg-delulu-violet text-white px-2 py-1 rounded-lg shadow-lg">
+      <div className="absolute top-2 right-2 bg-synclulu-violet text-white px-2 py-1 rounded-lg shadow-lg">
         <span className="text-xs font-bold">{users.length} aktiv</span>
       </div>
     </div>

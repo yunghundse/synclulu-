@@ -111,7 +111,7 @@ const ConsentItemComponent: React.FC<ConsentItemProps> = ({
       rounded-2xl border transition-all duration-200
       ${isChecked
         ? 'border-violet-500/50 bg-violet-500/5'
-        : 'border-[var(--delulu-border)] bg-[var(--delulu-card)]'
+        : 'border-[var(--synclulu-border)] bg-[var(--synclulu-card)]'
       }
     `}
   >
@@ -126,7 +126,7 @@ const ConsentItemComponent: React.FC<ConsentItemProps> = ({
           transition-all duration-200
           ${isChecked
             ? 'bg-violet-500 border-violet-500'
-            : 'border-[var(--delulu-border)] hover:border-violet-500/50'
+            : 'border-[var(--synclulu-border)] hover:border-violet-500/50'
           }
           ${item.required ? 'cursor-not-allowed' : 'cursor-pointer'}
         `}
@@ -137,28 +137,28 @@ const ConsentItemComponent: React.FC<ConsentItemProps> = ({
       {/* Content */}
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <span className={isChecked ? 'text-violet-500' : 'text-[var(--delulu-muted)]'}>
+          <span className={isChecked ? 'text-violet-500' : 'text-[var(--synclulu-muted)]'}>
             {item.icon}
           </span>
-          <h4 className="font-medium text-[var(--delulu-text)]">{item.title}</h4>
+          <h4 className="font-medium text-[var(--synclulu-text)]">{item.title}</h4>
           {item.required && (
             <span className="px-2 py-0.5 text-xs rounded-full bg-amber-500/10 text-amber-500">
               Erforderlich
             </span>
           )}
         </div>
-        <p className="text-sm text-[var(--delulu-muted)]">{item.description}</p>
+        <p className="text-sm text-[var(--synclulu-muted)]">{item.description}</p>
       </div>
 
       {/* Expand Button */}
       <button
         onClick={onExpand}
-        className="flex-shrink-0 p-2 rounded-lg hover:bg-[var(--delulu-surface)] transition-colors"
+        className="flex-shrink-0 p-2 rounded-lg hover:bg-[var(--synclulu-surface)] transition-colors"
       >
         {isExpanded ? (
-          <ChevronUp size={18} className="text-[var(--delulu-muted)]" />
+          <ChevronUp size={18} className="text-[var(--synclulu-muted)]" />
         ) : (
-          <ChevronDown size={18} className="text-[var(--delulu-muted)]" />
+          <ChevronDown size={18} className="text-[var(--synclulu-muted)]" />
         )}
       </button>
     </div>
@@ -175,7 +175,7 @@ const ConsentItemComponent: React.FC<ConsentItemProps> = ({
           <div className="px-4 pb-4 pl-14">
             <ul className="space-y-2">
               {item.details.map((detail, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[var(--delulu-muted)]">
+                <li key={i} className="flex items-start gap-2 text-sm text-[var(--synclulu-muted)]">
                   <Info size={14} className="flex-shrink-0 mt-0.5 text-violet-500/50" />
                   <span>{detail}</span>
                 </li>
@@ -303,10 +303,10 @@ const SanctuaryConsentModal: React.FC<SanctuaryConsentModalProps> = ({
           initial={{ opacity: 0, y: 50, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.95 }}
-          className="relative w-full max-w-lg mx-4 max-h-[90vh] overflow-hidden bg-[var(--delulu-bg)] rounded-t-3xl sm:rounded-3xl shadow-2xl"
+          className="relative w-full max-w-lg mx-4 max-h-[90vh] overflow-hidden bg-[var(--synclulu-bg)] rounded-t-3xl sm:rounded-3xl shadow-2xl"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-gradient-to-b from-[var(--delulu-bg)] to-[var(--delulu-bg)]/80 backdrop-blur-xl p-6 pb-4 border-b border-[var(--delulu-border)]">
+          <div className="sticky top-0 z-10 bg-gradient-to-b from-[var(--synclulu-bg)] to-[var(--synclulu-bg)]/80 backdrop-blur-xl p-6 pb-4 border-b border-[var(--synclulu-border)]">
             <div className="flex items-center gap-4 mb-4">
               {/* Animated Shield */}
               <motion.div
@@ -324,17 +324,17 @@ const SanctuaryConsentModal: React.FC<SanctuaryConsentModalProps> = ({
               </motion.div>
 
               <div>
-                <h2 className="text-xl font-semibold text-[var(--delulu-text)]">
+                <h2 className="text-xl font-semibold text-[var(--synclulu-text)]">
                   Sanctuary aktivieren
                 </h2>
-                <p className="text-sm text-[var(--delulu-muted)]">
+                <p className="text-sm text-[var(--synclulu-muted)]">
                   Dein Schutz ist uns wichtig
                 </p>
               </div>
             </div>
 
             {/* Legal Notice */}
-            <div className="p-3 rounded-xl bg-violet-500/5 border border-violet-500/10 text-xs text-[var(--delulu-muted)]">
+            <div className="p-3 rounded-xl bg-violet-500/5 border border-violet-500/10 text-xs text-[var(--synclulu-muted)]">
               <strong className="text-violet-500">Art. 6 Abs. 1 lit. a DSGVO:</strong>{' '}
               Deine ausdrückliche Einwilligung ist erforderlich für die Audio-Analyse zum Zweck des Schutzes vor Gewalt und Grooming.
             </div>
@@ -371,12 +371,12 @@ const SanctuaryConsentModal: React.FC<SanctuaryConsentModalProps> = ({
           )}
 
           {/* Actions */}
-          <div className="sticky bottom-0 p-4 bg-[var(--delulu-bg)] border-t border-[var(--delulu-border)]">
+          <div className="sticky bottom-0 p-4 bg-[var(--synclulu-bg)] border-t border-[var(--synclulu-border)]">
             <div className="flex gap-3">
               {!isRequired && (
                 <button
                   onClick={handleDecline}
-                  className="flex-1 py-3 rounded-xl bg-[var(--delulu-surface)] text-[var(--delulu-text)] font-medium hover:bg-[var(--delulu-card)] transition-colors"
+                  className="flex-1 py-3 rounded-xl bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] font-medium hover:bg-[var(--synclulu-card)] transition-colors"
                 >
                   Ablehnen
                 </button>
@@ -389,7 +389,7 @@ const SanctuaryConsentModal: React.FC<SanctuaryConsentModalProps> = ({
                   flex-1 py-3 rounded-xl font-medium flex items-center justify-center gap-2 transition-all
                   ${allRequiredChecked
                     ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl'
-                    : 'bg-[var(--delulu-surface)] text-[var(--delulu-muted)] cursor-not-allowed'
+                    : 'bg-[var(--synclulu-surface)] text-[var(--synclulu-muted)] cursor-not-allowed'
                   }
                 `}
               >
@@ -404,7 +404,7 @@ const SanctuaryConsentModal: React.FC<SanctuaryConsentModalProps> = ({
               </button>
             </div>
 
-            <p className="text-xs text-center text-[var(--delulu-muted)] mt-3">
+            <p className="text-xs text-center text-[var(--synclulu-muted)] mt-3">
               Du kannst deine Einwilligungen jederzeit in den Einstellungen widerrufen.
             </p>
           </div>

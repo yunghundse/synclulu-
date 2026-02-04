@@ -4,13 +4,13 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCMdQlzbrfXAVT6mB0tXuAUbj7-3QBOyLQ",
-  authDomain: "butterbread-web.firebaseapp.com",
-  projectId: "butterbread-web",
-  storageBucket: "butterbread-web.firebasestorage.app",
-  messagingSenderId: "1037775236421",
-  appId: "1:1037775236421:web:d9525d697800c7ffc5e22c",
-  measurementId: "G-TF57S4VYP9"
+  apiKey: "AIzaSyCffarAiFnuo6YJrkjJRslU1mhKigHcBdQ",
+  authDomain: "synclulu-4e6c0.firebaseapp.com",
+  projectId: "synclulu-4e6c0",
+  storageBucket: "synclulu-4e6c0.firebasestorage.app",
+  messagingSenderId: "569653412196",
+  appId: "1:569653412196:web:8b8cfb2fb650f703717a71",
+  measurementId: "G-PFT3BVCTZ6"
 };
 
 const app = initializeApp(firebaseConfig);

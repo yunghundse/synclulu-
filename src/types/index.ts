@@ -21,7 +21,7 @@ export const USERNAME_RULES = {
   minLength: 3,
   maxLength: 20,
   pattern: /^[a-z0-9_]+$/,       // Only lowercase, numbers, underscores
-  reserved: ['admin', 'delulu', 'support', 'help', 'system', 'mod', 'moderator'],
+  reserved: ['admin', 'synclulu', 'support', 'help', 'system', 'mod', 'moderator'],
 };
 
 // ═══════════════════════════════════════

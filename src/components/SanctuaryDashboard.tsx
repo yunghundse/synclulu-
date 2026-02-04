@@ -74,7 +74,7 @@ const Toggle: React.FC<ToggleProps> = ({
       disabled={disabled}
       className={`
         relative w-14 h-8 rounded-full transition-all duration-300 ease-out
-        ${enabled ? colors[color] : 'bg-[var(--delulu-surface)]'}
+        ${enabled ? colors[color] : 'bg-[var(--synclulu-surface)]'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
@@ -98,10 +98,10 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ title, children }) => (
   <div className="mb-6">
-    <h3 className="text-xs font-semibold text-[var(--delulu-muted)] uppercase tracking-wider px-4 mb-3">
+    <h3 className="text-xs font-semibold text-[var(--synclulu-muted)] uppercase tracking-wider px-4 mb-3">
       {title}
     </h3>
-    <div className="rounded-2xl bg-[var(--delulu-card)] border border-[var(--delulu-border)] divide-y divide-[var(--delulu-border)] overflow-hidden theme-transition">
+    <div className="rounded-2xl bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] divide-y divide-[var(--synclulu-border)] overflow-hidden theme-transition">
       {children}
     </div>
   </div>
@@ -135,21 +135,21 @@ const SettingRow: React.FC<SettingRowProps> = ({
     disabled={disabled || !onClick}
     className={`
       w-full p-4 flex items-center gap-4 text-left transition-colors
-      ${onClick && !disabled ? 'hover:bg-[var(--delulu-surface)] active:bg-[var(--delulu-border)]' : ''}
+      ${onClick && !disabled ? 'hover:bg-[var(--synclulu-surface)] active:bg-[var(--synclulu-border)]' : ''}
       ${disabled ? 'opacity-50' : ''}
     `}
   >
-    <div className={`w-10 h-10 rounded-xl bg-[var(--delulu-surface)] flex items-center justify-center ${iconColor}`}>
+    <div className={`w-10 h-10 rounded-xl bg-[var(--synclulu-surface)] flex items-center justify-center ${iconColor}`}>
       {icon}
     </div>
     <div className="flex-1 min-w-0">
-      <p className="font-medium text-[var(--delulu-text)] truncate">{title}</p>
+      <p className="font-medium text-[var(--synclulu-text)] truncate">{title}</p>
       {subtitle && (
-        <p className="text-sm text-[var(--delulu-muted)] truncate">{subtitle}</p>
+        <p className="text-sm text-[var(--synclulu-muted)] truncate">{subtitle}</p>
       )}
     </div>
     {rightElement || (onClick && (
-      <ChevronRight size={20} className="text-[var(--delulu-muted)]" />
+      <ChevronRight size={20} className="text-[var(--synclulu-muted)]" />
     ))}
   </button>
 );
@@ -194,19 +194,19 @@ const SafetyScoreCard: React.FC<SafetyScoreCardProps> = ({ score, onViewHistory 
         <div className="flex items-center gap-3">
           <StatusIcon size={24} className={textColors[status.color as keyof typeof textColors]} />
           <div>
-            <p className="text-sm text-[var(--delulu-muted)]">Safety Score</p>
+            <p className="text-sm text-[var(--synclulu-muted)]">Safety Score</p>
             <p className={`text-2xl font-bold ${textColors[status.color as keyof typeof textColors]}`}>
               {score}
             </p>
           </div>
         </div>
-        <div className={`px-3 py-1 rounded-full bg-[var(--delulu-bg)]/50 ${textColors[status.color as keyof typeof textColors]} text-sm font-medium`}>
+        <div className={`px-3 py-1 rounded-full bg-[var(--synclulu-bg)]/50 ${textColors[status.color as keyof typeof textColors]} text-sm font-medium`}>
           {status.label}
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="relative h-2 rounded-full bg-[var(--delulu-bg)]/30 overflow-hidden mb-3">
+      <div className="relative h-2 rounded-full bg-[var(--synclulu-bg)]/30 overflow-hidden mb-3">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${score}%` }}
@@ -222,7 +222,7 @@ const SafetyScoreCard: React.FC<SafetyScoreCardProps> = ({ score, onViewHistory 
 
       <button
         onClick={onViewHistory}
-        className="w-full py-2 text-sm text-[var(--delulu-text)] hover:underline"
+        className="w-full py-2 text-sm text-[var(--synclulu-text)] hover:underline"
       >
         Score-Verlauf anzeigen →
       </button>
@@ -331,7 +331,7 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[var(--delulu-bg)]">
+      <div className="flex items-center justify-center min-h-screen bg-[var(--synclulu-bg)]">
         <div className="flex flex-col items-center gap-4">
           <motion.div
             animate={{ rotate: 360 }}
@@ -339,24 +339,24 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
           >
             <Shield size={40} className="text-violet-500" />
           </motion.div>
-          <p className="text-[var(--delulu-muted)]">Lade Sanctuary...</p>
+          <p className="text-[var(--synclulu-muted)]">Lade Sanctuary...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--delulu-bg)] theme-transition">
+    <div className="min-h-screen bg-[var(--synclulu-bg)] theme-transition">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-[var(--delulu-bg)]/80 backdrop-blur-xl border-b border-[var(--delulu-border)]">
+      <div className="sticky top-0 z-20 bg-[var(--synclulu-bg)]/80 backdrop-blur-xl border-b border-[var(--synclulu-border)]">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center">
               <Shield size={22} className="text-violet-500" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-[var(--delulu-text)]">Sanctuary</h1>
-              <p className="text-xs text-[var(--delulu-muted)]">Sicherheit & Privatsphäre</p>
+              <h1 className="text-lg font-semibold text-[var(--synclulu-text)]">Sanctuary</h1>
+              <p className="text-xs text-[var(--synclulu-muted)]">Sicherheit & Privatsphäre</p>
             </div>
           </div>
           {onClose && (
@@ -393,7 +393,7 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
                   scoreHistory.map(change => (
                     <div
                       key={change.id}
-                      className="flex items-center justify-between p-3 rounded-xl bg-[var(--delulu-card)] border border-[var(--delulu-border)]"
+                      className="flex items-center justify-between p-3 rounded-xl bg-[var(--synclulu-card)] border border-[var(--synclulu-border)]"
                     >
                       <div className="flex items-center gap-3">
                         <div className={`
@@ -403,17 +403,17 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
                           {change.change > 0 ? '+' : ''}{change.change}
                         </div>
                         <div>
-                          <p className="text-sm text-[var(--delulu-text)]">{change.reason}</p>
-                          <p className="text-xs text-[var(--delulu-muted)]">
+                          <p className="text-sm text-[var(--synclulu-text)]">{change.reason}</p>
+                          <p className="text-xs text-[var(--synclulu-muted)]">
                             {change.createdAt.toLocaleDateString('de-DE')}
                           </p>
                         </div>
                       </div>
-                      <span className="font-medium text-[var(--delulu-text)]">{change.newScore}</span>
+                      <span className="font-medium text-[var(--synclulu-text)]">{change.newScore}</span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-sm text-[var(--delulu-muted)] py-4">
+                  <p className="text-center text-sm text-[var(--synclulu-muted)] py-4">
                     Keine Score-Änderungen
                   </p>
                 )}
@@ -479,7 +479,7 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
             title="Geräte-ID"
             subtitle={profile?.deviceFingerprintHash ? 'Registriert' : 'Nicht registriert'}
             rightElement={
-              <Lock size={18} className="text-[var(--delulu-muted)]" />
+              <Lock size={18} className="text-[var(--synclulu-muted)]" />
             }
           />
         </Section>
@@ -531,7 +531,7 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
             <SettingRow
               key={option.value}
               icon={option.icon}
-              iconColor={visibleTo === option.value ? 'text-violet-500' : 'text-[var(--delulu-muted)]'}
+              iconColor={visibleTo === option.value ? 'text-violet-500' : 'text-[var(--synclulu-muted)]'}
               title={option.label}
               subtitle={option.desc}
               onClick={() => {
@@ -551,19 +551,19 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
         <Section title="Rechtliches">
           <SettingRow
             icon={<FileText size={20} />}
-            iconColor="text-[var(--delulu-muted)]"
+            iconColor="text-[var(--synclulu-muted)]"
             title="Datenschutzerklärung"
             onClick={() => {/* Navigate to privacy policy */}}
           />
           <SettingRow
             icon={<FileText size={20} />}
-            iconColor="text-[var(--delulu-muted)]"
+            iconColor="text-[var(--synclulu-muted)]"
             title="AGB"
             onClick={() => {/* Navigate to TOS */}}
           />
           <SettingRow
             icon={<HelpCircle size={20} />}
-            iconColor="text-[var(--delulu-muted)]"
+            iconColor="text-[var(--synclulu-muted)]"
             title="Hilfe & Support"
             onClick={() => {/* Navigate to support */}}
           />
@@ -575,8 +575,8 @@ const SanctuaryDashboard: React.FC<SanctuaryDashboardProps> = ({ onClose }) => {
             <Info size={20} className="text-violet-500 flex-shrink-0 mt-0.5" />
             <div>
               <h4 className="font-medium text-violet-500 mb-1">Privacy by Design</h4>
-              <p className="text-xs text-[var(--delulu-muted)]">
-                Delulu speichert niemals dein Geburtsdatum oder Ausweisdaten.
+              <p className="text-xs text-[var(--synclulu-muted)]">
+                synclulu speichert niemals dein Geburtsdatum oder Ausweisdaten.
                 Die Audio-Analyse erfolgt lokal auf deinem Gerät.
                 Dein Standort wird nur während der Nutzung verarbeitet.
               </p>

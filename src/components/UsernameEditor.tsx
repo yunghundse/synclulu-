@@ -1,5 +1,5 @@
 /**
- * DELULU USERNAME EDITOR
+ * synclulu USERNAME EDITOR
  * "Solid Identity" - Username change with 30-day cooldown
  *
  * Features:

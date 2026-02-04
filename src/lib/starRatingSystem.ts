@@ -1,5 +1,5 @@
 /**
- * DELULU STAR RATING SYSTEM
+ * synclulu STAR RATING SYSTEM
  * Voice-Chat Bewertungen & Karma-System
  */
 

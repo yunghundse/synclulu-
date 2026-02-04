@@ -1,5 +1,5 @@
 /**
- * DELULU LEGAL AUDIT SYSTEM v3.5
+ * synclulu LEGAL AUDIT SYSTEM v3.5
  * "Gerichtsfeste Dokumentation"
  *
  * ARCHITECTURE:
@@ -122,7 +122,7 @@ export interface AggressionAnalysis {
 async function hashIP(ip?: string): Promise<string> {
   const rawIP = ip || 'unknown';
   const encoder = new TextEncoder();
-  const data = encoder.encode(rawIP + 'delulu-salt-2024');
+  const data = encoder.encode(rawIP + 'synclulu-salt-2024');
 
   try {
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -622,7 +622,7 @@ export async function exportUserData(userId: string): Promise<{
  */
 
 export const SQL_MIGRATION = `
--- Delulu Legal Audit Schema v3.5
+-- synclulu Legal Audit Schema v3.5
 -- Compatible with PostgreSQL 14+
 
 -- Enable UUID extension

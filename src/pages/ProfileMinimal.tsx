@@ -1,5 +1,5 @@
 /**
- * DELULU PROFILE v21.0 - NEBULA SOVEREIGN
+ * synclulu PROFILE v21.0 - NEBULA SOVEREIGN
  * "Trust & Connection" - Friends + Trust Integration
  *
  * FEATURES:
@@ -144,14 +144,14 @@ const ProfileMinimal = () => {
       {/* HEADER - Settings Button */}
       {/* ═══════════════════════════════════════ */}
       <div className="px-4 pt-6 pb-2 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-[var(--delulu-text)]">
+        <h1 className="font-display text-2xl font-bold text-[var(--synclulu-text)]">
           Profil
         </h1>
         <button
           onClick={() => navigate('/settings')}
-          className="w-10 h-10 rounded-xl bg-[var(--glass-bg)] backdrop-blur-sm shadow-sm border border-[var(--delulu-border)] flex items-center justify-center hover:bg-[var(--delulu-soft)] transition-colors theme-transition"
+          className="w-10 h-10 rounded-xl bg-[var(--glass-bg)] backdrop-blur-sm shadow-sm border border-[var(--synclulu-border)] flex items-center justify-center hover:bg-[var(--synclulu-soft)] transition-colors theme-transition"
         >
-          <Settings size={20} className="text-[var(--delulu-muted)]" />
+          <Settings size={20} className="text-[var(--synclulu-muted)]" />
         </button>
       </div>
 
@@ -167,13 +167,13 @@ const ProfileMinimal = () => {
               editable={true}
               avatarUrl={user?.avatarUrl}
               displayName={user?.displayName}
-              className="ring-4 ring-[var(--delulu-bg)] shadow-2xl shadow-purple-500/20"
+              className="ring-4 ring-[var(--synclulu-bg)] shadow-2xl shadow-purple-500/20"
             />
             {isFounder && (
               <div className="absolute -top-2 -right-2 text-2xl">👑</div>
             )}
             {isVerified && !isFounder && (
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center border-2 border-[var(--delulu-bg)]">
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center border-2 border-[var(--synclulu-bg)]">
                 <span className="text-white text-xs">✓</span>
               </div>
             )}
@@ -189,15 +189,15 @@ const ProfileMinimal = () => {
 
           {/* XP Progress */}
           <div className="w-full max-w-[220px] mb-5">
-            <div className="h-2 bg-[var(--delulu-surface)] rounded-full overflow-hidden">
+            <div className="h-2 bg-[var(--synclulu-surface)] rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-700"
                 style={{ width: `${Math.min(100, Math.max(0, xpProgress))}%` }}
               />
             </div>
             <div className="flex justify-between items-center mt-1.5">
-              <span className="text-xs text-[var(--delulu-muted)]">{xp} XP</span>
-              <span className="text-xs text-[var(--delulu-muted)]">{xpForNextLevel} XP</span>
+              <span className="text-xs text-[var(--synclulu-muted)]">{xp} XP</span>
+              <span className="text-xs text-[var(--synclulu-muted)]">{xpForNextLevel} XP</span>
             </div>
           </div>
 
@@ -208,7 +208,7 @@ const ProfileMinimal = () => {
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full text-center font-display text-xl font-bold bg-[var(--delulu-surface)] text-[var(--delulu-text)] rounded-xl px-4 py-3 border border-[var(--delulu-border)] focus:border-[var(--delulu-accent)] focus:ring-2 focus:ring-[var(--delulu-accent)]/20 outline-none transition-all theme-transition"
+                className="w-full text-center font-display text-xl font-bold bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] rounded-xl px-4 py-3 border border-[var(--synclulu-border)] focus:border-[var(--synclulu-accent)] focus:ring-2 focus:ring-[var(--synclulu-accent)]/20 outline-none transition-all theme-transition"
                 placeholder="Dein Name"
               />
               <textarea
@@ -217,12 +217,12 @@ const ProfileMinimal = () => {
                 placeholder="Über dich..."
                 maxLength={150}
                 rows={2}
-                className="w-full bg-[var(--delulu-surface)] text-[var(--delulu-text)] rounded-xl px-4 py-3 text-sm resize-none text-center border border-[var(--delulu-border)] focus:border-[var(--delulu-accent)] focus:ring-2 focus:ring-[var(--delulu-accent)]/20 outline-none transition-all theme-transition"
+                className="w-full bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] rounded-xl px-4 py-3 text-sm resize-none text-center border border-[var(--synclulu-border)] focus:border-[var(--synclulu-accent)] focus:ring-2 focus:ring-[var(--synclulu-accent)]/20 outline-none transition-all theme-transition"
               />
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="flex-1 py-2.5 rounded-xl border-2 border-[var(--delulu-border)] font-semibold text-[var(--delulu-muted)] text-sm hover:bg-[var(--delulu-soft)] transition-colors theme-transition"
+                  className="flex-1 py-2.5 rounded-xl border-2 border-[var(--synclulu-border)] font-semibold text-[var(--synclulu-muted)] text-sm hover:bg-[var(--synclulu-soft)] transition-colors theme-transition"
                 >
                   Abbrechen
                 </button>
@@ -236,14 +236,14 @@ const ProfileMinimal = () => {
             </div>
           ) : (
             <>
-              <h2 className="font-display text-2xl font-bold text-[var(--delulu-text)] mb-1">
+              <h2 className="font-display text-2xl font-bold text-[var(--synclulu-text)] mb-1">
                 {user?.displayName || 'Anonymous'}
               </h2>
 
               {/* Username */}
               <button
                 onClick={() => setShowUsernameEditor(true)}
-                className="flex items-center gap-2 text-sm text-[var(--delulu-text-secondary)] mb-3 hover:text-[var(--delulu-accent)] transition-colors group"
+                className="flex items-center gap-2 text-sm text-[var(--synclulu-text-secondary)] mb-3 hover:text-[var(--synclulu-accent)] transition-colors group"
               >
                 <AtSign size={14} />
                 <span>{user?.username}</span>
@@ -259,7 +259,7 @@ const ProfileMinimal = () => {
 
               {/* Birthday & Location */}
               {(user?.birthDay || user?.city) && (
-                <div className="flex items-center gap-3 text-sm text-[var(--delulu-muted)] mb-4">
+                <div className="flex items-center gap-3 text-sm text-[var(--synclulu-muted)] mb-4">
                   {user?.birthDay && user?.birthMonth && (
                     <span className="flex items-center gap-1.5">
                       <Cake size={14} />
@@ -276,14 +276,14 @@ const ProfileMinimal = () => {
               )}
 
               {/* Bio */}
-              <p className="text-sm text-[var(--delulu-text-secondary)] text-center max-w-xs mb-4">
+              <p className="text-sm text-[var(--synclulu-text-secondary)] text-center max-w-xs mb-4">
                 {user?.bio || 'Noch keine Bio hinzugefügt'}
               </p>
 
               {/* Edit Button */}
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 text-sm text-[var(--delulu-accent)] font-medium hover:opacity-80 transition-opacity"
+                className="flex items-center gap-2 text-sm text-[var(--synclulu-accent)] font-medium hover:opacity-80 transition-opacity"
               >
                 <Edit3 size={14} />
                 Profil bearbeiten
@@ -301,13 +301,13 @@ const ProfileMinimal = () => {
           {/* Friends Card */}
           <button
             onClick={handleNavigateToFriends}
-            className="bg-[var(--delulu-card)] rounded-2xl p-5 text-left shadow-sm border border-[var(--delulu-border)] hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all theme-transition group"
+            className="bg-[var(--synclulu-card)] rounded-2xl p-5 text-left shadow-sm border border-[var(--synclulu-border)] hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all theme-transition group"
           >
             <div className="w-12 h-12 mb-3 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users size={24} className="text-purple-500" />
             </div>
-            <p className="text-2xl font-bold text-[var(--delulu-text)]">{friendCount}</p>
-            <p className="text-xs text-[var(--delulu-muted)] uppercase tracking-wider">Freunde</p>
+            <p className="text-2xl font-bold text-[var(--synclulu-text)]">{friendCount}</p>
+            <p className="text-xs text-[var(--synclulu-muted)] uppercase tracking-wider">Freunde</p>
             <div className="mt-2 flex items-center gap-1 text-purple-500 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
               <span>Verwalten</span>
               <ChevronRight size={12} />
@@ -317,13 +317,13 @@ const ProfileMinimal = () => {
           {/* Trust Score Card */}
           <button
             onClick={handleNavigateToTrust}
-            className={`bg-[var(--delulu-card)] rounded-2xl p-5 text-left shadow-sm border ${trustColors.border} hover:shadow-lg transition-all theme-transition group`}
+            className={`bg-[var(--synclulu-card)] rounded-2xl p-5 text-left shadow-sm border ${trustColors.border} hover:shadow-lg transition-all theme-transition group`}
           >
             <div className={`w-12 h-12 mb-3 rounded-xl ${trustColors.bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
               <Shield size={24} className={trustColors.text} />
             </div>
-            <p className="text-2xl font-bold text-[var(--delulu-text)]">{trustScore}</p>
-            <p className="text-xs text-[var(--delulu-muted)] uppercase tracking-wider">{trustLabel}</p>
+            <p className="text-2xl font-bold text-[var(--synclulu-text)]">{trustScore}</p>
+            <p className="text-xs text-[var(--synclulu-muted)] uppercase tracking-wider">{trustLabel}</p>
             <div className={`mt-2 flex items-center gap-1 ${trustColors.text} text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity`}>
               <span>Details</span>
               <ChevronRight size={12} />
@@ -336,14 +336,14 @@ const ProfileMinimal = () => {
       {/* SMALL STATS - Voice Minutes */}
       {/* ═══════════════════════════════════════ */}
       <div className="px-4 mb-6">
-        <div className="bg-[var(--delulu-card)] rounded-2xl p-4 shadow-sm border border-[var(--delulu-border)] theme-transition flex items-center justify-between">
+        <div className="bg-[var(--synclulu-card)] rounded-2xl p-4 shadow-sm border border-[var(--synclulu-border)] theme-transition flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center">
               <Mic2 size={20} className="text-pink-500" />
             </div>
             <div>
-              <p className="text-lg font-bold text-[var(--delulu-text)]">{totalVoiceMinutes} Minuten</p>
-              <p className="text-xs text-[var(--delulu-muted)]">Voice-Zeit gesamt</p>
+              <p className="text-lg font-bold text-[var(--synclulu-text)]">{totalVoiceMinutes} Minuten</p>
+              <p className="text-xs text-[var(--synclulu-muted)]">Voice-Zeit gesamt</p>
             </div>
           </div>
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
@@ -366,48 +366,48 @@ const ProfileMinimal = () => {
       {/* QUICK ACTIONS */}
       {/* ═══════════════════════════════════════ */}
       <div className="px-4 pb-32">
-        <div className="bg-[var(--delulu-card)] rounded-2xl shadow-sm border border-[var(--delulu-border)] overflow-hidden theme-transition">
+        <div className="bg-[var(--synclulu-card)] rounded-2xl shadow-sm border border-[var(--synclulu-border)] overflow-hidden theme-transition">
           <button
             onClick={() => navigate('/statistics')}
-            className="w-full p-4 flex items-center justify-between hover:bg-[var(--delulu-soft)] transition-colors"
+            className="w-full p-4 flex items-center justify-between hover:bg-[var(--synclulu-soft)] transition-colors"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center">
                 <Zap size={20} className="text-violet-500" />
               </div>
-              <span className="font-medium text-[var(--delulu-text)]">Meine Statistiken</span>
+              <span className="font-medium text-[var(--synclulu-text)]">Meine Statistiken</span>
             </div>
-            <ChevronRight size={20} className="text-[var(--delulu-muted)]" />
+            <ChevronRight size={20} className="text-[var(--synclulu-muted)]" />
           </button>
 
-          <div className="h-px bg-[var(--delulu-border)]" />
+          <div className="h-px bg-[var(--synclulu-border)]" />
 
           <button
             onClick={() => navigate('/invites')}
-            className="w-full p-4 flex items-center justify-between hover:bg-[var(--delulu-soft)] transition-colors"
+            className="w-full p-4 flex items-center justify-between hover:bg-[var(--synclulu-soft)] transition-colors"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
                 <UserPlus size={20} className="text-emerald-500" />
               </div>
-              <span className="font-medium text-[var(--delulu-text)]">Freunde einladen</span>
+              <span className="font-medium text-[var(--synclulu-text)]">Freunde einladen</span>
             </div>
-            <ChevronRight size={20} className="text-[var(--delulu-muted)]" />
+            <ChevronRight size={20} className="text-[var(--synclulu-muted)]" />
           </button>
 
-          <div className="h-px bg-[var(--delulu-border)]" />
+          <div className="h-px bg-[var(--synclulu-border)]" />
 
           <button
             onClick={() => navigate('/settings')}
-            className="w-full p-4 flex items-center justify-between hover:bg-[var(--delulu-soft)] transition-colors"
+            className="w-full p-4 flex items-center justify-between hover:bg-[var(--synclulu-soft)] transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[var(--delulu-surface)] flex items-center justify-center">
-                <Settings size={20} className="text-[var(--delulu-muted)]" />
+              <div className="w-10 h-10 rounded-xl bg-[var(--synclulu-surface)] flex items-center justify-center">
+                <Settings size={20} className="text-[var(--synclulu-muted)]" />
               </div>
-              <span className="font-medium text-[var(--delulu-text)]">Alle Einstellungen</span>
+              <span className="font-medium text-[var(--synclulu-text)]">Alle Einstellungen</span>
             </div>
-            <ChevronRight size={20} className="text-[var(--delulu-muted)]" />
+            <ChevronRight size={20} className="text-[var(--synclulu-muted)]" />
           </button>
         </div>
       </div>

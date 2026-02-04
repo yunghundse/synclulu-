@@ -92,7 +92,7 @@ const FriendCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="bg-[var(--delulu-card)] rounded-2xl p-4 border border-[var(--delulu-border)] shadow-sm hover:shadow-md transition-all"
+      className="bg-[var(--synclulu-card)] rounded-2xl p-4 border border-[var(--synclulu-border)] shadow-sm hover:shadow-md transition-all"
     >
       <div className="flex items-center gap-3">
         {/* Avatar */}
@@ -119,7 +119,7 @@ const FriendCard = ({
 
           {/* Online Indicator */}
           {friend.isActive && (
-            <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--delulu-bg)]" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--synclulu-bg)]" />
           )}
 
           {/* Founder Crown */}
@@ -131,14 +131,14 @@ const FriendCard = ({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-[var(--delulu-text)] truncate">
+            <span className="font-semibold text-[var(--synclulu-text)] truncate">
               {friend.displayName || friend.username}
             </span>
             {friend.isVerified && (
               <span className="text-emerald-500 text-xs">✓</span>
             )}
           </div>
-          <div className="text-xs text-[var(--delulu-muted)]">
+          <div className="text-xs text-[var(--synclulu-muted)]">
             @{friend.username}
           </div>
         </div>
@@ -157,9 +157,9 @@ const FriendCard = ({
             triggerHaptic('light');
             onMessage();
           }}
-          className="w-10 h-10 rounded-xl bg-[var(--delulu-surface)] flex items-center justify-center hover:bg-purple-500/10 transition-colors"
+          className="w-10 h-10 rounded-xl bg-[var(--synclulu-surface)] flex items-center justify-center hover:bg-purple-500/10 transition-colors"
         >
-          <MessageCircle size={18} className="text-[var(--delulu-muted)]" />
+          <MessageCircle size={18} className="text-[var(--synclulu-muted)]" />
         </button>
       </div>
     </motion.div>
@@ -282,15 +282,15 @@ const Friends = () => {
               triggerHaptic('light');
               navigate('/profile');
             }}
-            className="w-10 h-10 rounded-xl bg-[var(--glass-bg)] backdrop-blur-sm border border-[var(--delulu-border)] flex items-center justify-center hover:bg-[var(--delulu-soft)] transition-colors"
+            className="w-10 h-10 rounded-xl bg-[var(--glass-bg)] backdrop-blur-sm border border-[var(--synclulu-border)] flex items-center justify-center hover:bg-[var(--synclulu-soft)] transition-colors"
           >
-            <ChevronLeft size={20} className="text-[var(--delulu-muted)]" />
+            <ChevronLeft size={20} className="text-[var(--synclulu-muted)]" />
           </button>
           <div>
-            <h1 className="font-display text-2xl font-bold text-[var(--delulu-text)]">
+            <h1 className="font-display text-2xl font-bold text-[var(--synclulu-text)]">
               Deine Aura
             </h1>
-            <p className="text-xs text-[var(--delulu-muted)]">
+            <p className="text-xs text-[var(--synclulu-muted)]">
               {friends.length} Freunde • {onlineCount} online
             </p>
           </div>
@@ -300,14 +300,14 @@ const Friends = () => {
         <div className="relative mb-4">
           <Search
             size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--synclulu-muted)]"
           />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Freunde suchen..."
-            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--delulu-surface)] border border-[var(--delulu-border)] text-[var(--delulu-text)] placeholder:text-[var(--delulu-muted)] focus:outline-none focus:border-purple-500/50 transition-colors"
+            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)] text-[var(--synclulu-text)] placeholder:text-[var(--synclulu-muted)] focus:outline-none focus:border-purple-500/50 transition-colors"
           />
         </div>
 
@@ -328,9 +328,9 @@ const Friends = () => {
               triggerHaptic('light');
               // Could open a modal to find friends nearby
             }}
-            className="w-12 h-12 rounded-xl bg-[var(--delulu-surface)] border border-[var(--delulu-border)] flex items-center justify-center hover:bg-purple-500/10 transition-colors"
+            className="w-12 h-12 rounded-xl bg-[var(--synclulu-surface)] border border-[var(--synclulu-border)] flex items-center justify-center hover:bg-purple-500/10 transition-colors"
           >
-            <Users size={20} className="text-[var(--delulu-muted)]" />
+            <Users size={20} className="text-[var(--synclulu-muted)]" />
           </button>
         </div>
       </div>
@@ -342,17 +342,17 @@ const Friends = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-12 h-12 rounded-full border-2 border-purple-500 border-t-transparent animate-spin mb-4" />
-            <p className="text-sm text-[var(--delulu-muted)]">Lade Freunde...</p>
+            <p className="text-sm text-[var(--synclulu-muted)]">Lade Freunde...</p>
           </div>
         ) : filteredFriends.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-4">
               <Users size={32} className="text-purple-500" />
             </div>
-            <h3 className="font-semibold text-[var(--delulu-text)] mb-2">
+            <h3 className="font-semibold text-[var(--synclulu-text)] mb-2">
               {searchQuery ? 'Keine Treffer' : 'Noch keine Freunde'}
             </h3>
-            <p className="text-sm text-[var(--delulu-muted)] max-w-xs">
+            <p className="text-sm text-[var(--synclulu-muted)] max-w-xs">
               {searchQuery
                 ? 'Versuche einen anderen Suchbegriff'
                 : 'Lade Freunde ein und baut gemeinsam eure Streaks auf!'}

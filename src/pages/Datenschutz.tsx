@@ -48,7 +48,7 @@ const Datenschutz = () => {
 
           <LegalSection title="3. Standortdaten">
             <p>
-              delulu nutzt Standortdaten, um Nutzer in deiner Nähe zu finden und Voice-Räume
+              synclulu nutzt Standortdaten, um Nutzer in deiner Nähe zu finden und Voice-Räume
               basierend auf der Region anzuzeigen. Die Standortfreigabe ist optional und kann
               jederzeit in den Einstellungen deaktiviert werden.
             </p>
@@ -99,7 +99,7 @@ const Datenschutz = () => {
               <p><strong style={{ color: 'white' }}>Butterbread UG (haftungsbeschränkt)</strong></p>
               <p className="mt-2">Musterstraße 123</p>
               <p>12345 Musterstadt</p>
-              <p className="mt-2" style={{ color: '#a855f7' }}>datenschutz@delulu.app</p>
+              <p className="mt-2" style={{ color: '#a855f7' }}>datenschutz@synclulu.app</p>
             </div>
           </LegalSection>
 

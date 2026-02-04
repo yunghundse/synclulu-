@@ -312,7 +312,7 @@ export function SoldOutOverlay({
 
         {/* Footer */}
         <p className="text-gray-600 text-xs mt-8">
-          Delulu – Where dreamers float together
+          synclulu – Where dreamers float together
         </p>
       </motion.div>
     </motion.div>

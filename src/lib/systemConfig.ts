@@ -1,5 +1,5 @@
 /**
- * DELULU DIGITAL OPERATING SYSTEM
+ * synclulu DIGITAL OPERATING SYSTEM
  * System Configuration & Global Settings
  */
 

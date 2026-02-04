@@ -53,12 +53,12 @@ const RadiusSlider = ({ value, min = 100, max = 5000, onChange }: RadiusSliderPr
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
-            <Target size={16} className="text-delulu-violet" />
+          <div className="w-8 h-8 rounded-xl bg-synclulu-violet/10 flex items-center justify-center">
+            <Target size={16} className="text-synclulu-violet" />
           </div>
-          <span className="font-semibold text-delulu-text">Suchradius</span>
+          <span className="font-semibold text-synclulu-text">Suchradius</span>
         </div>
-        <div className="flex items-center gap-1.5 bg-delulu-violet text-white px-3 py-1.5 rounded-xl">
+        <div className="flex items-center gap-1.5 bg-synclulu-violet text-white px-3 py-1.5 rounded-xl">
           <Expand size={14} />
           <span className="font-bold text-sm">{formatDistance(value)}</span>
         </div>
@@ -95,14 +95,14 @@ const RadiusSlider = ({ value, min = 100, max = 5000, onChange }: RadiusSliderPr
           `}
           style={{ left: `calc(${percentage}% - 10px)` }}
         >
-          <div className="w-5 h-5 rounded-full bg-white border-4 border-delulu-violet shadow-lg" />
+          <div className="w-5 h-5 rounded-full bg-white border-4 border-synclulu-violet shadow-lg" />
         </div>
       </div>
 
       {/* Scale markers */}
       <div className="flex justify-between px-1 mt-1 mb-4">
         {['100m', '1km', '2.5km', '5km'].map((label, i) => (
-          <span key={i} className="text-[10px] text-delulu-muted">{label}</span>
+          <span key={i} className="text-[10px] text-synclulu-muted">{label}</span>
         ))}
       </div>
 
@@ -115,8 +115,8 @@ const RadiusSlider = ({ value, min = 100, max = 5000, onChange }: RadiusSliderPr
             className={`
               flex-1 py-2 px-1 rounded-xl text-center transition-all duration-200
               ${value === preset.value
-                ? 'bg-delulu-violet text-white shadow-lg scale-105'
-                : 'bg-delulu-soft text-delulu-muted hover:bg-delulu-violet/10'
+                ? 'bg-synclulu-violet text-white shadow-lg scale-105'
+                : 'bg-synclulu-soft text-synclulu-muted hover:bg-synclulu-violet/10'
               }
             `}
           >

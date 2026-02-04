@@ -1,7 +1,7 @@
 /**
  * usePermissionGuard.ts
  * Persistent Permission Guard - GPS & Microphone
- * Ensures Delulu has the permissions needed to "breathe"
+ * Ensures synclulu has the permissions needed to "breathe"
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -164,11 +164,11 @@ export function usePermissionGuard(): UsePermissionGuardResult {
 
     if (isIOS) {
       alert(
-        'Öffne die Einstellungen-App → Delulu → Aktiviere Standort auf "Immer" und Mikrofon.'
+        'Öffne die Einstellungen-App → synclulu → Aktiviere Standort auf "Immer" und Mikrofon.'
       );
     } else if (isAndroid) {
       alert(
-        'Öffne Einstellungen → Apps → Delulu → Berechtigungen → Aktiviere Standort und Mikrofon.'
+        'Öffne Einstellungen → Apps → synclulu → Berechtigungen → Aktiviere Standort und Mikrofon.'
       );
     } else {
       alert(

@@ -213,18 +213,18 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-delulu-soft/50 to-white safe-top safe-bottom pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-synclulu-soft/50 to-white safe-top safe-bottom pb-24">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-gray-100">
         <div className="px-6 py-4 flex items-center gap-4">
           <button
             onClick={() => activeSection ? setActiveSection(null) : navigate(-1)}
-            className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-delulu-muted hover:bg-gray-200 transition-colors"
+            className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-synclulu-muted hover:bg-gray-200 transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
           <div className="flex-1">
-            <h1 className="font-display text-xl font-bold text-delulu-text">
+            <h1 className="font-display text-xl font-bold text-synclulu-text">
               {activeSection === 'account' && 'Account'}
               {activeSection === 'privacy' && 'Privatsphäre'}
               {activeSection === 'notifications' && 'Benachrichtigungen'}
@@ -248,7 +248,7 @@ const Settings = () => {
               onClick={() => navigate('/profile')}
               className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors"
             >
-              <div className="w-14 h-14 rounded-2xl bg-delulu-violet/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-synclulu-violet/10 flex items-center justify-center">
                 {user?.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
@@ -256,16 +256,16 @@ const Settings = () => {
                     className="w-full h-full rounded-2xl object-cover"
                   />
                 ) : (
-                  <User size={24} className="text-delulu-violet" />
+                  <User size={24} className="text-synclulu-violet" />
                 )}
               </div>
               <div className="flex-1 text-left">
-                <h3 className="font-semibold text-delulu-text">
+                <h3 className="font-semibold text-synclulu-text">
                   {user?.displayName || 'Dein Profil'}
                 </h3>
-                <p className="text-sm text-delulu-muted">@{user?.username || 'username'}</p>
+                <p className="text-sm text-synclulu-muted">@{user?.username || 'username'}</p>
               </div>
-              <ChevronRight size={20} className="text-delulu-muted" />
+              <ChevronRight size={20} className="text-synclulu-muted" />
             </button>
           </div>
 
@@ -330,10 +330,10 @@ const Settings = () => {
                   <Sparkles size={24} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-delulu-text">Creator werden</h3>
-                  <p className="text-xs text-delulu-muted">Bald verfügbar</p>
+                  <h3 className="font-semibold text-synclulu-text">Creator werden</h3>
+                  <p className="text-xs text-synclulu-muted">Bald verfügbar</p>
                 </div>
-                <ChevronRight size={20} className="text-delulu-muted" />
+                <ChevronRight size={20} className="text-synclulu-muted" />
               </div>
             </button>
           )}
@@ -349,10 +349,10 @@ const Settings = () => {
                   <Radio size={24} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-delulu-text">Star Dashboard</h3>
-                  <p className="text-xs text-delulu-muted">Analytics, Events & mehr</p>
+                  <h3 className="font-semibold text-synclulu-text">Star Dashboard</h3>
+                  <p className="text-xs text-synclulu-muted">Analytics, Events & mehr</p>
                 </div>
-                <ChevronRight size={20} className="text-delulu-muted" />
+                <ChevronRight size={20} className="text-synclulu-muted" />
               </div>
             </button>
           )}
@@ -372,7 +372,7 @@ const Settings = () => {
             <SettingsRow
               icon={<Sparkles size={20} />}
               label="Was gibt's Neues?"
-              sublabel="v1.4 - Delulu OS Update"
+              sublabel="v1.4 - synclulu OS Update"
               onClick={() => setShowWhatsNew(true)}
             />
             <SettingsRow
@@ -431,8 +431,8 @@ const Settings = () => {
               onClick={() => navigate('/login', { state: { showForgotPassword: true } })}
             />
             <div className="p-4">
-              <label className="text-sm text-delulu-muted">E-Mail Adresse</label>
-              <p className="font-medium text-delulu-text mt-1">
+              <label className="text-sm text-synclulu-muted">E-Mail Adresse</label>
+              <p className="font-medium text-synclulu-text mt-1">
                 {user?.email || 'user@example.com'}
               </p>
             </div>
@@ -474,7 +474,7 @@ const Settings = () => {
             />
           </div>
 
-          <h3 className="font-semibold text-delulu-text px-1">Benachrichtige mich bei:</h3>
+          <h3 className="font-semibold text-synclulu-text px-1">Benachrichtige mich bei:</h3>
 
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden divide-y divide-gray-100">
             <ToggleRow
@@ -508,8 +508,8 @@ const Settings = () => {
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <UserX size={24} className="text-gray-400" />
               </div>
-              <h3 className="font-semibold text-delulu-text mb-2">Keine blockierten User</h3>
-              <p className="text-sm text-delulu-muted">
+              <h3 className="font-semibold text-synclulu-text mb-2">Keine blockierten User</h3>
+              <p className="text-sm text-synclulu-muted">
                 User, die du blockierst, erscheinen hier
               </p>
             </div>
@@ -525,10 +525,10 @@ const Settings = () => {
                       <User size={20} className="text-gray-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-delulu-text">
+                      <h3 className="font-semibold text-synclulu-text">
                         {blockedUser.displayName}
                       </h3>
-                      <p className="text-sm text-delulu-muted">
+                      <p className="text-sm text-synclulu-muted">
                         @{blockedUser.username}
                       </p>
                       <div className="flex items-center gap-2 mt-2">
@@ -536,7 +536,7 @@ const Settings = () => {
                           {BLOCK_REASONS.find(r => r.id === blockedUser.reason)?.icon}
                           {BLOCK_REASONS.find(r => r.id === blockedUser.reason)?.label}
                         </span>
-                        <span className="text-xs text-delulu-muted">
+                        <span className="text-xs text-synclulu-muted">
                           {formatDate(blockedUser.blockedAt)}
                         </span>
                       </div>
@@ -573,13 +573,13 @@ const Settings = () => {
 
           {/* Block Reasons Info */}
           <div className="mt-6 p-4 bg-gray-50 rounded-2xl">
-            <h4 className="font-semibold text-delulu-text mb-3 flex items-center gap-2">
+            <h4 className="font-semibold text-synclulu-text mb-3 flex items-center gap-2">
               <Ban size={16} />
               Block-Gründe
             </h4>
             <div className="space-y-2">
               {BLOCK_REASONS.map(reason => (
-                <div key={reason.id} className="flex items-center gap-2 text-sm text-delulu-muted">
+                <div key={reason.id} className="flex items-center gap-2 text-sm text-synclulu-muted">
                   {reason.icon}
                   <span>{reason.label}</span>
                 </div>
@@ -592,7 +592,7 @@ const Settings = () => {
       {/* Language Section */}
       {activeSection === 'language' && (
         <div className="px-6 py-4 space-y-4">
-          <p className="text-sm text-delulu-muted">
+          <p className="text-sm text-synclulu-muted">
             Wähle deine bevorzugte Sprache. Die App wird sofort in der gewählten Sprache angezeigt.
           </p>
 
@@ -603,12 +603,12 @@ const Settings = () => {
                 onClick={() => setLanguage(lang)}
                 className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors text-left"
               >
-                <div className="w-10 h-10 rounded-xl bg-delulu-violet/10 flex items-center justify-center text-lg">
+                <div className="w-10 h-10 rounded-xl bg-synclulu-violet/10 flex items-center justify-center text-lg">
                   {LANGUAGES[lang].flag}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-delulu-text">{LANGUAGES[lang].native}</h3>
-                  <p className="text-xs text-delulu-muted">{LANGUAGES[lang].name}</p>
+                  <h3 className="font-semibold text-synclulu-text">{LANGUAGES[lang].native}</h3>
+                  <p className="text-xs text-synclulu-muted">{LANGUAGES[lang].name}</p>
                 </div>
                 {language === lang && (
                   <Check size={20} className="text-green-500" />
@@ -716,33 +716,33 @@ const Settings = () => {
               onClick={() => navigate('/impressum')}
               className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors text-left"
             >
-              <div className="w-10 h-10 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
-                <FileText size={20} className="text-delulu-violet" />
+              <div className="w-10 h-10 rounded-xl bg-synclulu-violet/10 flex items-center justify-center">
+                <FileText size={20} className="text-synclulu-violet" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-delulu-text">Impressum</h3>
-                <p className="text-sm text-delulu-muted">Anbieterinformationen</p>
+                <h3 className="font-semibold text-synclulu-text">Impressum</h3>
+                <p className="text-sm text-synclulu-muted">Anbieterinformationen</p>
               </div>
-              <ChevronRight size={20} className="text-delulu-muted" />
+              <ChevronRight size={20} className="text-synclulu-muted" />
             </button>
             <button
               onClick={() => navigate('/datenschutz')}
               className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors text-left"
             >
-              <div className="w-10 h-10 rounded-xl bg-delulu-violet/10 flex items-center justify-center">
-                <Shield size={20} className="text-delulu-violet" />
+              <div className="w-10 h-10 rounded-xl bg-synclulu-violet/10 flex items-center justify-center">
+                <Shield size={20} className="text-synclulu-violet" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-delulu-text">Datenschutz</h3>
-                <p className="text-sm text-delulu-muted">Datenschutzerklärung</p>
+                <h3 className="font-semibold text-synclulu-text">Datenschutz</h3>
+                <p className="text-sm text-synclulu-muted">Datenschutzerklärung</p>
               </div>
-              <ChevronRight size={20} className="text-delulu-muted" />
+              <ChevronRight size={20} className="text-synclulu-muted" />
             </button>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-2xl text-center">
-            <p className="text-sm text-delulu-muted">
-              delulu App v1.0.0<br />
+            <p className="text-sm text-synclulu-muted">
+              synclulu App v1.0.0<br />
               © 2025 Butterbread UG
             </p>
           </div>
@@ -756,10 +756,10 @@ const Settings = () => {
             <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Pause size={32} className="text-amber-600" />
             </div>
-            <h2 className="font-display text-xl font-bold text-delulu-text mb-2">
+            <h2 className="font-display text-xl font-bold text-synclulu-text mb-2">
               Account pausieren?
             </h2>
-            <p className="text-sm text-delulu-muted mb-6">
+            <p className="text-sm text-synclulu-muted mb-6">
               Dein Profil wird für andere unsichtbar. Du kannst jederzeit zurückkehren und
               all deine Daten bleiben erhalten.
             </p>
@@ -802,16 +802,16 @@ const Settings = () => {
             <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Trash2 size={32} className="text-red-600" />
             </div>
-            <h2 className="font-display text-xl font-bold text-delulu-text mb-2">
+            <h2 className="font-display text-xl font-bold text-synclulu-text mb-2">
               Account unwiderruflich löschen?
             </h2>
-            <p className="text-sm text-delulu-muted mb-6">
+            <p className="text-sm text-synclulu-muted mb-6">
               Alle deine Daten, Freundschaften, Sterne und XP werden permanent gelöscht.
               Diese Aktion kann nicht rückgängig gemacht werden.
             </p>
 
             <div className="mb-6">
-              <label className="text-sm text-delulu-muted block mb-2">
+              <label className="text-sm text-synclulu-muted block mb-2">
                 Tippe "LÖSCHEN" zur Bestätigung:
               </label>
               <input
@@ -877,19 +877,19 @@ const SettingsRow = ({ icon, label, sublabel, onClick, dangerous }: SettingsRowP
     className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors text-left"
   >
     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-      dangerous ? 'bg-red-50 text-red-500' : 'bg-delulu-violet/10 text-delulu-violet'
+      dangerous ? 'bg-red-50 text-red-500' : 'bg-synclulu-violet/10 text-synclulu-violet'
     }`}>
       {icon}
     </div>
     <div className="flex-1">
-      <h3 className={`font-semibold ${dangerous ? 'text-red-600' : 'text-delulu-text'}`}>
+      <h3 className={`font-semibold ${dangerous ? 'text-red-600' : 'text-synclulu-text'}`}>
         {label}
       </h3>
       {sublabel && (
-        <p className="text-sm text-delulu-muted">{sublabel}</p>
+        <p className="text-sm text-synclulu-muted">{sublabel}</p>
       )}
     </div>
-    <ChevronRight size={20} className="text-delulu-muted" />
+    <ChevronRight size={20} className="text-synclulu-muted" />
   </button>
 );
 
@@ -903,19 +903,19 @@ interface ToggleRowProps {
 
 const ToggleRow = ({ icon, label, sublabel, value, onChange }: ToggleRowProps) => (
   <div className="flex items-center gap-4 p-4">
-    <div className="w-10 h-10 rounded-xl bg-delulu-violet/10 flex items-center justify-center text-delulu-violet">
+    <div className="w-10 h-10 rounded-xl bg-synclulu-violet/10 flex items-center justify-center text-synclulu-violet">
       {icon}
     </div>
     <div className="flex-1">
-      <h3 className="font-semibold text-delulu-text">{label}</h3>
+      <h3 className="font-semibold text-synclulu-text">{label}</h3>
       {sublabel && (
-        <p className="text-sm text-delulu-muted">{sublabel}</p>
+        <p className="text-sm text-synclulu-muted">{sublabel}</p>
       )}
     </div>
     <button
       onClick={() => onChange(!value)}
       className={`relative w-12 h-7 rounded-full transition-colors ${
-        value ? 'bg-delulu-violet' : 'bg-gray-200'
+        value ? 'bg-synclulu-violet' : 'bg-gray-200'
       }`}
     >
       <div

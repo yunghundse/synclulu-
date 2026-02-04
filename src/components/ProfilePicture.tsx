@@ -240,7 +240,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
       {/* Online Indicator */}
       {showOnline && isOnline && (
         <div
-          className="absolute bottom-0 right-0 bg-green-500 rounded-full border-2 border-[var(--delulu-bg)]"
+          className="absolute bottom-0 right-0 bg-green-500 rounded-full border-2 border-[var(--synclulu-bg)]"
           style={{
             width: size * 0.25,
             height: size * 0.25,

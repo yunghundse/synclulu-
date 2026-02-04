@@ -1,5 +1,5 @@
 /**
- * DELULU INVITE SYSTEM
+ * synclulu INVITE SYSTEM
  * "The Growth Engine" - Exclusive, magical invite experience
  * Inspired by Clubhouse invites & Apple design language
  */

@@ -1,6 +1,6 @@
 /**
  * WHAT'S NEW MODAL
- * Delulu Update Log mit verspieltem Design
+ * synclulu Update Log mit verspieltem Design
  */
 
 import { useState, useEffect } from 'react';
@@ -125,11 +125,11 @@ const WhatsNewModal = ({ isOpen, onClose }: WhatsNewModalProps) => {
   useEffect(() => {
     if (isOpen) {
       // Mark as seen
-      const seenVersions = localStorage.getItem('delulu_seen_updates') || '';
+      const seenVersions = localStorage.getItem('synclulu_seen_updates') || '';
       const latestVersion = UPDATES[0].version;
 
       if (!seenVersions.includes(latestVersion)) {
-        localStorage.setItem('delulu_seen_updates', seenVersions + latestVersion);
+        localStorage.setItem('synclulu_seen_updates', seenVersions + latestVersion);
       }
 
       setHasSeenUpdate(true);
@@ -281,7 +281,7 @@ const WhatsNewModal = ({ isOpen, onClose }: WhatsNewModalProps) => {
  * Check if user has unseen updates
  */
 export const hasUnseenUpdates = (): boolean => {
-  const seenVersions = localStorage.getItem('delulu_seen_updates') || '';
+  const seenVersions = localStorage.getItem('synclulu_seen_updates') || '';
   const latestVersion = UPDATES[0].version;
   return !seenVersions.includes(latestVersion);
 };

@@ -9,7 +9,7 @@
  * PATENT CORE: Exact coordinates are NEVER compared directly.
  * Only geohash cells are matched, ensuring privacy at the protocol level.
  *
- * @author Delulu Engineering
+ * @author synclulu Engineering
  * @version 2.0.0
  */
 

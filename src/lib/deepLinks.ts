@@ -1,5 +1,5 @@
 /**
- * DELULU DEEP LINK SYSTEM
+ * synclulu DEEP LINK SYSTEM
  * Viral sharing & app installation flow
  */
 
@@ -34,10 +34,10 @@ export interface DeepLinkConfig {
 // ═══════════════════════════════════════
 
 const DEEP_LINK_CONFIG: DeepLinkConfig = {
-  baseUrl: typeof window !== 'undefined' ? window.location.origin : 'https://delulu.app',
-  appStoreUrl: 'https://apps.apple.com/app/delulu/id123456789',
-  playStoreUrl: 'https://play.google.com/store/apps/details?id=app.delulu',
-  fallbackUrl: 'https://delulu.app/download',
+  baseUrl: typeof window !== 'undefined' ? window.location.origin : 'https://synclulu.app',
+  appStoreUrl: 'https://apps.apple.com/app/synclulu/id123456789',
+  playStoreUrl: 'https://play.google.com/store/apps/details?id=app.synclulu',
+  fallbackUrl: 'https://synclulu.app/download',
 };
 
 // ═══════════════════════════════════════
@@ -166,7 +166,7 @@ export const getDeepLinkFromUrl = (): DeepLinkData | null => {
 // DEEP LINK STORAGE
 // ═══════════════════════════════════════
 
-const DEEP_LINK_STORAGE_KEY = 'delulu_pending_deeplink';
+const DEEP_LINK_STORAGE_KEY = 'synclulu_pending_deeplink';
 
 /**
  * Store deep link for processing after install/login
@@ -266,8 +266,8 @@ export const shareProfile = async (
 ): Promise<boolean> => {
   const url = generateProfileLink(username, referrerId);
   return shareDeepLink({
-    title: `${displayName} auf delulu`,
-    text: `Schau dir das Profil von ${displayName} auf delulu an! 🌟`,
+    title: `${displayName} auf synclulu`,
+    text: `Schau dir das Profil von ${displayName} auf synclulu an! 🌟`,
     url,
   });
 };
@@ -283,7 +283,7 @@ export const shareLockedContent = async (
   const url = generateContentLink(contentId, creatorId);
   return shareDeepLink({
     title: `Secret Bubble: ${contentTitle}`,
-    text: `Entsperre diesen geheimen Inhalt auf delulu! 🔒✨`,
+    text: `Entsperre diesen geheimen Inhalt auf synclulu! 🔒✨`,
     url,
   });
 };
@@ -298,8 +298,8 @@ export const shareCloudInvite = async (
 ): Promise<boolean> => {
   const url = generateCloudLink(cloudId, inviterId);
   return shareDeepLink({
-    title: `${cloudName} - delulu Cloud`,
-    text: `Komm in mein Wölkchen "${cloudName}" auf delulu! ☁️`,
+    title: `${cloudName} - synclulu Cloud`,
+    text: `Komm in mein Wölkchen "${cloudName}" auf synclulu! ☁️`,
     url,
   });
 };

@@ -71,7 +71,7 @@ const FriendRequestCard = ({
   if (isDone) {
     return (
       <div className="glass-card p-4 opacity-50">
-        <div className="flex items-center justify-center gap-2 text-delulu-muted">
+        <div className="flex items-center justify-center gap-2 text-synclulu-muted">
           <Check size={16} />
           <span className="text-sm">Bearbeitet</span>
         </div>
@@ -84,7 +84,7 @@ const FriendRequestCard = ({
       <div className="flex items-start gap-4">
         {/* Avatar */}
         <div className="relative">
-          <div className="w-14 h-14 rounded-2xl overflow-hidden bg-delulu-soft">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden bg-synclulu-soft">
             {request.fromAvatar ? (
               <img
                 src={request.fromAvatar}
@@ -99,7 +99,7 @@ const FriendRequestCard = ({
           </div>
           {/* Level badge */}
           <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 bg-white rounded-md shadow-sm border border-gray-100">
-            <span className="text-[10px] font-bold text-delulu-violet">
+            <span className="text-[10px] font-bold text-synclulu-violet">
               Lv.{request.fromLevel}
             </span>
           </div>
@@ -108,10 +108,10 @@ const FriendRequestCard = ({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-display font-bold text-delulu-text truncate">
+            <span className="font-display font-bold text-synclulu-text truncate">
               {request.fromDisplayName}
             </span>
-            <span className="text-xs text-delulu-muted">
+            <span className="text-xs text-synclulu-muted">
               @{request.fromUsername}
             </span>
           </div>
@@ -122,7 +122,7 @@ const FriendRequestCard = ({
               <Shield size={10} />
               {request.fromTrustScore.toFixed(1)}
             </span>
-            <span className="flex items-center gap-1 text-xs text-delulu-muted">
+            <span className="flex items-center gap-1 text-xs text-synclulu-muted">
               <Clock size={10} />
               {getTimeRemaining()}
             </span>
@@ -130,7 +130,7 @@ const FriendRequestCard = ({
 
           {/* Message */}
           {request.message && (
-            <p className="mt-2 text-sm text-delulu-muted italic bg-gray-50 p-2 rounded-lg">
+            <p className="mt-2 text-sm text-synclulu-muted italic bg-gray-50 p-2 rounded-lg">
               "{request.message}"
             </p>
           )}
@@ -181,7 +181,7 @@ const FriendRequestCard = ({
       </div>
 
       {/* Handshake hint */}
-      <div className="mt-3 flex items-center justify-center gap-2 text-[10px] text-delulu-muted">
+      <div className="mt-3 flex items-center justify-center gap-2 text-[10px] text-synclulu-muted">
         <span>🤝</span>
         <span>Handshake-Freundschaft: Beide müssen bestätigen</span>
       </div>

@@ -1,7 +1,7 @@
 /**
  * PermissionOverlay.tsx
  * High-End blocking overlay when permissions are missing
- * "Delulu benötigt deine permanente Aura (GPS) und deine Stimme (Mikrofon)"
+ * "synclulu benötigt deine permanente Aura (GPS) und deine Stimme (Mikrofon)"
  */
 
 import React, { memo, useState } from 'react';
@@ -174,7 +174,7 @@ export const PermissionOverlay = memo(function PermissionOverlay({
                 Nebula-Verbindung
               </h2>
               <p className="text-sm text-white/60 max-w-xs mx-auto">
-                Delulu benötigt deine <span className="text-violet-400">permanente Aura (GPS)</span> und
+                synclulu benötigt deine <span className="text-violet-400">permanente Aura (GPS)</span> und
                 deine <span className="text-violet-400">Stimme (Mikrofon)</span>, um die Nebula stabil zu halten.
               </p>
             </div>

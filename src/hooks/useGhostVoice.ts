@@ -1,5 +1,5 @@
 /**
- * DELULU GHOST VOICE HOOK
+ * synclulu GHOST VOICE HOOK
  * ═══════════════════════════════════════════════════════════════
  * React Hook für einfache Voice-Integration in Komponenten
  *
@@ -13,7 +13,7 @@
  *   toggleMute
  * } = useGhostVoice();
  *
- * @author Delulu Engineering
+ * @author synclulu Engineering
  * @version 1.0.0
  */
 

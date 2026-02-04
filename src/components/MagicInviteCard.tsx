@@ -180,7 +180,7 @@ const MagicInviteCard: React.FC<MagicInviteCardProps> = ({
   // Copy handler
   const handleCopy = async () => {
     try {
-      const shareText = `✨ Du wurdest zu Delulu eingeladen!\n\n🎫 Dein VIP-Code: ${code}\n\n👉 https://delulu.app/join/${code}`;
+      const shareText = `✨ Du wurdest zu synclulu eingeladen!\n\n🎫 Dein VIP-Code: ${code}\n\n👉 https://synclulu.app/join/${code}`;
       await navigator.clipboard.writeText(shareText);
       setCopied(true);
       if ('vibrate' in navigator) navigator.vibrate([15, 50, 15]);
@@ -198,9 +198,9 @@ const MagicInviteCard: React.FC<MagicInviteCardProps> = ({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Delulu Einladung 💫',
-          text: `Hey! Ich lade dich zu Delulu ein. Nutze meinen Code: ${code}`,
-          url: `https://delulu.app/join/${code}`,
+          title: 'synclulu Einladung 💫',
+          text: `Hey! Ich lade dich zu synclulu ein. Nutze meinen Code: ${code}`,
+          url: `https://synclulu.app/join/${code}`,
         });
         onShare?.();
       } catch (error) {

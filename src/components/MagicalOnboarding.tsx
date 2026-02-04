@@ -428,7 +428,7 @@ const SafetyPromiseStep = ({
       </h2>
 
       <p className="text-gray-400 max-w-sm mb-6">
-        Delulu ist ein sicherer Raum. Wir schützen unsere Community
+        synclulu ist ein sicherer Raum. Wir schützen unsere Community
         durch das Aegis-System. Respekt ist unsere Währung.
       </p>
 

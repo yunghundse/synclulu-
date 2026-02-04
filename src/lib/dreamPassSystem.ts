@@ -1,5 +1,5 @@
 /**
- * DELULU DREAM PASS SYSTEM
+ * synclulu DREAM PASS SYSTEM
  * Battle Pass für Season-basierte Belohnungen
  * Beta Season 1 Start: 01. März 2026
  */
@@ -106,8 +106,8 @@ export const BETA_SEASON_REWARDS: PassReward[] = [
     type: 'coins',
     name: 'Starter Coins',
     nameDE: 'Starter Coins',
-    description: '50 Delulu Coins to start your journey',
-    descriptionDE: '50 Delulu Coins für deinen Start',
+    description: '50 synclulu Coins to start your journey',
+    descriptionDE: '50 synclulu Coins für deinen Start',
     rarity: 'common',
     isPremium: false,
     value: 50,
@@ -154,8 +154,8 @@ export const BETA_SEASON_REWARDS: PassReward[] = [
     type: 'coins',
     name: 'Coin Bundle',
     nameDE: 'Coin Bundle',
-    description: '100 Delulu Coins',
-    descriptionDE: '100 Delulu Coins',
+    description: '100 synclulu Coins',
+    descriptionDE: '100 synclulu Coins',
     rarity: 'common',
     isPremium: false,
     value: 100,
@@ -224,8 +224,8 @@ export const BETA_SEASON_REWARDS: PassReward[] = [
     type: 'coins',
     name: 'Big Coin Bag',
     nameDE: 'Großer Coin-Beutel',
-    description: '250 Delulu Coins',
-    descriptionDE: '250 Delulu Coins',
+    description: '250 synclulu Coins',
+    descriptionDE: '250 synclulu Coins',
     rarity: 'rare',
     isPremium: false,
     value: 250,
@@ -295,8 +295,8 @@ export const BETA_SEASON_REWARDS: PassReward[] = [
     type: 'coins',
     name: 'Treasure Chest',
     nameDE: 'Schatzkiste',
-    description: '500 Delulu Coins',
-    descriptionDE: '500 Delulu Coins',
+    description: '500 synclulu Coins',
+    descriptionDE: '500 synclulu Coins',
     rarity: 'epic',
     isPremium: false,
     value: 500,
@@ -367,8 +367,8 @@ export const BETA_SEASON_REWARDS: PassReward[] = [
     type: 'coins',
     name: 'Elite Vault',
     nameDE: 'Elite-Tresor',
-    description: '1000 Delulu Coins',
-    descriptionDE: '1000 Delulu Coins',
+    description: '1000 synclulu Coins',
+    descriptionDE: '1000 synclulu Coins',
     rarity: 'legendary',
     isPremium: false,
     value: 1000,

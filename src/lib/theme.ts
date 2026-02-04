@@ -1,14 +1,14 @@
 /**
- * DELULU THEME SYSTEM v2.0
+ * synclulu THEME SYSTEM v2.0
  * "The Deep Night Standard"
  *
  * PHILOSOPHY:
  * - No pure black (#000) - always use refined dark grays
  * - WCAG AA compliant contrasts
- * - Delulu Glow: Soft pastels on dark backgrounds
+ * - synclulu Glow: Soft pastels on dark backgrounds
  * - Consistent elevation system with subtle shadows
  *
- * @design Apple Human Interface Guidelines meets Delulu
+ * @design Apple Human Interface Guidelines meets synclulu
  * @version 2.0.0
  */
 
@@ -63,7 +63,7 @@ export const colors = {
     },
   },
 
-  // ─── DELULU ACCENT COLORS ───
+  // ─── synclulu ACCENT COLORS ───
   accent: {
     purple: {
       50: '#FAF5FF',
@@ -89,7 +89,7 @@ export const colors = {
       800: '#9D174D',
       900: '#831843',
     },
-    // Delulu Glow - Pastels for dark mode accents
+    // synclulu Glow - Pastels for dark mode accents
     glow: {
       purple: 'rgba(168, 85, 247, 0.15)',
       pink: 'rgba(236, 72, 153, 0.15)',
@@ -176,7 +176,7 @@ interface ThemeState {
 export const useTheme = create<ThemeState>()(
   persist(
     (set) => ({
-      isDark: true, // Default to dark mode for Delulu
+      isDark: true, // Default to dark mode for synclulu
       setDark: (dark) => {
         set({ isDark: dark });
         applyTheme(dark);
@@ -187,7 +187,7 @@ export const useTheme = create<ThemeState>()(
         return { isDark: newDark };
       }),
     }),
-    { name: 'delulu-theme' }
+    { name: 'synclulu-theme' }
   )
 );
 
@@ -218,7 +218,7 @@ export const applyTheme = (isDark: boolean) => {
 
 // Initialize theme on load
 export const initTheme = () => {
-  const stored = localStorage.getItem('delulu-theme');
+  const stored = localStorage.getItem('synclulu-theme');
   if (stored) {
     const { state } = JSON.parse(stored);
     applyTheme(state.isDark);

@@ -31,8 +31,8 @@ const faqData: FAQItem[] = [
   // Allgemein
   {
     category: 'allgemein',
-    question: 'Was ist delulu?',
-    answer: 'delulu ist eine hyperlocal Community-App, die Menschen in deiner Nähe per Voice-Chat verbindet. Tauche in die "Wolke" ein und triff neue Leute spontan und unkompliziert.',
+    question: 'Was ist synclulu?',
+    answer: 'synclulu ist eine hyperlocal Community-App, die Menschen in deiner Nähe per Voice-Chat verbindet. Tauche in die "Wolke" ein und triff neue Leute spontan und unkompliziert.',
   },
   {
     category: 'allgemein',
@@ -41,7 +41,7 @@ const faqData: FAQItem[] = [
   },
   {
     category: 'allgemein',
-    question: 'Ist delulu kostenlos?',
+    question: 'Ist synclulu kostenlos?',
     answer: 'Ja! Die Grundfunktionen sind komplett kostenlos. Mit Catalyst Premium bekommst du zusätzliche Features wie 1.5x XP, unbegrenzte Sterne und die Möglichkeit zu sehen, wer dein Profil besucht hat.',
   },
 
@@ -100,7 +100,7 @@ const faqData: FAQItem[] = [
   {
     category: 'freunde',
     question: 'Wie füge ich Freunde hinzu?',
-    answer: 'Sende eine Freundschaftsanfrage über das Profil eines Users. Freundschaft in delulu funktioniert nach dem "Handshake"-Prinzip - beide müssen bestätigen.',
+    answer: 'Sende eine Freundschaftsanfrage über das Profil eines Users. Freundschaft in synclulu funktioniert nach dem "Handshake"-Prinzip - beide müssen bestätigen.',
   },
   {
     category: 'freunde',
@@ -143,40 +143,40 @@ const Help = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--delulu-bg)] safe-top safe-bottom pb-24 theme-transition">
+    <div className="min-h-screen bg-[var(--synclulu-bg)] safe-top safe-bottom pb-24 theme-transition">
       {/* Background Effect */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--delulu-accent)]/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--synclulu-accent)]/5 via-transparent to-transparent" />
       </div>
 
       {/* Header */}
-      <div className="sticky top-0 z-20 glass-nav border-b border-[var(--delulu-border)]">
+      <div className="sticky top-0 z-20 glass-nav border-b border-[var(--synclulu-border)]">
         <div className="px-6 py-4 flex items-center gap-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] flex items-center justify-center text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] transition-colors shadow-sm"
+            className="w-10 h-10 rounded-xl bg-[var(--synclulu-card)] flex items-center justify-center text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)] transition-colors shadow-sm"
           >
             <ArrowLeft size={20} />
           </motion.button>
           <div className="flex-1">
-            <h1 className="font-display text-xl font-bold text-[var(--delulu-text)]">
+            <h1 className="font-display text-xl font-bold text-[var(--synclulu-text)]">
               Hilfe & FAQ
             </h1>
-            <p className="text-xs text-[var(--delulu-muted)]">Finde Antworten auf deine Fragen</p>
+            <p className="text-xs text-[var(--synclulu-muted)]">Finde Antworten auf deine Fragen</p>
           </div>
         </div>
 
         {/* Search */}
         <div className="px-6 pb-4">
           <div className="relative">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]" />
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--synclulu-muted)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Suche in den FAQ..."
-              className="w-full pl-11 pr-4 py-3 bg-[var(--delulu-card)] border border-[var(--delulu-border)] rounded-xl text-sm text-[var(--delulu-text)] placeholder-[var(--delulu-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--delulu-accent)]/30"
+              className="w-full pl-11 pr-4 py-3 bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] rounded-xl text-sm text-[var(--synclulu-text)] placeholder-[var(--synclulu-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--synclulu-accent)]/30"
             />
           </div>
         </div>
@@ -196,8 +196,8 @@ const Help = () => {
                 onClick={() => setActiveCategory(null)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
                   !activeCategory
-                    ? 'bg-[var(--delulu-accent)] text-white shadow-lg'
-                    : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] border border-[var(--delulu-border)]'
+                    ? 'bg-[var(--synclulu-accent)] text-white shadow-lg'
+                    : 'bg-[var(--synclulu-card)] text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)] border border-[var(--synclulu-border)]'
                 }`}
               >
                 Alle
@@ -208,8 +208,8 @@ const Help = () => {
                   onClick={() => setActiveCategory(cat.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
                     activeCategory === cat.id
-                      ? 'bg-[var(--delulu-accent)] text-white shadow-lg'
-                      : 'bg-[var(--delulu-card)] text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] border border-[var(--delulu-border)]'
+                      ? 'bg-[var(--synclulu-accent)] text-white shadow-lg'
+                      : 'bg-[var(--synclulu-card)] text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)] border border-[var(--synclulu-border)]'
                   }`}
                 >
                   <cat.icon size={16} />
@@ -229,8 +229,8 @@ const Help = () => {
       >
         {filteredFAQ.length === 0 ? (
           <div className="text-center py-12">
-            <HelpCircle size={48} className="mx-auto text-[var(--delulu-muted)] opacity-30 mb-4" />
-            <p className="text-[var(--delulu-muted)]">Keine Ergebnisse gefunden</p>
+            <HelpCircle size={48} className="mx-auto text-[var(--synclulu-muted)] opacity-30 mb-4" />
+            <p className="text-[var(--synclulu-muted)]">Keine Ergebnisse gefunden</p>
           </div>
         ) : (
           filteredFAQ.map((item, index) => (
@@ -239,19 +239,19 @@ const Help = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.03 }}
-              className="bg-[var(--delulu-card)] rounded-2xl shadow-sm overflow-hidden border border-[var(--delulu-border)]"
+              className="bg-[var(--synclulu-card)] rounded-2xl shadow-sm overflow-hidden border border-[var(--synclulu-border)]"
             >
               <button
                 onClick={() => toggleQuestion(item.question)}
                 className="w-full flex items-center justify-between p-4 text-left"
               >
-                <span className="font-semibold text-[var(--delulu-text)] pr-4">
+                <span className="font-semibold text-[var(--synclulu-text)] pr-4">
                   {item.question}
                 </span>
                 {expandedQuestion === item.question ? (
-                  <ChevronDown size={20} className="text-[var(--delulu-accent)] flex-shrink-0" />
+                  <ChevronDown size={20} className="text-[var(--synclulu-accent)] flex-shrink-0" />
                 ) : (
-                  <ChevronRight size={20} className="text-[var(--delulu-muted)] flex-shrink-0" />
+                  <ChevronRight size={20} className="text-[var(--synclulu-muted)] flex-shrink-0" />
                 )}
               </button>
 
@@ -265,8 +265,8 @@ const Help = () => {
                     className="overflow-hidden"
                   >
                     <div className="px-4 pb-4 pt-0">
-                      <div className="bg-[var(--delulu-bg)] rounded-xl p-4 border border-[var(--delulu-border)]">
-                        <p className="text-sm text-[var(--delulu-text)] leading-relaxed">
+                      <div className="bg-[var(--synclulu-bg)] rounded-xl p-4 border border-[var(--synclulu-border)]">
+                        <p className="text-sm text-[var(--synclulu-text)] leading-relaxed">
                           {item.answer}
                         </p>
                       </div>
@@ -281,28 +281,28 @@ const Help = () => {
 
       {/* Contact Support */}
       <div className="px-6 py-8">
-        <div className="bg-gradient-to-br from-[var(--delulu-accent)]/10 to-[var(--delulu-accent)]/5 rounded-2xl p-6 text-center border border-[var(--delulu-accent)]/20">
-          <MessageCircle size={32} className="mx-auto text-[var(--delulu-accent)] mb-3" />
-          <h3 className="font-display font-bold text-[var(--delulu-text)] mb-2">
+        <div className="bg-gradient-to-br from-[var(--synclulu-accent)]/10 to-[var(--synclulu-accent)]/5 rounded-2xl p-6 text-center border border-[var(--synclulu-accent)]/20">
+          <MessageCircle size={32} className="mx-auto text-[var(--synclulu-accent)] mb-3" />
+          <h3 className="font-display font-bold text-[var(--synclulu-text)] mb-2">
             Noch Fragen?
           </h3>
-          <p className="text-sm text-[var(--delulu-muted)] mb-4">
+          <p className="text-sm text-[var(--synclulu-muted)] mb-4">
             Unser Support-Team hilft dir gerne weiter
           </p>
 
           <div className="flex flex-col gap-3">
             <a
-              href="mailto:support@delulu.app"
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--delulu-accent)] text-white rounded-xl font-semibold hover:opacity-90 transition-opacity"
+              href="mailto:support@synclulu.app"
+              className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--synclulu-accent)] text-white rounded-xl font-semibold hover:opacity-90 transition-opacity"
             >
               <Mail size={18} />
               E-Mail schreiben
             </a>
             <a
-              href="https://delulu.app/help"
+              href="https://synclulu.app/help"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--delulu-card)] text-[var(--delulu-text)] rounded-xl font-semibold hover:opacity-90 transition-opacity border border-[var(--delulu-border)]"
+              className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--synclulu-card)] text-[var(--synclulu-text)] rounded-xl font-semibold hover:opacity-90 transition-opacity border border-[var(--synclulu-border)]"
             >
               <ExternalLink size={18} />
               Hilfe-Center besuchen
@@ -313,14 +313,14 @@ const Help = () => {
 
       {/* Legal Links */}
       <div className="px-6 pb-8">
-        <div className="flex justify-center gap-6 text-xs text-[var(--delulu-muted)]">
-          <button onClick={() => navigate('/privacy')} className="hover:text-[var(--delulu-accent)] transition-colors">
+        <div className="flex justify-center gap-6 text-xs text-[var(--synclulu-muted)]">
+          <button onClick={() => navigate('/privacy')} className="hover:text-[var(--synclulu-accent)] transition-colors">
             Datenschutz
           </button>
-          <button onClick={() => navigate('/terms')} className="hover:text-[var(--delulu-accent)] transition-colors">
+          <button onClick={() => navigate('/terms')} className="hover:text-[var(--synclulu-accent)] transition-colors">
             AGB
           </button>
-          <button onClick={() => navigate('/imprint')} className="hover:text-[var(--delulu-accent)] transition-colors">
+          <button onClick={() => navigate('/imprint')} className="hover:text-[var(--synclulu-accent)] transition-colors">
             Impressum
           </button>
         </div>

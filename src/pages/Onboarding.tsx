@@ -185,7 +185,7 @@ const Onboarding = () => {
         return;
       }
 
-      const reserved = ['admin', 'delulu', 'support', 'help', 'system', 'mod', 'moderator'];
+      const reserved = ['admin', 'synclulu', 'support', 'help', 'system', 'mod', 'moderator'];
       if (reserved.includes(value)) {
         setIsUsernameAvailable(false);
         setUsernameError('Dieser Username ist reserviert');
@@ -233,9 +233,9 @@ const Onboarding = () => {
   // Tutorial slides
   const tutorialSlides = [
     {
-      icon: <Cloud size={64} className="text-delulu-violet" />,
+      icon: <Cloud size={64} className="text-synclulu-violet" />,
       title: 'Willkommen in der Wolke',
-      description: 'delulu verbindet dich mit Menschen in deiner Nähe über Voice-Chat. Tippe auf die Wolke um loszulegen.',
+      description: 'synclulu verbindet dich mit Menschen in deiner Nähe über Voice-Chat. Tippe auf die Wolke um loszulegen.',
     },
     {
       icon: <MapPin size={64} className="text-green-500" />,
@@ -261,7 +261,7 @@ const Onboarding = () => {
 
   const handleLanguageSelect = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem('delulu-language', lang);
+    localStorage.setItem('synclulu-language', lang);
   };
 
   const handleLanguageContinue = () => {
@@ -404,8 +404,8 @@ const Onboarding = () => {
               key={s}
               className={`h-1 flex-1 rounded-full transition-colors ${
                 ['language', 'invite', 'age', 'terms', 'tutorial', 'profile'].indexOf(step) >= i
-                  ? 'bg-delulu-violet'
-                  : 'bg-[var(--delulu-surface)]'
+                  ? 'bg-synclulu-violet'
+                  : 'bg-[var(--synclulu-surface)]'
               }`}
             />
           ))}
@@ -417,15 +417,15 @@ const Onboarding = () => {
         <div className="flex-1 flex flex-col px-6 py-8">
           <div className="flex-1">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-16 h-16 rounded-full bg-delulu-violet/10 flex items-center justify-center">
-                <Globe size={32} className="text-delulu-violet" />
+              <div className="w-16 h-16 rounded-full bg-synclulu-violet/10 flex items-center justify-center">
+                <Globe size={32} className="text-synclulu-violet" />
               </div>
             </div>
 
-            <h1 className="font-display text-2xl font-bold text-delulu-text text-center mb-2">
+            <h1 className="font-display text-2xl font-bold text-synclulu-text text-center mb-2">
               Wähle deine Sprache
             </h1>
-            <p className="text-delulu-muted text-center mb-6">
+            <p className="text-synclulu-muted text-center mb-6">
               Choose your language
             </p>
 
@@ -436,17 +436,17 @@ const Onboarding = () => {
                   onClick={() => handleLanguageSelect(lang)}
                   className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all ${
                     language === lang
-                      ? 'border-delulu-violet bg-delulu-violet/5'
-                      : 'border-[var(--delulu-border)] hover:border-[var(--delulu-border)]'
+                      ? 'border-synclulu-violet bg-synclulu-violet/5'
+                      : 'border-[var(--synclulu-border)] hover:border-[var(--synclulu-border)]'
                   }`}
                 >
                   <span className="text-2xl">{LANGUAGES[lang].flag}</span>
                   <div className="flex-1 text-left">
-                    <p className="font-semibold text-delulu-text">{LANGUAGES[lang].native}</p>
-                    <p className="text-xs text-delulu-muted">{LANGUAGES[lang].name}</p>
+                    <p className="font-semibold text-synclulu-text">{LANGUAGES[lang].native}</p>
+                    <p className="text-xs text-synclulu-muted">{LANGUAGES[lang].name}</p>
                   </div>
                   {language === lang && (
-                    <Check size={20} className="text-delulu-violet" />
+                    <Check size={20} className="text-synclulu-violet" />
                   )}
                 </button>
               ))}
@@ -455,7 +455,7 @@ const Onboarding = () => {
 
           <button
             onClick={handleLanguageContinue}
-            className="w-full py-4 bg-delulu-violet text-white font-bold rounded-xl transition-opacity"
+            className="w-full py-4 bg-synclulu-violet text-white font-bold rounded-xl transition-opacity"
           >
             Weiter
           </button>
@@ -468,9 +468,9 @@ const Onboarding = () => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-6">
               <button onClick={() => setStep('language')} className="p-2 -m-2">
-                <ChevronLeft size={24} className="text-delulu-muted" />
+                <ChevronLeft size={24} className="text-synclulu-muted" />
               </button>
-              <h1 className="font-display text-2xl font-bold text-delulu-text">
+              <h1 className="font-display text-2xl font-bold text-synclulu-text">
                 Einladungscode
               </h1>
             </div>
@@ -481,33 +481,33 @@ const Onboarding = () => {
               </div>
             </div>
 
-            <p className="text-delulu-muted text-center mb-6">
+            <p className="text-synclulu-muted text-center mb-6">
               Hast du einen Einladungscode von einem Freund erhalten? Gib ihn hier ein um Bonus-XP zu erhalten!
             </p>
 
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-delulu-text mb-2">
+              <label className="block text-sm font-semibold text-synclulu-text mb-2">
                 Einladungscode (optional)
               </label>
               <div className="relative">
-                <Ticket size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-delulu-muted" />
+                <Ticket size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-synclulu-muted" />
                 <input
                   type="text"
                   value={inviteCode}
                   onChange={(e) => handleInviteCodeChange(e.target.value)}
-                  placeholder="z.B. DELULU-ABC12"
+                  placeholder="z.B. synclulu-ABC12"
                   maxLength={15}
                   className={`w-full pl-12 pr-12 py-4 border-2 rounded-xl focus:outline-none transition-colors font-mono text-lg tracking-wider ${
                     codeStatus === 'valid'
                       ? 'border-green-400 bg-green-50 focus:border-green-500'
                       : codeStatus === 'invalid'
                       ? 'border-red-300 bg-red-50 focus:border-red-500'
-                      : 'border-[var(--delulu-border)] focus:border-delulu-violet'
+                      : 'border-[var(--synclulu-border)] focus:border-synclulu-violet'
                   }`}
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
                   {isCheckingCode ? (
-                    <Loader2 size={20} className="text-[var(--delulu-muted)] animate-spin" />
+                    <Loader2 size={20} className="text-[var(--synclulu-muted)] animate-spin" />
                   ) : codeStatus === 'valid' ? (
                     <Check size={20} className="text-green-500" />
                   ) : codeStatus === 'invalid' ? (
@@ -537,7 +537,7 @@ const Onboarding = () => {
 
           <button
             onClick={handleInviteContinue}
-            className="w-full py-4 bg-delulu-violet text-white font-bold rounded-xl transition-opacity flex items-center justify-center gap-2"
+            className="w-full py-4 bg-synclulu-violet text-white font-bold rounded-xl transition-opacity flex items-center justify-center gap-2"
           >
             {codeStatus === 'valid' ? (
               <>
@@ -559,30 +559,30 @@ const Onboarding = () => {
               <AlertTriangle size={40} className="text-amber-600" />
             </div>
 
-            <h1 className="font-display text-2xl font-bold text-delulu-text mb-4">
+            <h1 className="font-display text-2xl font-bold text-synclulu-text mb-4">
               Altersverifikation
             </h1>
 
-            <p className="text-delulu-muted mb-8 max-w-sm">
-              delulu ist eine Plattform für Erwachsene. Du musst mindestens 18 Jahre alt sein um die App zu nutzen.
+            <p className="text-synclulu-muted mb-8 max-w-sm">
+              synclulu ist eine Plattform für Erwachsene. Du musst mindestens 18 Jahre alt sein um die App zu nutzen.
             </p>
 
-            <label className="flex items-start gap-3 p-4 bg-[var(--delulu-card)] rounded-xl border-2 border-[var(--delulu-border)] cursor-pointer mb-6 text-left max-w-sm">
+            <label className="flex items-start gap-3 p-4 bg-[var(--synclulu-card)] rounded-xl border-2 border-[var(--synclulu-border)] cursor-pointer mb-6 text-left max-w-sm">
               <input
                 type="checkbox"
                 checked={isOver18}
                 onChange={(e) => setIsOver18(e.target.checked)}
-                className="mt-1 w-5 h-5 rounded border-[var(--delulu-border)] text-delulu-violet focus:ring-delulu-violet"
+                className="mt-1 w-5 h-5 rounded border-[var(--synclulu-border)] text-synclulu-violet focus:ring-synclulu-violet"
               />
               <div>
-                <p className="font-semibold text-delulu-text">Ich bestätige, dass ich 18 Jahre oder älter bin</p>
-                <p className="text-sm text-delulu-muted mt-1">
+                <p className="font-semibold text-synclulu-text">Ich bestätige, dass ich 18 Jahre oder älter bin</p>
+                <p className="text-sm text-synclulu-muted mt-1">
                   Falsche Angaben führen zur sofortigen Sperrung des Accounts.
                 </p>
               </div>
             </label>
 
-            <p className="text-xs text-delulu-muted max-w-sm">
+            <p className="text-xs text-synclulu-muted max-w-sm">
               Bei Verdacht auf Minderjährigkeit kann eine ID-Verifikation angefordert werden.
             </p>
           </div>
@@ -590,14 +590,14 @@ const Onboarding = () => {
           <div className="flex gap-3">
             <button
               onClick={() => setStep('invite')}
-              className="py-4 px-6 border-2 border-[var(--delulu-border)] text-delulu-muted font-semibold rounded-xl"
+              className="py-4 px-6 border-2 border-[var(--synclulu-border)] text-synclulu-muted font-semibold rounded-xl"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={handleAgeVerification}
               disabled={!isOver18}
-              className="flex-1 py-4 bg-delulu-violet text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+              className="flex-1 py-4 bg-synclulu-violet text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
               Weiter
             </button>
@@ -611,31 +611,31 @@ const Onboarding = () => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-6">
               <button onClick={() => setStep('age')} className="p-2 -m-2">
-                <ChevronLeft size={24} className="text-delulu-muted" />
+                <ChevronLeft size={24} className="text-synclulu-muted" />
               </button>
-              <h1 className="font-display text-2xl font-bold text-delulu-text">
+              <h1 className="font-display text-2xl font-bold text-synclulu-text">
                 Nutzungsbedingungen
               </h1>
             </div>
 
-            <p className="text-delulu-muted mb-6">
+            <p className="text-synclulu-muted mb-6">
               Bitte lies und akzeptiere unsere Richtlinien um fortzufahren.
             </p>
 
             <div className="space-y-4 mb-6">
               {/* Terms */}
-              <label className="flex items-start gap-3 p-4 bg-[var(--delulu-card)] rounded-xl border-2 border-[var(--delulu-border)] cursor-pointer">
+              <label className="flex items-start gap-3 p-4 bg-[var(--synclulu-card)] rounded-xl border-2 border-[var(--synclulu-border)] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-1 w-5 h-5 rounded border-[var(--delulu-border)] text-delulu-violet focus:ring-delulu-violet"
+                  className="mt-1 w-5 h-5 rounded border-[var(--synclulu-border)] text-synclulu-violet focus:ring-synclulu-violet"
                 />
                 <div className="flex-1">
-                  <p className="font-semibold text-delulu-text">AGB akzeptieren</p>
-                  <p className="text-sm text-delulu-muted">
+                  <p className="font-semibold text-synclulu-text">AGB akzeptieren</p>
+                  <p className="text-sm text-synclulu-muted">
                     Ich habe die{' '}
-                    <a href="/impressum" className="text-delulu-violet underline">
+                    <a href="/impressum" className="text-synclulu-violet underline">
                       Allgemeinen Geschäftsbedingungen
                     </a>{' '}
                     gelesen und akzeptiere diese.
@@ -644,18 +644,18 @@ const Onboarding = () => {
               </label>
 
               {/* Privacy */}
-              <label className="flex items-start gap-3 p-4 bg-[var(--delulu-card)] rounded-xl border-2 border-[var(--delulu-border)] cursor-pointer">
+              <label className="flex items-start gap-3 p-4 bg-[var(--synclulu-card)] rounded-xl border-2 border-[var(--synclulu-border)] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={acceptedPrivacy}
                   onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-                  className="mt-1 w-5 h-5 rounded border-[var(--delulu-border)] text-delulu-violet focus:ring-delulu-violet"
+                  className="mt-1 w-5 h-5 rounded border-[var(--synclulu-border)] text-synclulu-violet focus:ring-synclulu-violet"
                 />
                 <div className="flex-1">
-                  <p className="font-semibold text-delulu-text">Datenschutz akzeptieren</p>
-                  <p className="text-sm text-delulu-muted">
+                  <p className="font-semibold text-synclulu-text">Datenschutz akzeptieren</p>
+                  <p className="text-sm text-synclulu-muted">
                     Ich habe die{' '}
-                    <a href="/datenschutz" className="text-delulu-violet underline">
+                    <a href="/datenschutz" className="text-synclulu-violet underline">
                       Datenschutzerklärung
                     </a>{' '}
                     gelesen und akzeptiere diese.
@@ -664,16 +664,16 @@ const Onboarding = () => {
               </label>
 
               {/* Community Guidelines */}
-              <label className="flex items-start gap-3 p-4 bg-[var(--delulu-card)] rounded-xl border-2 border-[var(--delulu-border)] cursor-pointer">
+              <label className="flex items-start gap-3 p-4 bg-[var(--synclulu-card)] rounded-xl border-2 border-[var(--synclulu-border)] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={acceptedCommunity}
                   onChange={(e) => setAcceptedCommunity(e.target.checked)}
-                  className="mt-1 w-5 h-5 rounded border-[var(--delulu-border)] text-delulu-violet focus:ring-delulu-violet"
+                  className="mt-1 w-5 h-5 rounded border-[var(--synclulu-border)] text-synclulu-violet focus:ring-synclulu-violet"
                 />
                 <div className="flex-1">
-                  <p className="font-semibold text-delulu-text">Community-Regeln akzeptieren</p>
-                  <p className="text-sm text-delulu-muted">
+                  <p className="font-semibold text-synclulu-text">Community-Regeln akzeptieren</p>
+                  <p className="text-sm text-synclulu-muted">
                     Ich verpflichte mich zu respektvollem Umgang. Belästigung, Hate Speech und unangemessenes Verhalten sind verboten.
                   </p>
                 </div>
@@ -686,11 +686,11 @@ const Onboarding = () => {
                 type="checkbox"
                 checked={showTutorial}
                 onChange={(e) => setShowTutorial(e.target.checked)}
-                className="w-5 h-5 rounded border-[var(--delulu-border)] text-delulu-violet focus:ring-delulu-violet"
+                className="w-5 h-5 rounded border-[var(--synclulu-border)] text-synclulu-violet focus:ring-synclulu-violet"
               />
               <div>
-                <p className="font-semibold text-delulu-text">App-Einführung anzeigen</p>
-                <p className="text-sm text-delulu-muted">Kurze Erklärung wie delulu funktioniert</p>
+                <p className="font-semibold text-synclulu-text">App-Einführung anzeigen</p>
+                <p className="text-sm text-synclulu-muted">Kurze Erklärung wie synclulu funktioniert</p>
               </div>
             </label>
           </div>
@@ -698,7 +698,7 @@ const Onboarding = () => {
           <button
             onClick={handleTermsAccept}
             disabled={!acceptedTerms || !acceptedPrivacy || !acceptedCommunity}
-            className="w-full py-4 bg-delulu-violet text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+            className="w-full py-4 bg-synclulu-violet text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
           >
             Weiter
           </button>
@@ -713,11 +713,11 @@ const Onboarding = () => {
               {tutorialSlides[tutorialStep].icon}
             </div>
 
-            <h2 className="font-display text-2xl font-bold text-delulu-text mb-4">
+            <h2 className="font-display text-2xl font-bold text-synclulu-text mb-4">
               {tutorialSlides[tutorialStep].title}
             </h2>
 
-            <p className="text-delulu-muted max-w-sm mb-8">
+            <p className="text-synclulu-muted max-w-sm mb-8">
               {tutorialSlides[tutorialStep].description}
             </p>
 
@@ -727,7 +727,7 @@ const Onboarding = () => {
                 <div
                   key={i}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    i === tutorialStep ? 'bg-delulu-violet w-6' : 'bg-[var(--delulu-border)]'
+                    i === tutorialStep ? 'bg-synclulu-violet w-6' : 'bg-[var(--synclulu-border)]'
                   }`}
                 />
               ))}
@@ -737,13 +737,13 @@ const Onboarding = () => {
           <div className="flex gap-3">
             <button
               onClick={handleTutorialSkip}
-              className="flex-1 py-4 border-2 border-[var(--delulu-border)] text-delulu-muted font-semibold rounded-xl"
+              className="flex-1 py-4 border-2 border-[var(--synclulu-border)] text-synclulu-muted font-semibold rounded-xl"
             >
               Überspringen
             </button>
             <button
               onClick={handleTutorialNext}
-              className="flex-1 py-4 bg-delulu-violet text-white font-bold rounded-xl flex items-center justify-center gap-2"
+              className="flex-1 py-4 bg-synclulu-violet text-white font-bold rounded-xl flex items-center justify-center gap-2"
             >
               {tutorialStep < tutorialSlides.length - 1 ? (
                 <>Weiter <ChevronRight size={20} /></>
@@ -761,25 +761,25 @@ const Onboarding = () => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-6">
               <button onClick={() => setStep('tutorial')} className="p-2 -m-2">
-                <ChevronLeft size={24} className="text-delulu-muted" />
+                <ChevronLeft size={24} className="text-synclulu-muted" />
               </button>
-              <h1 className="font-display text-2xl font-bold text-delulu-text">
+              <h1 className="font-display text-2xl font-bold text-synclulu-text">
                 Dein Profil
               </h1>
             </div>
 
-            <p className="text-delulu-muted mb-6">
+            <p className="text-synclulu-muted mb-6">
               Richte dein Profil ein. Du kannst diese Angaben später jederzeit ändern.
             </p>
 
             <div className="space-y-4">
               {/* Username with real-time availability check */}
               <div>
-                <label className="block text-sm font-semibold text-delulu-text mb-2">
+                <label className="block text-sm font-semibold text-synclulu-text mb-2">
                   Benutzername *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-delulu-muted">@</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-synclulu-muted">@</span>
                   <input
                     type="text"
                     value={username}
@@ -791,12 +791,12 @@ const Onboarding = () => {
                         ? 'border-red-300 focus:border-red-500'
                         : isUsernameAvailable
                         ? 'border-green-300 focus:border-green-500'
-                        : 'border-[var(--delulu-border)] focus:border-delulu-violet'
+                        : 'border-[var(--synclulu-border)] focus:border-synclulu-violet'
                     }`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2">
                     {isCheckingUsername ? (
-                      <Loader2 size={20} className="text-[var(--delulu-muted)] animate-spin" />
+                      <Loader2 size={20} className="text-[var(--synclulu-muted)] animate-spin" />
                     ) : isUsernameAvailable === true ? (
                       <Check size={20} className="text-green-500" />
                     ) : isUsernameAvailable === false ? (
@@ -810,14 +810,14 @@ const Onboarding = () => {
                 {isUsernameAvailable && (
                   <p className="text-green-600 text-xs mt-1">✓ @{username} ist verfügbar</p>
                 )}
-                <p className="text-xs text-delulu-muted mt-1">
+                <p className="text-xs text-synclulu-muted mt-1">
                   Einzigartig, nur Kleinbuchstaben, Zahlen & Unterstriche
                 </p>
               </div>
 
               {/* Display Name */}
               <div>
-                <label className="block text-sm font-semibold text-delulu-text mb-2">
+                <label className="block text-sm font-semibold text-synclulu-text mb-2">
                   Anzeigename
                 </label>
                 <input
@@ -826,13 +826,13 @@ const Onboarding = () => {
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder="Wie sollen dich andere sehen?"
                   maxLength={30}
-                  className="w-full px-4 py-3 border-2 border-[var(--delulu-border)] rounded-xl focus:border-delulu-violet focus:outline-none"
+                  className="w-full px-4 py-3 border-2 border-[var(--synclulu-border)] rounded-xl focus:border-synclulu-violet focus:outline-none"
                 />
               </div>
 
               {/* Full Birthdate */}
               <div>
-                <label className="block text-sm font-semibold text-delulu-text mb-2">
+                <label className="block text-sm font-semibold text-synclulu-text mb-2">
                   Geburtsdatum *
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -840,7 +840,7 @@ const Onboarding = () => {
                   <select
                     value={birthDay}
                     onChange={(e) => setBirthDay(e.target.value)}
-                    className="px-3 py-3 border-2 border-[var(--delulu-border)] rounded-xl focus:border-delulu-violet focus:outline-none bg-[var(--delulu-card)]"
+                    className="px-3 py-3 border-2 border-[var(--synclulu-border)] rounded-xl focus:border-synclulu-violet focus:outline-none bg-[var(--synclulu-card)]"
                   >
                     <option value="">Tag</option>
                     {days.map((d) => (
@@ -852,7 +852,7 @@ const Onboarding = () => {
                   <select
                     value={birthMonth}
                     onChange={(e) => setBirthMonth(e.target.value)}
-                    className="px-3 py-3 border-2 border-[var(--delulu-border)] rounded-xl focus:border-delulu-violet focus:outline-none bg-[var(--delulu-card)]"
+                    className="px-3 py-3 border-2 border-[var(--synclulu-border)] rounded-xl focus:border-synclulu-violet focus:outline-none bg-[var(--synclulu-card)]"
                   >
                     <option value="">Monat</option>
                     {months.map((m) => (
@@ -864,7 +864,7 @@ const Onboarding = () => {
                   <select
                     value={birthYear}
                     onChange={(e) => setBirthYear(e.target.value)}
-                    className="px-3 py-3 border-2 border-[var(--delulu-border)] rounded-xl focus:border-delulu-violet focus:outline-none bg-[var(--delulu-card)]"
+                    className="px-3 py-3 border-2 border-[var(--synclulu-border)] rounded-xl focus:border-synclulu-violet focus:outline-none bg-[var(--synclulu-card)]"
                   >
                     <option value="">Jahr</option>
                     {years.map((year) => (
@@ -881,7 +881,7 @@ const Onboarding = () => {
 
               {/* City */}
               <div>
-                <label className="block text-sm font-semibold text-delulu-text mb-2">
+                <label className="block text-sm font-semibold text-synclulu-text mb-2">
                   Stadt / Region
                 </label>
                 <input
@@ -890,13 +890,13 @@ const Onboarding = () => {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="z.B. Berlin, München..."
                   maxLength={50}
-                  className="w-full px-4 py-3 border-2 border-[var(--delulu-border)] rounded-xl focus:border-delulu-violet focus:outline-none"
+                  className="w-full px-4 py-3 border-2 border-[var(--synclulu-border)] rounded-xl focus:border-synclulu-violet focus:outline-none"
                 />
               </div>
 
               {/* Bio */}
               <div>
-                <label className="block text-sm font-semibold text-delulu-text mb-2">
+                <label className="block text-sm font-semibold text-synclulu-text mb-2">
                   Über dich
                 </label>
                 <textarea
@@ -905,9 +905,9 @@ const Onboarding = () => {
                   placeholder="Erzähl etwas über dich... (optional)"
                   maxLength={200}
                   rows={3}
-                  className="w-full px-4 py-3 border-2 border-[var(--delulu-border)] rounded-xl focus:border-delulu-violet focus:outline-none resize-none"
+                  className="w-full px-4 py-3 border-2 border-[var(--synclulu-border)] rounded-xl focus:border-synclulu-violet focus:outline-none resize-none"
                 />
-                <p className="text-xs text-delulu-muted mt-1 text-right">{bio.length}/200</p>
+                <p className="text-xs text-synclulu-muted mt-1 text-right">{bio.length}/200</p>
               </div>
             </div>
           </div>
@@ -915,7 +915,7 @@ const Onboarding = () => {
           <button
             onClick={handleProfileSave}
             disabled={!canSaveProfile || isSaving}
-            className="w-full py-4 bg-delulu-violet text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center gap-2 mt-6"
+            className="w-full py-4 bg-synclulu-violet text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center gap-2 mt-6"
           >
             {isSaving ? (
               <>

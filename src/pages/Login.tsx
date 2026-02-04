@@ -1,5 +1,5 @@
 /**
- * DELULU LOGIN PAGE
+ * synclulu LOGIN PAGE
  * @version 2.0.0 - Clean Production Build
  */
 
@@ -77,7 +77,7 @@ const Login = () => {
   // Forgot Password View
   if (showForgotPassword) {
     return (
-      <div className="min-h-screen min-h-[100dvh] bg-[var(--delulu-bg)] px-6 py-8 safe-top">
+      <div className="min-h-screen min-h-[100dvh] bg-[var(--synclulu-bg)] px-6 py-8 safe-top">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
@@ -86,11 +86,11 @@ const Login = () => {
               setResetEmailSent(false);
               setError('');
             }}
-            className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] flex items-center justify-center shadow-sm"
+            className="w-10 h-10 rounded-xl bg-[var(--synclulu-card)] flex items-center justify-center shadow-sm"
           >
-            <ArrowLeft size={20} className="text-[var(--delulu-text)]" />
+            <ArrowLeft size={20} className="text-[var(--synclulu-text)]" />
           </button>
-          <h1 className="font-display text-2xl font-bold text-[var(--delulu-text)]">
+          <h1 className="font-display text-2xl font-bold text-[var(--synclulu-text)]">
             Passwort vergessen
           </h1>
         </div>
@@ -100,14 +100,14 @@ const Login = () => {
             <div className="w-16 h-16 mx-auto rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
               <CheckCircle2 size={32} className="text-green-600 dark:text-green-400" />
             </div>
-            <h2 className="font-display text-xl font-bold text-[var(--delulu-text)] mb-2">
+            <h2 className="font-display text-xl font-bold text-[var(--synclulu-text)] mb-2">
               E-Mail gesendet!
             </h2>
-            <p className="text-[var(--delulu-muted)] mb-6">
+            <p className="text-[var(--synclulu-muted)] mb-6">
               Wir haben dir eine E-Mail an <strong>{email}</strong> gesendet.
               Folge dem Link in der E-Mail, um dein Passwort zurückzusetzen.
             </p>
-            <p className="text-sm text-[var(--delulu-muted)] mb-6">
+            <p className="text-sm text-[var(--synclulu-muted)] mb-6">
               Keine E-Mail erhalten? Überprüfe deinen Spam-Ordner oder versuche es erneut.
             </p>
             <button
@@ -122,20 +122,20 @@ const Login = () => {
           </div>
         ) : (
           <div className="glass-card p-6">
-            <p className="text-[var(--delulu-muted)] mb-6">
+            <p className="text-[var(--synclulu-muted)] mb-6">
               Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.
             </p>
 
             <form onSubmit={handleForgotPassword} className="space-y-4">
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-[var(--delulu-muted)] mb-2">
+                <label className="block text-sm font-medium text-[var(--synclulu-muted)] mb-2">
                   E-Mail
                 </label>
                 <div className="relative">
                   <Mail
                     size={18}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--synclulu-muted)]"
                   />
                   <input
                     type="email"
@@ -143,7 +143,7 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="deine@email.de"
                     required
-                    className="w-full pl-12 pr-4 py-3 bg-[var(--delulu-card)] border-2 border-[var(--delulu-border)] rounded-xl focus:border-[var(--delulu-violet)] focus:outline-none transition-colors text-[var(--delulu-text)]"
+                    className="w-full pl-12 pr-4 py-3 bg-[var(--synclulu-card)] border-2 border-[var(--synclulu-border)] rounded-xl focus:border-[var(--synclulu-violet)] focus:outline-none transition-colors text-[var(--synclulu-text)]"
                   />
                 </div>
               </div>
@@ -170,16 +170,16 @@ const Login = () => {
 
   // Normal Login View
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-[var(--delulu-bg)] px-6 py-8 safe-top">
+    <div className="min-h-screen min-h-[100dvh] bg-[var(--synclulu-bg)] px-6 py-8 safe-top">
       {/* Header */}
       <div className="flex items-center gap-4 mb-4">
         <Link
           to="/"
-          className="w-10 h-10 rounded-xl bg-[var(--delulu-card)] flex items-center justify-center shadow-sm"
+          className="w-10 h-10 rounded-xl bg-[var(--synclulu-card)] flex items-center justify-center shadow-sm"
         >
-          <ArrowLeft size={20} className="text-[var(--delulu-text)]" />
+          <ArrowLeft size={20} className="text-[var(--synclulu-text)]" />
         </Link>
-        <h1 className="font-display text-2xl font-bold text-[var(--delulu-text)]">Login</h1>
+        <h1 className="font-display text-2xl font-bold text-[var(--synclulu-text)]">Login</h1>
       </div>
 
       {/* Mascot */}
@@ -194,13 +194,13 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-[var(--delulu-muted)] mb-2">
+            <label className="block text-sm font-medium text-[var(--synclulu-muted)] mb-2">
               E-Mail
             </label>
             <div className="relative">
               <Mail
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--synclulu-muted)]"
               />
               <input
                 type="email"
@@ -208,7 +208,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="deine@email.de"
                 required
-                className="w-full pl-12 pr-4 py-3 bg-[var(--delulu-card)] border-2 border-[var(--delulu-border)] rounded-xl focus:border-[var(--delulu-violet)] focus:outline-none transition-colors text-[var(--delulu-text)]"
+                className="w-full pl-12 pr-4 py-3 bg-[var(--synclulu-card)] border-2 border-[var(--synclulu-border)] rounded-xl focus:border-[var(--synclulu-violet)] focus:outline-none transition-colors text-[var(--synclulu-text)]"
               />
             </div>
           </div>
@@ -216,13 +216,13 @@ const Login = () => {
           {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-[var(--delulu-muted)]">
+              <label className="block text-sm font-medium text-[var(--synclulu-muted)]">
                 Passwort
               </label>
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-[var(--delulu-violet)] font-medium hover:underline"
+                className="text-sm text-[var(--synclulu-violet)] font-medium hover:underline"
               >
                 Passwort vergessen?
               </button>
@@ -230,7 +230,7 @@ const Login = () => {
             <div className="relative">
               <Lock
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--synclulu-muted)]"
               />
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -238,12 +238,12 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full pl-12 pr-12 py-3 bg-[var(--delulu-card)] border-2 border-[var(--delulu-border)] rounded-xl focus:border-[var(--delulu-violet)] focus:outline-none transition-colors text-[var(--delulu-text)]"
+                className="w-full pl-12 pr-12 py-3 bg-[var(--synclulu-card)] border-2 border-[var(--synclulu-border)] rounded-xl focus:border-[var(--synclulu-violet)] focus:outline-none transition-colors text-[var(--synclulu-text)]"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--delulu-muted)]"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--synclulu-muted)]"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -268,9 +268,9 @@ const Login = () => {
 
       {/* Divider */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 h-px bg-[var(--delulu-border)]" />
-        <span className="text-sm text-[var(--delulu-muted)]">oder</span>
-        <div className="flex-1 h-px bg-[var(--delulu-border)]" />
+        <div className="flex-1 h-px bg-[var(--synclulu-border)]" />
+        <span className="text-sm text-[var(--synclulu-muted)]">oder</span>
+        <div className="flex-1 h-px bg-[var(--synclulu-border)]" />
       </div>
 
       {/* Social Logins - Only Google */}
@@ -278,7 +278,7 @@ const Login = () => {
         <button
           onClick={handleGoogleLogin}
           disabled={isLoading}
-          className="w-full py-4 bg-[var(--delulu-card)] border-2 border-[var(--delulu-border)] rounded-xl font-medium flex items-center justify-center gap-3 hover:border-[var(--delulu-violet)] transition-colors disabled:opacity-70 text-[var(--delulu-text)]"
+          className="w-full py-4 bg-[var(--synclulu-card)] border-2 border-[var(--synclulu-border)] rounded-xl font-medium flex items-center justify-center gap-3 hover:border-[var(--synclulu-violet)] transition-colors disabled:opacity-70 text-[var(--synclulu-text)]"
         >
           <svg width="20" height="20" viewBox="0 0 24 24">
             <path
@@ -303,9 +303,9 @@ const Login = () => {
       </div>
 
       {/* Register Link */}
-      <p className="text-center text-[var(--delulu-muted)] mt-8">
+      <p className="text-center text-[var(--synclulu-muted)] mt-8">
         Noch kein Account?{' '}
-        <Link to="/register" className="text-[var(--delulu-violet)] font-semibold">
+        <Link to="/register" className="text-[var(--synclulu-violet)] font-semibold">
           Registrieren
         </Link>
       </p>

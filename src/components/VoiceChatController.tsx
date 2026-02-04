@@ -180,27 +180,27 @@ const LiveVoiceControl: React.FC<LiveVoiceControlProps> = ({
             transition-all duration-300
             ${isActive
               ? 'bg-emerald-500 shadow-lg shadow-emerald-500/40'
-              : 'bg-[var(--delulu-surface)] hover:bg-[var(--delulu-card)]'
+              : 'bg-[var(--synclulu-surface)] hover:bg-[var(--synclulu-card)]'
             }
           `}
         >
           <Mic
             size={32}
-            className={isActive ? 'text-white' : 'text-[var(--delulu-text)]'}
+            className={isActive ? 'text-white' : 'text-[var(--synclulu-text)]'}
           />
         </div>
       </motion.button>
 
       {/* Status Text */}
       <div className="text-center">
-        <p className={`text-sm font-medium ${isActive ? 'text-emerald-500' : 'text-[var(--delulu-text)]'}`}>
+        <p className={`text-sm font-medium ${isActive ? 'text-emerald-500' : 'text-[var(--synclulu-text)]'}`}>
           {isActive ? 'Live mit ' + otherUserName : 'Tippe für Live-Voice'}
         </p>
         {isActive && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-xs text-[var(--delulu-muted)] mt-1"
+            className="text-xs text-[var(--synclulu-muted)] mt-1"
           >
             Tippe erneut zum Beenden
           </motion.p>
@@ -209,7 +209,7 @@ const LiveVoiceControl: React.FC<LiveVoiceControlProps> = ({
 
       {/* WebRTC Hinweis */}
       {!isActive && (
-        <p className="text-xs text-[var(--delulu-muted)] text-center max-w-xs">
+        <p className="text-xs text-[var(--synclulu-muted)] text-center max-w-xs">
           Live-Voice ermöglicht Echtzeit-Kommunikation wenn ihr nah beieinander seid
         </p>
       )}
@@ -254,7 +254,7 @@ const VoiceChatController: React.FC<VoiceChatControllerProps> = ({
   if (isCalculating) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="flex items-center gap-3 text-[var(--delulu-muted)]">
+        <div className="flex items-center gap-3 text-[var(--synclulu-muted)]">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
@@ -313,7 +313,7 @@ const VoiceChatController: React.FC<VoiceChatControllerProps> = ({
           />
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
-            className="p-2 text-[var(--delulu-muted)]"
+            className="p-2 text-[var(--synclulu-muted)]"
           >
             <ChevronDown size={20} />
           </motion.div>
@@ -329,7 +329,7 @@ const VoiceChatController: React.FC<VoiceChatControllerProps> = ({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="rounded-2xl border border-[var(--delulu-border)] bg-[var(--delulu-card)] overflow-hidden theme-transition">
+            <div className="rounded-2xl border border-[var(--synclulu-border)] bg-[var(--synclulu-card)] overflow-hidden theme-transition">
               {/* Mode-specific content */}
               {mode === 'live' && (
                 <LiveVoiceControl
@@ -343,7 +343,7 @@ const VoiceChatController: React.FC<VoiceChatControllerProps> = ({
                 <div className="p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <Cloud size={18} className="text-violet-500" />
-                    <span className="text-sm font-medium text-[var(--delulu-text)]">
+                    <span className="text-sm font-medium text-[var(--synclulu-text)]">
                       Cloud-Memo an {otherUserName}
                     </span>
                   </div>
@@ -358,8 +358,8 @@ const VoiceChatController: React.FC<VoiceChatControllerProps> = ({
 
               {mode === 'unavailable' && (
                 <div className="p-8 text-center">
-                  <MapPin size={32} className="mx-auto mb-3 text-[var(--delulu-muted)]" />
-                  <p className="text-sm text-[var(--delulu-muted)]">
+                  <MapPin size={32} className="mx-auto mb-3 text-[var(--synclulu-muted)]" />
+                  <p className="text-sm text-[var(--synclulu-muted)]">
                     Standort nicht verfügbar. Aktiviere die Standortfreigabe.
                   </p>
                 </div>
@@ -367,7 +367,7 @@ const VoiceChatController: React.FC<VoiceChatControllerProps> = ({
             </div>
 
             {/* Distance Threshold Info */}
-            <p className="text-xs text-center text-[var(--delulu-muted)] mt-3">
+            <p className="text-xs text-center text-[var(--synclulu-muted)] mt-3">
               {mode === 'live' ? (
                 <>✨ Ihr seid innerhalb von {thresholdKm}km - Live-Voice aktiviert!</>
               ) : mode === 'cloud-memo' ? (

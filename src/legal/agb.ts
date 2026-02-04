@@ -27,7 +27,7 @@ export const ALLGEMEINE_GESCHAEFTSBEDINGUNGEN = {
 
 **Stand: ${TOS_DATE} | Version ${TOS_VERSION}**
 
-Diese Allgemeinen Geschäftsbedingungen regeln die Nutzung der mobilen Anwendung "Delulu" (nachfolgend "App" oder "Dienst") zwischen dem Anbieter [FIRMENNAME] (nachfolgend "wir", "uns" oder "Anbieter") und Ihnen als Nutzer (nachfolgend "Sie" oder "Nutzer").
+Diese Allgemeinen Geschäftsbedingungen regeln die Nutzung der mobilen Anwendung "synclulu" (nachfolgend "App" oder "Dienst") zwischen dem Anbieter [FIRMENNAME] (nachfolgend "wir", "uns" oder "Anbieter") und Ihnen als Nutzer (nachfolgend "Sie" oder "Nutzer").
 
 Mit der Registrierung und Nutzung der App erklären Sie sich mit diesen AGB einverstanden.
   `,
@@ -39,7 +39,7 @@ Mit der Registrierung und Nutzung der App erklären Sie sich mit diesen AGB einv
 ## 1. Leistungsbeschreibung
 
 ### 1.1 Kernfunktionen
-Delulu ist eine proximity-basierte Social-Discovery-Plattform, die folgende Funktionen bereitstellt:
+synclulu ist eine proximity-basierte Social-Discovery-Plattform, die folgende Funktionen bereitstellt:
 - Standortbasiertes Matching mit anderen Nutzern
 - Kommunikation via Text, Voice und Medien
 - Profildarstellung und -verwaltung
@@ -273,7 +273,7 @@ Die Vertragssprache ist Deutsch.
 
 ---
 
-**Mit der Registrierung und Nutzung von Delulu akzeptieren Sie diese AGB in vollem Umfang.**
+**Mit der Registrierung und Nutzung von synclulu akzeptieren Sie diese AGB in vollem Umfang.**
   `,
 };
 

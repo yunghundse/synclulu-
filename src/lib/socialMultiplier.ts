@@ -1,5 +1,5 @@
 /**
- * DELULU DIGITAL OPERATING SYSTEM
+ * synclulu DIGITAL OPERATING SYSTEM
  * Social Multiplier System - Dynamic XP Bonuses
  */
 

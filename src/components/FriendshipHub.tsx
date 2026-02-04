@@ -1,5 +1,5 @@
 /**
- * DELULU FRIENDSHIP HUB
+ * synclulu FRIENDSHIP HUB
  * Visual display of friendships with streak highlighting
  */
 

@@ -1,5 +1,5 @@
 /**
- * delulu UI Copy - Skeptic Style
+ * synclulu UI Copy - Skeptic Style
  * "Kompetent, leicht arrogant, aber charmant."
  */
 

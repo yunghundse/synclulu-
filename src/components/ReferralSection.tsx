@@ -1,5 +1,5 @@
 /**
- * DELULU DIGITAL OPERATING SYSTEM
+ * synclulu DIGITAL OPERATING SYSTEM
  * Referral Section Component - 5 Exclusive Invite Links
  */
 

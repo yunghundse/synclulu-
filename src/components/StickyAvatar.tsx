@@ -1,5 +1,5 @@
 /**
- * DELULU STICKY AVATAR
+ * synclulu STICKY AVATAR
  * "Permanent Identity" - Zero-flicker avatar component
  *
  * GUARANTEES:

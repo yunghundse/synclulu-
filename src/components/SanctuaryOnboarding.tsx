@@ -82,17 +82,17 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
   // Success state
   if (showSuccess) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[var(--delulu-bg)]/90 backdrop-blur-2xl theme-transition">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[var(--synclulu-bg)]/90 backdrop-blur-2xl theme-transition">
         <div className="text-center animate-[fadeIn_0.5s_ease-out]">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-[scaleIn_0.5s_ease-out]">
             <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-[var(--delulu-text)] mb-2">
+          <h2 className="text-2xl font-bold text-[var(--synclulu-text)] mb-2">
             Willkommen im Sanctuary! 🌟
           </h2>
-          <p className="text-[var(--delulu-muted)]">
+          <p className="text-[var(--synclulu-muted)]">
             Du bist jetzt geschützt.
           </p>
         </div>
@@ -101,8 +101,8 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[var(--delulu-bg)]/90 backdrop-blur-2xl theme-transition">
-      <div className="max-w-md w-full p-8 rounded-[32px] border border-[var(--delulu-border)] bg-[var(--delulu-card)] shadow-2xl theme-transition">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[var(--synclulu-bg)]/90 backdrop-blur-2xl theme-transition">
+      <div className="max-w-md w-full p-8 rounded-[32px] border border-[var(--synclulu-border)] bg-[var(--synclulu-card)] shadow-2xl theme-transition">
 
         {/* Pulsierendes Shield Icon */}
         <div className="flex justify-center mb-6">
@@ -131,12 +131,12 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
         </div>
 
         {/* Headline */}
-        <h2 className="text-2xl font-bold text-center mb-4 text-[var(--delulu-text)]">
+        <h2 className="text-2xl font-bold text-center mb-4 text-[var(--synclulu-text)]">
           Deine Wolke. Dein Schutzraum. ✨
         </h2>
 
         {/* Description */}
-        <p className="text-sm text-center mb-8 leading-relaxed text-[var(--delulu-muted)]">
+        <p className="text-sm text-center mb-8 leading-relaxed text-[var(--synclulu-muted)]">
           Unsere KI agiert als unsichtbarer Bodyguard. Durch Aktivierung des
           Sanctuary-Schutzes erlaubst du uns, Hassrede und Gewalt im Ernstfall
           verschlüsselt zu sichern.
@@ -155,7 +155,7 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
               transition-all duration-300 flex items-center justify-center
               ${isChecked
                 ? 'bg-violet-500 border-violet-500 shadow-[0_0_12px_rgba(139,92,246,0.5)]'
-                : 'border-[var(--delulu-muted)]'
+                : 'border-[var(--synclulu-muted)]'
               }
             `}
             style={{
@@ -169,7 +169,7 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
           </div>
 
           {/* Label */}
-          <p className="text-xs select-none text-[var(--delulu-muted)] group-hover:text-[var(--delulu-text)] transition-colors">
+          <p className="text-xs select-none text-[var(--synclulu-muted)] group-hover:text-[var(--synclulu-text)] transition-colors">
             Ich aktiviere den Sanctuary-Schutz und bestätige die{' '}
             <a
               href="/datenschutz"
@@ -191,7 +191,7 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
             transition-all duration-500 ease-out
             ${isChecked
               ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30 scale-100 hover:scale-[1.02] hover:shadow-xl hover:shadow-violet-500/40'
-              : 'bg-[var(--delulu-surface)] text-[var(--delulu-muted)] scale-95 cursor-not-allowed opacity-50'
+              : 'bg-[var(--synclulu-surface)] text-[var(--synclulu-muted)] scale-95 cursor-not-allowed opacity-50'
             }
           `}
         >
@@ -212,14 +212,14 @@ const SanctuaryOnboarding: React.FC<SanctuaryOnboardingProps> = ({
         {onDecline && (
           <button
             onClick={onDecline}
-            className="w-full mt-3 py-3 text-sm text-[var(--delulu-muted)] hover:text-[var(--delulu-text)] transition-colors"
+            className="w-full mt-3 py-3 text-sm text-[var(--synclulu-muted)] hover:text-[var(--synclulu-text)] transition-colors"
           >
             Später erinnern
           </button>
         )}
 
         {/* Legal Fine Print */}
-        <p className="text-center text-[10px] text-[var(--delulu-muted)] mt-6 opacity-70">
+        <p className="text-center text-[10px] text-[var(--synclulu-muted)] mt-6 opacity-70">
           Mit der Aktivierung akzeptierst du unsere{' '}
           <a href="/datenschutz" className="underline">Datenschutzerklärung</a>
           {' '}v3.5

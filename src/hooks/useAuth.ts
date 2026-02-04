@@ -1,5 +1,5 @@
 /**
- * DELULU AUTH HOOK
+ * synclulu AUTH HOOK
  * "Photo Core Edition" - Authentication with direct avatarUrl storage
  *
  * KEY FEATURES:
@@ -38,7 +38,7 @@ import {
 const ADMIN_EMAILS = [
   'yunghundse@gmail.com',
   'jan@butterbread.de',
-  'founder@delulu.app',
+  'founder@synclulu.app',
 ];
 
 export const useAuth = () => {

@@ -34,12 +34,12 @@ import { initializeUserReferrals, useReferralCode } from '@/lib/referralSystem';
 // CONSTANTS
 // ═══════════════════════════════════════
 
-const AUTH_PERSISTENCE_KEY = 'delulu_auth_state';
-const REDIRECT_STATE_KEY = 'delulu_auth_redirect';
+const AUTH_PERSISTENCE_KEY = 'synclulu_auth_state';
+const REDIRECT_STATE_KEY = 'synclulu_auth_redirect';
 const ADMIN_EMAILS = [
   'yunghundse@gmail.com',
   'jan@butterbread.de',
-  'founder@delulu.app',
+  'founder@synclulu.app',
 ];
 
 // ═══════════════════════════════════════

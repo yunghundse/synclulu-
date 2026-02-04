@@ -47,7 +47,7 @@ async function reverseGeocode(
       {
         headers: {
           'Accept-Language': 'de',
-          'User-Agent': 'DeluluApp/1.0',
+          'User-Agent': 'syncluluApp/1.0',
         },
       }
     );

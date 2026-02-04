@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * DELULU THEME UTILITY CLASSES
+ * synclulu THEME UTILITY CLASSES
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * Zentrale Theme-aware Klassen für 100% Dark/Light Mode Konsistenz.
@@ -19,19 +19,19 @@ export const theme = {
   // ═══════════════════════════════════════════════════════════════════════════
   bg: {
     /** Main app background */
-    primary: 'bg-[var(--delulu-bg)]',
+    primary: 'bg-[var(--synclulu-bg)]',
     /** Secondary/surface background */
-    secondary: 'bg-[var(--delulu-surface)]',
+    secondary: 'bg-[var(--synclulu-surface)]',
     /** Card backgrounds */
-    card: 'bg-[var(--delulu-card)]',
+    card: 'bg-[var(--synclulu-card)]',
     /** Soft highlight background */
-    soft: 'bg-[var(--delulu-soft)]',
+    soft: 'bg-[var(--synclulu-soft)]',
     /** Glass effect background */
     glass: 'glass-card',
     /** Navigation background */
     nav: 'glass-nav',
     /** Input/form backgrounds */
-    input: 'bg-[var(--delulu-surface)]',
+    input: 'bg-[var(--synclulu-surface)]',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -39,13 +39,13 @@ export const theme = {
   // ═══════════════════════════════════════════════════════════════════════════
   text: {
     /** Primary text */
-    primary: 'text-[var(--delulu-text)]',
+    primary: 'text-[var(--synclulu-text)]',
     /** Secondary/muted text */
-    secondary: 'text-[var(--delulu-text-secondary)]',
+    secondary: 'text-[var(--synclulu-text-secondary)]',
     /** Subtle/hint text */
-    muted: 'text-[var(--delulu-muted)]',
+    muted: 'text-[var(--synclulu-muted)]',
     /** Accent colored text */
-    accent: 'text-[var(--delulu-accent)]',
+    accent: 'text-[var(--synclulu-accent)]',
     /** Gradient text */
     gradient: 'gradient-text',
   },
@@ -55,11 +55,11 @@ export const theme = {
   // ═══════════════════════════════════════════════════════════════════════════
   border: {
     /** Default border */
-    default: 'border-[var(--delulu-border)]',
+    default: 'border-[var(--synclulu-border)]',
     /** Accent border */
-    accent: 'border-[var(--delulu-accent)]',
+    accent: 'border-[var(--synclulu-accent)]',
     /** Input focus border */
-    focus: 'focus:border-[var(--delulu-accent)]',
+    focus: 'focus:border-[var(--synclulu-accent)]',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -67,11 +67,11 @@ export const theme = {
   // ═══════════════════════════════════════════════════════════════════════════
   card: {
     /** Standard card */
-    default: 'bg-[var(--delulu-card)] border border-[var(--delulu-border)] rounded-2xl theme-transition',
+    default: 'bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] rounded-2xl theme-transition',
     /** Glass card */
     glass: 'glass-card',
     /** Elevated card with shadow */
-    elevated: 'bg-[var(--delulu-card)] border border-[var(--delulu-border)] rounded-2xl shadow-[var(--shadow-md)] theme-transition',
+    elevated: 'bg-[var(--synclulu-card)] border border-[var(--synclulu-border)] rounded-2xl shadow-[var(--shadow-md)] theme-transition',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -81,11 +81,11 @@ export const theme = {
     /** Primary gradient button */
     primary: 'btn-primary text-white',
     /** Secondary button */
-    secondary: 'bg-[var(--delulu-surface)] text-[var(--delulu-text)] border border-[var(--delulu-border)] hover:bg-[var(--delulu-soft)] transition-colors',
+    secondary: 'bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] border border-[var(--synclulu-border)] hover:bg-[var(--synclulu-soft)] transition-colors',
     /** Ghost button */
-    ghost: 'text-[var(--delulu-text)] hover:bg-[var(--delulu-soft)] transition-colors',
+    ghost: 'text-[var(--synclulu-text)] hover:bg-[var(--synclulu-soft)] transition-colors',
     /** Icon button */
-    icon: 'bg-[var(--glass-bg)] backdrop-blur-sm border border-[var(--delulu-border)] text-[var(--delulu-text)] hover:text-[var(--delulu-accent)] transition-colors',
+    icon: 'bg-[var(--glass-bg)] backdrop-blur-sm border border-[var(--synclulu-border)] text-[var(--synclulu-text)] hover:text-[var(--synclulu-accent)] transition-colors',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -93,7 +93,7 @@ export const theme = {
   // ═══════════════════════════════════════════════════════════════════════════
   input: {
     /** Default input */
-    default: 'bg-[var(--delulu-surface)] text-[var(--delulu-text)] border border-[var(--delulu-border)] placeholder:text-[var(--delulu-muted)] focus:border-[var(--delulu-accent)] focus:ring-2 focus:ring-[var(--delulu-accent)]/20 outline-none transition-all',
+    default: 'bg-[var(--synclulu-surface)] text-[var(--synclulu-text)] border border-[var(--synclulu-border)] placeholder:text-[var(--synclulu-muted)] focus:border-[var(--synclulu-accent)] focus:ring-2 focus:ring-[var(--synclulu-accent)]/20 outline-none transition-all',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -113,11 +113,11 @@ export const theme = {
   // ═══════════════════════════════════════════════════════════════════════════
   icon: {
     /** Default icon color */
-    default: 'text-[var(--delulu-text)]',
+    default: 'text-[var(--synclulu-text)]',
     /** Muted icon color */
-    muted: 'text-[var(--delulu-muted)]',
+    muted: 'text-[var(--synclulu-muted)]',
     /** Accent icon color */
-    accent: 'text-[var(--delulu-accent)]',
+    accent: 'text-[var(--synclulu-accent)]',
     /** currentColor for SVG adaptation */
     adaptive: 'text-current',
   },
@@ -133,7 +133,7 @@ export const tw = (...classes: (string | undefined | null | false)[]): string =>
 /**
  * Page wrapper with theme background
  */
-export const pageWrapper = 'min-h-screen bg-[var(--delulu-bg)] text-[var(--delulu-text)] theme-transition';
+export const pageWrapper = 'min-h-screen bg-[var(--synclulu-bg)] text-[var(--synclulu-text)] theme-transition';
 
 /**
  * Safe area wrapper

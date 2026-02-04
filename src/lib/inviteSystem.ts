@@ -1,5 +1,5 @@
 /**
- * DELULU INVITE SYSTEM v2.0
+ * synclulu INVITE SYSTEM v2.0
  * "The FOMO Logic"
  *
  * ARCHITECTURE:
@@ -245,7 +245,7 @@ export const generateInviteCode = async (
 ): Promise<string | null> => {
   try {
     // Generate unique code
-    const codePrefix = 'DELULU';
+    const codePrefix = 'synclulu';
     const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
     const code = `${codePrefix}-${randomPart}`;
 
@@ -374,19 +374,19 @@ export const extractCodeFromURL = (): string | null => {
  * Store invite code in session for registration flow
  */
 export const storeInviteCode = (code: string) => {
-  sessionStorage.setItem('delulu_invite_code', code.toUpperCase());
+  sessionStorage.setItem('synclulu_invite_code', code.toUpperCase());
 };
 
 /**
  * Get stored invite code
  */
 export const getStoredInviteCode = (): string | null => {
-  return sessionStorage.getItem('delulu_invite_code');
+  return sessionStorage.getItem('synclulu_invite_code');
 };
 
 /**
  * Clear stored invite code
  */
 export const clearStoredInviteCode = () => {
-  sessionStorage.removeItem('delulu_invite_code');
+  sessionStorage.removeItem('synclulu_invite_code');
 };

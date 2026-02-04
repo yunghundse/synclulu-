@@ -663,7 +663,7 @@ const Admin = () => {
               <Shield size={20} />
             </div>
             <div>
-              <h1 className="font-bold text-lg">Delulu Admin Panel</h1>
+              <h1 className="font-bold text-lg">synclulu Admin Panel</h1>
               <p className="text-xs text-gray-400">Eingeloggt als {user.username}</p>
             </div>
           </div>

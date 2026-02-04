@@ -1,5 +1,5 @@
 /**
- * DELULU DEVICES SETTINGS v2.0
+ * synclulu DEVICES SETTINGS v2.0
  * "iOS System Preferences Style"
  *
  * DESIGN:
@@ -201,7 +201,7 @@ const DevicesSettings = () => {
 
   // Get current session ID
   const getCurrentSessionId = () => {
-    return sessionStorage.getItem('delulu_session_id') || 'unknown';
+    return sessionStorage.getItem('synclulu_session_id') || 'unknown';
   };
 
   // Detect device info
@@ -369,7 +369,7 @@ const DevicesSettings = () => {
           <div>
             <h3 className="font-semibold text-white mb-1">Sicherheitsübersicht</h3>
             <p className="text-sm text-gray-400">
-              Hier siehst du alle Geräte, auf denen dein Delulu-Account aktiv ist.
+              Hier siehst du alle Geräte, auf denen dein synclulu-Account aktiv ist.
               Entferne unbekannte Geräte sofort.
             </p>
           </div>

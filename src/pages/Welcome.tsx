@@ -10,7 +10,7 @@ const Welcome = () => {
 
   // Load saved language on mount
   useEffect(() => {
-    const saved = localStorage.getItem('delulu-language');
+    const saved = localStorage.getItem('synclulu-language');
     if (saved && ['de', 'en', 'es', 'fr', 'pt'].includes(saved)) {
       setLanguage(saved as any);
     }
@@ -141,7 +141,7 @@ const Welcome = () => {
         {/* Brand Name */}
         <h1 className="font-display text-6xl font-bold mb-3 tracking-tight">
           <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-violet-700 bg-clip-text text-transparent">
-            delulu
+            synclulu
           </span>
         </h1>
 

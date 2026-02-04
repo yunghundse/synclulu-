@@ -1,5 +1,5 @@
 /**
- * DELULU GHOST VOICE MANAGER
+ * synclulu GHOST VOICE MANAGER
  * ═══════════════════════════════════════════════════════════════
  * Singleton Audio Manager für persistente Voice-Connections
  *
@@ -15,7 +15,7 @@
  * voice.startSession(roomId, userId);
  * voice.on('participantJoined', (user) => { ... });
  *
- * @author Delulu Engineering
+ * @author synclulu Engineering
  * @version 1.0.0
  */
 

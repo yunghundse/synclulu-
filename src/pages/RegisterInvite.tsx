@@ -1,5 +1,5 @@
 /**
- * DELULU INVITE-ONLY REGISTRATION v2.0
+ * synclulu INVITE-ONLY REGISTRATION v2.0
  * "The FOMO Experience"
  *
  * FLOW:
@@ -337,7 +337,7 @@ const RegisterInvite = () => {
         {/* Logo */}
         <div className="mb-8">
           <h1 className="font-display text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
-            Delulu
+            synclulu
           </h1>
           <p className="text-center text-gray-500 text-sm mt-1">Invite-Only Beta</p>
         </div>
@@ -362,7 +362,7 @@ const RegisterInvite = () => {
                   Hast du einen Einladungscode?
                 </h2>
                 <p className="text-gray-400 text-sm">
-                  Delulu ist nur mit Einladung zugänglich
+                  synclulu ist nur mit Einladung zugänglich
                 </p>
               </div>
 
@@ -372,7 +372,7 @@ const RegisterInvite = () => {
                     type="text"
                     value={inviteCode}
                     onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                    placeholder="DELULU-XXXXXX"
+                    placeholder="synclulu-XXXXXX"
                     className="w-full px-4 py-4 rounded-xl bg-white/5 border border-white/10 text-white text-center font-mono text-lg tracking-widest placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all uppercase"
                   />
                 </div>

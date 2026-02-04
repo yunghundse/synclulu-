@@ -1,5 +1,5 @@
 /**
- * DELULU IMAGE UPLOADER
+ * synclulu IMAGE UPLOADER
  * Firebase Storage Integration for Profile & Content Images
  */
 

@@ -1,5 +1,5 @@
 /**
- * DELULU CREATOR & STAR PROGRAM
+ * synclulu CREATOR & STAR PROGRAM
  * Monetization & Virality Engine
  */
 
@@ -68,8 +68,8 @@ export const CREATOR_TIERS: Record<CreatorTier, CreatorTierConfig> = {
   },
   star: {
     tier: 'star',
-    name: 'Delulu Star',
-    nameDE: 'Delulu Star',
+    name: 'synclulu Star',
+    nameDE: 'synclulu Star',
     emoji: '⭐',
     minFollowers: 500,
     minInvites: 25,
@@ -94,8 +94,8 @@ export const CREATOR_TIERS: Record<CreatorTier, CreatorTierConfig> = {
   },
   icon: {
     tier: 'icon',
-    name: 'Delulu Icon',
-    nameDE: 'Delulu Icon',
+    name: 'synclulu Icon',
+    nameDE: 'synclulu Icon',
     emoji: '👑',
     minFollowers: 10000,
     minInvites: 500,
@@ -132,7 +132,7 @@ export interface CreatorProfile {
 // ═══════════════════════════════════════
 
 export const CURRENCY_CONFIG = {
-  name: 'Delulu Coins',
+  name: 'synclulu Coins',
   symbol: '💎',
   exchangeRate: 100, // 100 coins = 1 EUR
   unlockCost: 50, // Cost to unlock content

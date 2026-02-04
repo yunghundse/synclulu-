@@ -118,7 +118,7 @@ const StarButton = ({
         <div className="p-6">
           {/* Star amount selector */}
           <div className="mb-6">
-            <p className="text-sm font-semibold text-delulu-text mb-3">
+            <p className="text-sm font-semibold text-synclulu-text mb-3">
               Wie viele Sterne?
             </p>
             <div className="flex justify-center gap-2">
@@ -157,13 +157,13 @@ const StarButton = ({
               <span className="text-2xl font-display font-bold text-amber-500">
                 +{selectedAmount * STAR_CONFIG.xpPerStar} XP
               </span>
-              <p className="text-xs text-delulu-muted">für @{username}</p>
+              <p className="text-xs text-synclulu-muted">für @{username}</p>
             </div>
           </div>
 
           {/* Optional message */}
           <div className="mb-6">
-            <label className="text-sm font-semibold text-delulu-text mb-2 block">
+            <label className="text-sm font-semibold text-synclulu-text mb-2 block">
               Nachricht (optional)
             </label>
             <input
@@ -174,7 +174,7 @@ const StarButton = ({
               maxLength={50}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 outline-none transition-all"
             />
-            <p className="text-xs text-delulu-muted mt-1 text-right">
+            <p className="text-xs text-synclulu-muted mt-1 text-right">
               {message.length}/50
             </p>
           </div>

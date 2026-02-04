@@ -1,5 +1,5 @@
 /**
- * DELULU CREATOR DASHBOARD
+ * synclulu CREATOR DASHBOARD
  * Statistics and monetization panel for creators
  */
 
