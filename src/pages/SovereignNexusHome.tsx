@@ -18,6 +18,7 @@ import { Mail, User, Sparkles, Zap, Search, Plus, Crown } from 'lucide-react';
 
 // Components
 import { GlobalDiscoveryButton } from '../components/SovereignUI/GlobalDiscoveryButton';
+import { ObsidianNav } from '../components/SovereignUI/ObsidianNav';
 
 // Firebase
 import {
@@ -796,16 +797,12 @@ export default function SovereignNexusHome() {
       />
 
       {/* ═══════════════════════════════════════════════════════
-          5. PORTAL CLOUD CENTER
+          5. OBSIDIAN NAVIGATION (Liquid Gum Button)
           ═══════════════════════════════════════════════════════ */}
-      <div className="absolute bottom-8 left-0 right-0">
-        <PortalCloudCenter
-          onSearch={() => navigate('/discover')}
-          onCreate={() => navigate('/create-room')}
-          onQuickSync={handleQuickSync}
-          isLoading={isHyperspace}
-        />
-      </div>
+      <ObsidianNav
+        onCreateRoom={() => navigate('/create-room')}
+        onDiscovery={handleQuickSync}
+      />
 
       {/* Background Ambient Glow */}
       <div

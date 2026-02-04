@@ -66,6 +66,7 @@ import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 import { ConsentScreen } from '@/components/ConsentScreen/ConsentScreen';
 import { FloatingDock } from '@/components/SovereignUI/FloatingDock';
 import { DeepSpaceGrid } from '@/components/SovereignUI/DeepSpaceGrid';
+import { ObsidianNav } from '@/components/SovereignUI/ObsidianNav';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -290,8 +291,8 @@ function App() {
             <Route path="/onboarding" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-            {/* Sovereign Floating Dock - Nur auf Sub-Pages, nicht auf Home */}
-            {location.pathname !== '/' && <FloatingDock />}
+            {/* Obsidian Navigation - Liquid Gum Button */}
+            {location.pathname !== '/' && <ObsidianNav />}
           </div>
         </NotificationProvider>
       </ThemeProvider>

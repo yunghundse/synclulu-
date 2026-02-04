@@ -10,6 +10,9 @@ export { DeepSpaceGrid } from './DeepSpaceGrid';
 export { LightBridge } from './LightBridge';
 export { NexusCommandCenter, FOUNDER_UID } from './NexusCommandCenter';
 export { GlobalDiscoveryButton } from './GlobalDiscoveryButton';
+export { LiquidGumButton } from './LiquidGumButton';
+export { ObsidianNav } from './ObsidianNav';
+export { CloudChatList, CloudChatItem } from './CloudChatList';
 
 // Re-export ascension system
 export {
