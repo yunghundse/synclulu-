@@ -21,6 +21,8 @@ import Onboarding from '@/pages/Onboarding';
 import Home from '@/pages/Home';
 import HomeLegacy from '@/pages/HomeLegacy';
 import SovereignNexusHome from '@/pages/SovereignNexusHome';
+import HomeSovereign from '@/pages/HomeSovereign';
+import Legal from '@/pages/Legal';
 import Discover from '@/pages/Discover';
 import Messages from '@/pages/Messages';
 import MessagesNew from '@/pages/MessagesNew';
@@ -259,8 +261,9 @@ function App() {
               <NotificationToast />
               <XPToast />
               <Routes>
-                <Route path="/" element={<SovereignNexusHome />} />
-                <Route path="/home" element={<SovereignNexusHome />} />
+                <Route path="/" element={<HomeSovereign />} />
+                <Route path="/home" element={<HomeSovereign />} />
+                <Route path="/home-legacy" element={<SovereignNexusHome />} />
                 <Route path="/discover" element={<Discover />} />
                 <Route path="/map" element={<Discover />} />
                 <Route path="/messages" element={<MessagesNew />} />
@@ -298,8 +301,8 @@ function App() {
                 <Route path="/creator-application" element={<CreatorApplication />} />
                 <Route path="/impressum" element={<Impressum />} />
                 <Route path="/datenschutz" element={<Datenschutz />} />
-                <Route path="/legal" element={<LegalCenter />} />
-                <Route path="/legal-center" element={<LegalCenter />} />
+                <Route path="/legal" element={<Legal />} />
+                <Route path="/legal-center" element={<Legal />} />
                 <Route path="/legal-popup" element={<LegalPopup />} />
                 <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
                 <Route path="/nexus-admin" element={<NexusDashboard />} />
