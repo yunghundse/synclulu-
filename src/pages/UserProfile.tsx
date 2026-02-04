@@ -10,6 +10,7 @@ import {
   CheckCircle, Shield, ShieldOff, Cake
 } from 'lucide-react';
 import BlockUserModal from '@/components/BlockUserModal';
+import { recordProfileVisit } from '@/lib/profileVisitService';
 
 interface UserData {
   id: string;
@@ -50,7 +51,7 @@ const UserProfile = () => {
   const userIsBlocked = userId ? isBlocked(userId) : false;
   const blockedByThisUser = userId ? isBlockedBy(userId) : false;
 
-  // Fetch user data
+  // Fetch user data and record profile visit
   useEffect(() => {
     const fetchUserData = async () => {
       if (!userId) return;
@@ -80,6 +81,11 @@ const UserProfile = () => {
             showBirthdateOnProfile: data.showBirthdateOnProfile !== false,
             city: data.city,
           });
+
+          // Record profile visit (only if logged in and viewing another user)
+          if (currentUser?.id && currentUser.id !== userId) {
+            recordProfileVisit(currentUser.id, userId);
+          }
         }
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -89,7 +95,7 @@ const UserProfile = () => {
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId, currentUser?.id]);
 
   // Check friendship status
   useEffect(() => {

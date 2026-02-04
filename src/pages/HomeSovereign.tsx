@@ -258,11 +258,13 @@ const HeaderBanner = ({ bannerURL }: { bannerURL?: string }) => {
 const LevelRing = ({
   level,
   progress,
+  totalXP,
   isFounder,
   onClick,
 }: {
   level: number;
   progress: number;
+  totalXP: number;
   isFounder: boolean;
   onClick: () => void;
 }) => {
@@ -273,6 +275,10 @@ const LevelRing = ({
   const circumference = radius * 2 * Math.PI;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
+  // DYNAMIC LEVEL SYSTEM: If XP is 0, show no level or "0"
+  const displayLevel = totalXP === 0 ? 0 : level;
+  const showRing = totalXP > 0;
+
   return (
     <motion.button
       whileTap={{ scale: 0.95 }}
@@ -282,7 +288,8 @@ const LevelRing = ({
       }}
       className="relative flex items-center justify-center z-20"
     >
-      {isFounder && (
+      {/* Founder glow effect */}
+      {isFounder && showRing && (
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{ background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)` }}
@@ -291,33 +298,42 @@ const LevelRing = ({
         />
       )}
       <svg width={ringSize} height={ringSize} className="transform -rotate-90">
+        {/* Background ring */}
         <circle
           cx={ringSize / 2}
           cy={ringSize / 2}
           r={radius}
           fill="transparent"
-          stroke="rgba(255, 255, 255, 0.1)"
+          stroke={showRing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)'}
           strokeWidth={strokeWidth}
         />
-        <motion.circle
-          cx={ringSize / 2}
-          cy={ringSize / 2}
-          r={radius}
-          fill="transparent"
-          stroke={accentColor}
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          style={{ filter: `drop-shadow(0 0 6px ${accentColor}80)` }}
-        />
+        {/* Progress ring - only show if XP > 0 */}
+        {showRing && (
+          <motion.circle
+            cx={ringSize / 2}
+            cy={ringSize / 2}
+            r={radius}
+            fill="transparent"
+            stroke={accentColor}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            initial={{ strokeDashoffset: circumference }}
+            animate={{ strokeDashoffset }}
+            transition={{ duration: 1, ease: 'easeOut' }}
+            style={{ filter: `drop-shadow(0 0 6px ${accentColor}80)` }}
+          />
+        )}
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-xs font-black" style={{ color: accentColor }}>
-          {level}
-        </span>
+        {displayLevel === 0 ? (
+          // Zero-State: Show dash or subtle "0"
+          <span className="text-xs font-bold text-white/30">—</span>
+        ) : (
+          <span className="text-xs font-black" style={{ color: accentColor }}>
+            {displayLevel}
+          </span>
+        )}
       </div>
     </motion.button>
   );
@@ -1422,6 +1438,7 @@ export default function HomeSovereign() {
             <LevelRing
               level={levelData.level}
               progress={levelProgress}
+              totalXP={profile?.xp || 0}
               isFounder={profile?.isFounder || false}
               onClick={() => setShowXPOverlay(true)}
             />
