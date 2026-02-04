@@ -72,6 +72,8 @@ interface MapFriend {
   roomId?: string;
   roomName?: string;
   sanctuaryScore?: number;
+  auraResonance?: number; // 0-100, für Pings der Nähe
+  justStartedSync?: boolean; // Gerade in Sync gegangen
 }
 
 interface MapRoom {
@@ -112,6 +114,7 @@ interface ClusterGroup {
 
 const FOUNDER_UID = 'MIbamchs82Ve7y0ecX2TpPyymbw1';
 const CLUSTER_RADIUS_METERS = 50; // Group friends within 50m
+const HIGH_RESONANCE_THRESHOLD = 50; // Ab 50% Aura-Resonanz = "enger Kontakt"
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // FREE MAP TILES - No API Key Required, works on any domain!
@@ -390,6 +393,73 @@ const VibeHeatmap = memo<VibeHeatmapProps>(({ heatPoints }) => {
 VibeHeatmap.displayName = 'VibeHeatmap';
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// PROXIMITY PING - Dezenter Puls wenn enge Kontakte in Sync gehen
+// Anti-Snap Philosophy: Keine aufdringliche Benachrichtigung, nur ein sanfter Ping
+// ═══════════════════════════════════════════════════════════════════════════════
+
+interface ProximityPingProps {
+  friend: MapFriend;
+  userLocation: { latitude: number; longitude: number };
+}
+
+const ProximityPing = memo<ProximityPingProps>(({ friend, userLocation }) => {
+  // Nur anzeigen wenn: hohe Aura-Resonanz UND gerade in Sync gegangen
+  if (!friend.justStartedSync || (friend.auraResonance || 0) < HIGH_RESONANCE_THRESHOLD) {
+    return null;
+  }
+
+  const distance = calculateDistance(
+    userLocation.latitude, userLocation.longitude,
+    friend.latitude, friend.longitude
+  );
+
+  // Radius basiert auf Distanz - näher = intensiver
+  const baseRadius = Math.min(300, Math.max(100, distance * 0.3));
+  const resonanceMultiplier = (friend.auraResonance || 50) / 100;
+
+  return (
+    <>
+      {/* Outer ripple - sehr dezent */}
+      <Circle
+        center={[friend.latitude, friend.longitude]}
+        radius={baseRadius * 1.5}
+        pathOptions={{
+          color: 'transparent',
+          fillColor: `rgba(168, 85, 247, ${0.05 * resonanceMultiplier})`,
+          fillOpacity: 0.3,
+          className: 'proximity-ping-outer'
+        }}
+      />
+      {/* Inner ripple - etwas intensiver */}
+      <Circle
+        center={[friend.latitude, friend.longitude]}
+        radius={baseRadius}
+        pathOptions={{
+          color: `rgba(139, 92, 246, ${0.2 * resonanceMultiplier})`,
+          weight: 2,
+          fillColor: `rgba(139, 92, 246, ${0.1 * resonanceMultiplier})`,
+          fillOpacity: 0.4,
+          className: 'proximity-ping-inner'
+        }}
+      />
+      {/* Core glow */}
+      <Circle
+        center={[friend.latitude, friend.longitude]}
+        radius={baseRadius * 0.3}
+        pathOptions={{
+          color: 'transparent',
+          fillColor: `rgba(168, 85, 247, ${0.3 * resonanceMultiplier})`,
+          fillOpacity: 0.6,
+          className: 'proximity-ping-core'
+        }}
+      />
+    </>
+  );
+});
+
+ProximityPing.displayName = 'ProximityPing';
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // MAIN COMPONENT - Wrapped with memo for performance
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -406,6 +476,8 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
   const [heatPoints, setHeatPoints] = useState<HeatPoint[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<ClusterGroup | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Start without loading state
+  const [recentSyncFriends, setRecentSyncFriends] = useState<Set<string>>(new Set()); // Track recent syncs
+  const previousRoomStates = useRef<Map<string, boolean>>(new Map()); // Track room state changes
 
   // Theme detection for map tiles (safe fallback)
   const { isDark } = useSafeTheme();
@@ -454,6 +526,32 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
             const isOnline = friendData.isActive &&
               friendData.lastSeen?.toDate() > new Date(Date.now() - 5 * 60 * 1000);
 
+            const isInRoom = !!friendData.currentRoomId;
+            const wasInRoom = previousRoomStates.current.get(friendId) || false;
+            const justStartedSync = isInRoom && !wasInRoom;
+
+            // Update tracking
+            previousRoomStates.current.set(friendId, isInRoom);
+
+            // Wenn gerade in Sync gegangen, für 10 Sekunden Ping zeigen
+            if (justStartedSync) {
+              setRecentSyncFriends(prev => new Set(prev).add(friendId));
+              setTimeout(() => {
+                setRecentSyncFriends(prev => {
+                  const next = new Set(prev);
+                  next.delete(friendId);
+                  return next;
+                });
+              }, 10000); // Ping verschwindet nach 10 Sekunden
+            }
+
+            // Aura-Resonanz berechnen (basierend auf Streak, Interaktionen etc.)
+            const auraResonance = Math.min(100,
+              (friendData.streakDays || 0) * 2 +
+              (friendData.totalSyncMinutes || 0) / 10 +
+              (friendData.sanctuaryScore || 50) / 2
+            );
+
             friendsList.push({
               id: friendId,
               username: friendData.username || 'unknown',
@@ -462,10 +560,12 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
               latitude: friendLocation.latitude,
               longitude: friendLocation.longitude,
               isOnline,
-              inRoom: !!friendData.currentRoomId,
+              inRoom: isInRoom,
               roomId: friendData.currentRoomId,
               roomName: friendData.currentRoomName,
               sanctuaryScore: friendData.sanctuaryScore || 50,
+              auraResonance,
+              justStartedSync: recentSyncFriends.has(friendId),
             });
 
             // Add heat point based on sanctuary score
@@ -613,6 +713,18 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
 
         {/* Vibe Heatmap Layer */}
         <VibeHeatmap heatPoints={heatPoints} />
+
+        {/* Proximity Pings - Dezente Pulse für enge Kontakte die in Sync gehen */}
+        {friends
+          .filter(f => f.justStartedSync && (f.auraResonance || 0) >= HIGH_RESONANCE_THRESHOLD)
+          .map(friend => (
+            <ProximityPing
+              key={`ping-${friend.id}`}
+              friend={friend}
+              userLocation={userLocation}
+            />
+          ))
+        }
 
         {/* User location marker */}
         <Marker

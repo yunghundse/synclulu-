@@ -142,6 +142,51 @@ export const RANKS: RankInfo[] = [
   { name: 'Eternal', minLevel: 100, color: '#FFD700', glow: 'rgba(255, 215, 0, 0.6)', badge: '👑' },
 ];
 
+// ═══════════════════════════════════════════════════════════════════════════
+// LEVEL REWARDS - Was bekommt man bei bestimmten Levels?
+// ═══════════════════════════════════════════════════════════════════════════
+
+export interface LevelReward {
+  level: number;
+  reward: string;
+  description: string;
+  icon: string;
+}
+
+export const LEVEL_REWARDS: LevelReward[] = [
+  { level: 5, reward: 'custom_avatar_frame', description: 'Eigener Avatar-Rahmen', icon: '🖼️' },
+  { level: 10, reward: 'extended_bio', description: 'Längere Bio (500 Zeichen)', icon: '📝' },
+  { level: 15, reward: 'aura_color_1', description: 'Aura-Farbe: Emerald', icon: '💚' },
+  { level: 25, reward: 'private_rooms', description: 'Private Räume erstellen', icon: '🔒' },
+  { level: 35, reward: 'aura_color_2', description: 'Aura-Farbe: Cosmic Purple', icon: '💜' },
+  { level: 50, reward: 'permanent_cloud', description: 'Permanent-Wölkchen auf Karte', icon: '☁️' },
+  { level: 70, reward: 'aura_color_3', description: 'Aura-Farbe: Celestial Cyan', icon: '💎' },
+  { level: 85, reward: 'custom_room_theme', description: 'Eigene Raum-Themes', icon: '🎨' },
+  { level: 100, reward: 'eternal_status', description: 'Eternal Status + alle Farben', icon: '👑' },
+];
+
+/**
+ * Holt alle freigeschalteten Rewards für ein Level
+ */
+export const getUnlockedRewards = (level: number): LevelReward[] => {
+  return LEVEL_REWARDS.filter(r => r.level <= level);
+};
+
+/**
+ * Prüft ob ein bestimmtes Feature freigeschaltet ist
+ */
+export const hasFeature = (level: number, feature: string): boolean => {
+  const reward = LEVEL_REWARDS.find(r => r.reward === feature);
+  return reward ? level >= reward.level : false;
+};
+
+/**
+ * Kann Permanent-Wölkchen erstellen? (Level 50+)
+ */
+export const canCreatePermanentCloud = (level: number): boolean => {
+  return hasFeature(level, 'permanent_cloud');
+};
+
 /**
  * Holt den Rang basierend auf Level
  */

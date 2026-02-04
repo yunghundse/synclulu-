@@ -19,32 +19,30 @@ interface FounderBadgeProps {
 
 export function FounderBadge({ size = 'md', animate = true, showLabel = true }: FounderBadgeProps) {
   const sizeClasses = {
-    sm: 'text-xs px-2 py-0.5',
-    md: 'text-sm px-3 py-1',
-    lg: 'text-base px-4 py-1.5'
-  };
-
-  const iconSizes = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg'
+    sm: 'text-[8px] px-2 py-0.5',
+    md: 'text-[10px] px-3 py-1',
+    lg: 'text-xs px-4 py-1.5'
   };
 
   return (
     <motion.div
-      className={`inline-flex items-center gap-1.5 rounded-full font-bold ${sizeClasses[size]}`}
+      className={`inline-flex items-center gap-1 rounded-full font-black uppercase tracking-widest border border-yellow-500 ${sizeClasses[size]}`}
       style={{
-        background: 'linear-gradient(135deg, #FFD700 0%, #9333EA 50%, #FFD700 100%)',
-        backgroundSize: '200% 200%',
-        animation: animate ? 'founderShimmer 3s ease infinite' : 'none',
-        color: '#000',
-        boxShadow: '0 0 15px rgba(255, 215, 0, 0.4), 0 0 30px rgba(147, 51, 234, 0.2)'
+        background: 'rgba(255, 215, 0, 0.1)',
+        color: '#FFD700',
       }}
+      animate={animate ? {
+        boxShadow: [
+          '0 0 10px #FFD700',
+          '0 0 20px #B8860B',
+          '0 0 10px #FFD700'
+        ]
+      } : undefined}
+      transition={{ repeat: Infinity, duration: 3 }}
       whileHover={{ scale: 1.05 }}
       initial={animate ? { opacity: 0, scale: 0.8 } : undefined}
-      animate={animate ? { opacity: 1, scale: 1 } : undefined}
     >
-      <span className={iconSizes[size]}>👑</span>
+      <span>👑</span>
       {showLabel && <span>Founder</span>}
     </motion.div>
   );
