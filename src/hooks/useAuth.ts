@@ -56,18 +56,57 @@ export const useAuth = () => {
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: any) => {
       if (firebaseUser) {
-        // Get or create user profile
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+        try {
+          // Get or create user profile
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
 
-        if (userDoc.exists()) {
-          const userData = userDoc.data() as User;
-          // Set isAdmin flag for admin emails (but NOT star status - that requires verification)
+          if (userDoc.exists()) {
+            const userData = userDoc.data() as User;
+            // Set isAdmin flag for admin emails (but NOT star status - that requires verification)
+            const isAdmin = ADMIN_EMAILS.includes(firebaseUser.email?.toLowerCase() || '');
+
+            setUser({ ...userData, id: firebaseUser.uid, isAdmin });
+          } else {
+            // Create new user profile
+            const newUser: Omit<User, 'id'> = {
+              email: firebaseUser.email || '',
+              username: `user_${firebaseUser.uid.slice(0, 8)}`,
+              displayName: firebaseUser.displayName || 'Anonymous',
+              avatarUrl: firebaseUser.photoURL || null,
+              visibilityMode: 'anonymous',
+              isActive: true,
+              lastSeen: new Date(),
+              createdAt: new Date(),
+            };
+
+            // Filter out undefined/null values for Firestore
+            const userDataForFirestore: Record<string, any> = {
+              email: newUser.email,
+              username: newUser.username,
+              displayName: newUser.displayName,
+              visibilityMode: newUser.visibilityMode,
+              isActive: newUser.isActive,
+              lastSeen: serverTimestamp(),
+              createdAt: serverTimestamp(),
+            };
+
+            // Only add avatarUrl if it exists
+            if (firebaseUser.photoURL) {
+              userDataForFirestore.avatarUrl = firebaseUser.photoURL;
+            }
+
+            await setDoc(doc(db, 'users', firebaseUser.uid), userDataForFirestore);
+
+            // Set isAdmin flag for admin emails (but NOT star status - that requires verification)
+            const isAdmin = ADMIN_EMAILS.includes(firebaseUser.email?.toLowerCase() || '');
+            setUser({ ...newUser, id: firebaseUser.uid, isAdmin });
+          }
+        } catch (error: any) {
+          console.error('[useAuth] Error loading user profile:', error);
+          // Still set basic user info even if Firestore fails
           const isAdmin = ADMIN_EMAILS.includes(firebaseUser.email?.toLowerCase() || '');
-
-          setUser({ ...userData, id: firebaseUser.uid, isAdmin });
-        } else {
-          // Create new user profile
-          const newUser: Omit<User, 'id'> = {
+          setUser({
+            id: firebaseUser.uid,
             email: firebaseUser.email || '',
             username: `user_${firebaseUser.uid.slice(0, 8)}`,
             displayName: firebaseUser.displayName || 'Anonymous',
@@ -76,29 +115,8 @@ export const useAuth = () => {
             isActive: true,
             lastSeen: new Date(),
             createdAt: new Date(),
-          };
-
-          // Filter out undefined/null values for Firestore
-          const userDataForFirestore: Record<string, any> = {
-            email: newUser.email,
-            username: newUser.username,
-            displayName: newUser.displayName,
-            visibilityMode: newUser.visibilityMode,
-            isActive: newUser.isActive,
-            lastSeen: serverTimestamp(),
-            createdAt: serverTimestamp(),
-          };
-
-          // Only add avatarUrl if it exists
-          if (firebaseUser.photoURL) {
-            userDataForFirestore.avatarUrl = firebaseUser.photoURL;
-          }
-
-          await setDoc(doc(db, 'users', firebaseUser.uid), userDataForFirestore);
-
-          // Set isAdmin flag for admin emails (but NOT star status - that requires verification)
-          const isAdmin = ADMIN_EMAILS.includes(firebaseUser.email?.toLowerCase() || '');
-          setUser({ ...newUser, id: firebaseUser.uid, isAdmin });
+            isAdmin
+          });
         }
       } else {
         setUser(null);

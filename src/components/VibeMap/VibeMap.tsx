@@ -591,6 +591,10 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
 
       setFriends(friendsList);
       setHeatPoints(heatPointsList);
+    }, (error) => {
+      // Handle permission denied and other errors gracefully
+      console.error('[VibeMap] Friends listener error:', error);
+      setIsLoading(false);
     });
 
     // Fetch active rooms with locations
@@ -636,6 +640,10 @@ const VibeMapInner: React.FC<VibeMapProps> = ({
       }
 
       setRooms(roomsList);
+      setIsLoading(false);
+    }, (error) => {
+      // Handle permission denied and other errors gracefully
+      console.error('[VibeMap] Rooms listener error:', error);
       setIsLoading(false);
     });
 

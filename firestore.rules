@@ -6,8 +6,9 @@ service cloud.firestore {
     // SYSTEM CONFIG & STATS
     // ═══════════════════════════════════════════════════════════════════
 
-    // System stats - Allow increment during registration
+    // System stats - Public read for capacity check on register page
     match /system/stats {
+      // IMPORTANT: Public read allows unauthenticated users to check capacity
       allow read: if true;
       // Allow authenticated users to increment totalUsers (for registration)
       allow update: if request.auth != null &&
@@ -16,11 +17,27 @@ service cloud.firestore {
       allow create: if request.auth != null;
     }
 
-    // System config - Admin only write
+    // System config - Public read for features, Admin only write
     match /system/config {
+      // IMPORTANT: Public read allows unauthenticated users to check system config
       allow read: if true;
       allow write: if request.auth != null &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Referrals - Public read for code validation on register page
+    match /referrals/{code} {
+      // IMPORTANT: Public read allows unauthenticated users to validate referral codes
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+
+    // Waitlist - Public read and create for joining waitlist without auth
+    match /waitlist/{email} {
+      allow read: if true;
+      allow create: if true; // Anyone can join waitlist (no auth required)
+      allow update: if request.auth != null;
     }
 
     // Other system documents - Admin only
@@ -41,22 +58,6 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == userId;
       allow update: if request.auth != null && request.auth.uid == userId;
       allow delete: if false; // No self-deletion
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // REFERRALS & WAITLIST
-    // ═══════════════════════════════════════════════════════════════════
-
-    match /referrals/{code} {
-      allow read: if true; // Anyone can validate referral codes
-      allow create: if request.auth != null;
-      allow update: if request.auth != null;
-    }
-
-    match /waitlist/{email} {
-      allow read: if true;
-      allow create: if true; // Anyone can join waitlist (no auth required)
-      allow update: if request.auth != null;
     }
 
     // ═══════════════════════════════════════════════════════════════════

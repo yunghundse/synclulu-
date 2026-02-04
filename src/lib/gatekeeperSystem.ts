@@ -79,10 +79,13 @@ export interface RegistrationResult {
 
 /**
  * Check current capacity status
+ * NOTE: This function handles permission-denied errors gracefully
+ * to support pre-auth checks on register page
  */
 export async function checkCapacity(): Promise<CapacityStatus> {
   try {
     // Get user count from system stats
+    // Note: system/stats has allow read: if true; in firestore rules
     const statsDoc = await getDoc(doc(db, 'system', 'stats'));
 
     let currentUsers = 0;
@@ -91,18 +94,9 @@ export async function checkCapacity(): Promise<CapacityStatus> {
     if (statsDoc.exists()) {
       currentUsers = statsDoc.data().totalUsers || 0;
       waitlistCount = statsDoc.data().waitlistCount || 0;
-    } else {
-      // Count users manually if stats don't exist
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      currentUsers = usersSnapshot.size;
-
-      // Initialize stats
-      await setDoc(doc(db, 'system', 'stats'), {
-        totalUsers: currentUsers,
-        waitlistCount: 0,
-        updatedAt: serverTimestamp()
-      });
     }
+    // Don't try to count users or create stats doc without auth
+    // Just use defaults if stats don't exist
 
     const maxUsers = await getMaxUserCap();
 
@@ -113,8 +107,13 @@ export async function checkCapacity(): Promise<CapacityStatus> {
       spotsRemaining: Math.max(0, maxUsers - currentUsers),
       waitlistCount
     };
-  } catch (error) {
-    console.error('Error checking capacity:', error);
+  } catch (error: any) {
+    // Handle permission-denied gracefully - common when not authenticated
+    if (error?.code === 'permission-denied') {
+      console.warn('[Gatekeeper] Permission denied - using defaults (user likely not authenticated)');
+    } else {
+      console.error('Error checking capacity:', error);
+    }
     // Fail-safe: return not full to prevent lockout
     return {
       currentUsers: 0,
@@ -128,6 +127,7 @@ export async function checkCapacity(): Promise<CapacityStatus> {
 
 /**
  * Get max user cap (can be adjusted by founder)
+ * Handles permission-denied gracefully for pre-auth scenarios
  */
 async function getMaxUserCap(): Promise<number> {
   try {
@@ -135,7 +135,12 @@ async function getMaxUserCap(): Promise<number> {
     if (configDoc.exists() && configDoc.data().maxUsers) {
       return configDoc.data().maxUsers;
     }
-  } catch {}
+  } catch (error: any) {
+    // Silently use default on permission denied
+    if (error?.code !== 'permission-denied') {
+      console.warn('[Gatekeeper] Error getting max user cap:', error);
+    }
+  }
   return GATEKEEPER_CONFIG.maxUsers;
 }
 
@@ -278,6 +283,7 @@ export async function createReferralCode(
 
 /**
  * Validate referral code
+ * Handles permission-denied gracefully for pre-auth scenarios
  */
 export async function validateReferralCode(code: string): Promise<{
   valid: boolean;
@@ -299,8 +305,13 @@ export async function validateReferralCode(code: string): Promise<{
     }
 
     return { valid: false };
-  } catch (error) {
-    console.error('Error validating referral:', error);
+  } catch (error: any) {
+    // Handle permission-denied gracefully
+    if (error?.code === 'permission-denied') {
+      console.warn('[Gatekeeper] Permission denied validating referral - user not authenticated');
+    } else {
+      console.error('Error validating referral:', error);
+    }
     return { valid: false };
   }
 }
