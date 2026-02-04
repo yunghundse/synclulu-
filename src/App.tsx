@@ -32,7 +32,7 @@ import Notifications from '@/pages/Notifications';
 import Premium from '@/pages/Premium';
 import Settings from '@/pages/Settings';
 import SettingsHub from '@/pages/SettingsHub';
-import Help from '@/pages/Help';
+import HelpCenter from '@/pages/HelpCenter';
 import StarsApplication from '@/pages/StarsApplication';
 import StarsDashboard from '@/pages/StarsDashboard';
 import StarsSchedule from '@/pages/StarsSchedule';
@@ -277,7 +277,7 @@ function App() {
                 <Route path="/settings/security" element={<Settings />} />
                 <Route path="/settings/blocked" element={<BlockedUsers />} />
                 <Route path="/settings/devices" element={<DevicesSettings />} />
-                <Route path="/help" element={<Help />} />
+                <Route path="/help" element={<HelpCenter />} />
                 <Route path="/invites" element={<InvitesPage />} />
                 <Route path="/referral-status" element={<InvitesPage />} />
                 <Route path="/radar" element={<RadarPage />} />

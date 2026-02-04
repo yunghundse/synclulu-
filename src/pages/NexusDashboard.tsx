@@ -665,7 +665,7 @@ export default function NexusDashboard() {
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-4">System Info</h3>
             <div className="space-y-2 text-[11px] font-mono">
               <p className="text-white/40">Founder: <span className="text-emerald-400">Authenticated</span></p>
-              <p className="text-white/40">UID: <span className="text-purple-400">{userId}</span></p>
+              {/* UID removed for security - never display Firebase UIDs */}
               <p className="text-white/40">Version: <span className="text-white/60">2.0.0</span></p>
               <p className="text-white/40">Build: <span className="text-white/60">{new Date().toISOString().split('T')[0]}</span></p>
             </div>

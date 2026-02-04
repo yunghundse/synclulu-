@@ -1,20 +1,23 @@
 /**
  * GlobalDock.tsx
- * Universal Bottom Navigation - Chief Software Architect Edition
+ * Universal Bottom Navigation - Final Legal & UI Architect Edition
+ *
+ * NEUE STRUKTUR:
+ * [Home] – [Map] – [Kaugummi] – [Messages] – [Profil]
  *
  * Features:
- * - 4 Icons: [Home] – [Kaugummi] – [Messages] – [Settings]
+ * - Settings aus Nav entfernt (erreichbar über Header-Zahnrad)
+ * - Profil-Button hinzugefügt
  * - Liquid Gum Button in der Mitte
  * - Persistent auf allen Seiten
  * - Active State Tracking
  * - Safe Area Support
- * - GPU-beschleunigt
  */
 
 import React, { memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Settings, Map } from 'lucide-react';
+import { Home, MessageCircle, Map, User } from 'lucide-react';
 import { LiquidGumButton } from './LiquidGumButton';
 
 // ═══════════════════════════════════════════════════════════════
@@ -104,8 +107,8 @@ export const GlobalDock = memo(function GlobalDock({
     const path = location.pathname;
     if (path === '/' || path === '/home') return 'home';
     if (path === '/discover' || path === '/map') return 'discover';
-    if (path === '/messages' || path === '/chat') return 'messages';
-    if (path.startsWith('/settings') || path === '/legal' || path === '/legal-center') return 'settings';
+    if (path === '/messages' || path === '/chat' || path.startsWith('/chat/')) return 'messages';
+    if (path === '/profile' || path.startsWith('/profile/')) return 'profile';
     return 'home';
   }, [location.pathname]);
 
@@ -113,10 +116,10 @@ export const GlobalDock = memo(function GlobalDock({
 
   // Navigation handlers
   const handleHome = useCallback(() => navigate('/'), [navigate]);
+  const handleDiscover = useCallback(() => navigate('/discover'), [navigate]);
   const handleMessages = useCallback(() => navigate('/messages'), [navigate]);
-  const handleSettings = useCallback(() => navigate('/settings'), [navigate]);
+  const handleProfile = useCallback(() => navigate('/profile'), [navigate]);
   const handleCreateRoom = useCallback(() => navigate('/create-room'), [navigate]);
-  const handleDiscovery = useCallback(() => navigate('/discover'), [navigate]);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[200] pb-safe">
@@ -142,10 +145,10 @@ export const GlobalDock = memo(function GlobalDock({
             icon={<Home size={22} className={activePage === 'home' ? 'text-violet-400' : 'text-white'} />}
           />
 
-          {/* DISCOVER / MAP */}
+          {/* MAP / DISCOVER */}
           <NavIcon
             active={activePage === 'discover'}
-            onClick={handleDiscovery}
+            onClick={handleDiscover}
             label="Map"
             icon={<Map size={22} className={activePage === 'discover' ? 'text-violet-400' : 'text-white'} />}
           />
@@ -154,11 +157,11 @@ export const GlobalDock = memo(function GlobalDock({
           <div className="relative -mt-10">
             <LiquidGumButton
               onCreateRoom={handleCreateRoom}
-              onDiscovery={handleDiscovery}
+              onDiscovery={handleDiscover}
             />
           </div>
 
-          {/* MESSAGES */}
+          {/* MESSAGES / CHAT */}
           <NavIcon
             active={activePage === 'messages'}
             onClick={handleMessages}
@@ -167,12 +170,12 @@ export const GlobalDock = memo(function GlobalDock({
             badge={unreadMessages}
           />
 
-          {/* SETTINGS */}
+          {/* PROFILE (NEU - ersetzt Settings) */}
           <NavIcon
-            active={activePage === 'settings'}
-            onClick={handleSettings}
-            label="Settings"
-            icon={<Settings size={22} className={activePage === 'settings' ? 'text-violet-400' : 'text-white'} />}
+            active={activePage === 'profile'}
+            onClick={handleProfile}
+            label="Profil"
+            icon={<User size={22} className={activePage === 'profile' ? 'text-violet-400' : 'text-white'} />}
           />
         </motion.div>
       </div>
