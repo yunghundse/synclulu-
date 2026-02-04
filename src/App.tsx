@@ -53,6 +53,8 @@ import OnboardingFlow from '@/pages/OnboardingFlow';
 import DevicesSettings from '@/pages/DevicesSettings';
 import TrustStats from '@/pages/TrustStats';
 import Friends from '@/pages/Friends';
+import FriendsList from '@/pages/FriendsList';
+import FriendStreaks from '@/pages/FriendStreaks';
 import VoiceStats from '@/pages/VoiceStats';
 import NexusDashboard from '@/pages/NexusDashboard';
 import LegalCenter from '@/pages/LegalCenter';
@@ -270,6 +272,8 @@ function App() {
                 <Route path="/profile/trust-stats" element={<TrustStats />} />
                 <Route path="/voice-stats" element={<VoiceStats />} />
                 <Route path="/friends" element={<Friends />} />
+                <Route path="/friends-list" element={<FriendsList />} />
+                <Route path="/friend-streaks" element={<FriendStreaks />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/premium" element={<Premium />} />
