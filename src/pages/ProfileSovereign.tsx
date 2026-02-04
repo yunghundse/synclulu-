@@ -40,6 +40,14 @@ import {
   Activity,
   Radio,
   Lock,
+  Gift,
+  UserPlus,
+  ChevronRight,
+  Target,
+  Award,
+  TrendingUp,
+  Calendar,
+  Mic,
 } from 'lucide-react';
 import { FriendsTrigger } from '../components/SovereignUI/FriendsTrigger';
 import { useFriendsRealtime } from '../hooks/useFriendsRealtime';
@@ -536,6 +544,465 @@ const AuraRatingPanel = ({
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// LEVEL COMMAND OVERLAY (Full-Screen XP Status)
+// ═══════════════════════════════════════════════════════════════════════════
+
+interface LevelMilestone {
+  level: number;
+  title: string;
+  reward: string;
+  icon: React.ReactNode;
+  unlocked: boolean;
+}
+
+const LevelCommandOverlay = ({
+  isOpen,
+  onClose,
+  level,
+  currentXP,
+  totalXP,
+  neededXP,
+  tier,
+  accentColor,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  level: number;
+  currentXP: number;
+  totalXP: number;
+  neededXP: number;
+  tier: { name: string; badge: string };
+  accentColor: string;
+}) => {
+  const milestones: LevelMilestone[] = [
+    { level: 5, title: 'Newcomer', reward: 'Basic Aura', icon: <Sparkles size={16} />, unlocked: level >= 5 },
+    { level: 10, title: 'Rising Star', reward: 'Custom Status', icon: <Star size={16} />, unlocked: level >= 10 },
+    { level: 15, title: 'Connector', reward: 'Priority Match', icon: <Users size={16} />, unlocked: level >= 15 },
+    { level: 25, title: 'Established', reward: 'Gold Badge', icon: <Award size={16} />, unlocked: level >= 25 },
+    { level: 50, title: 'Elite', reward: 'Elite Frame', icon: <Crown size={16} />, unlocked: level >= 50 },
+    { level: 100, title: 'Legendary', reward: 'Mythic Aura', icon: <Trophy size={16} />, unlocked: level >= 100 },
+  ];
+
+  const nextMilestone = milestones.find(m => !m.unlocked) || milestones[milestones.length - 1];
+  const progress = Math.min(100, (currentXP / neededXP) * 100);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[200] flex flex-col"
+          style={{ background: 'rgba(5, 5, 5, 0.98)' }}
+          onClick={onClose}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 pt-safe">
+            <motion.button
+              onClick={onClose}
+              whileTap={{ scale: 0.95 }}
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+            >
+              <X size={20} className="text-white/70" />
+            </motion.button>
+            <h1 className="text-lg font-black text-white">Level Command</h1>
+            <div className="w-10" />
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto px-5 pb-20" onClick={(e) => e.stopPropagation()}>
+            {/* Big Level Display */}
+            <div className="text-center py-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', delay: 0.1 }}
+                className="relative inline-block"
+              >
+                {/* Glow Ring */}
+                <motion.div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)`,
+                    transform: 'scale(2)',
+                  }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+
+                {/* Level Circle */}
+                <div
+                  className="relative w-32 h-32 rounded-full flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}10)`,
+                    border: `3px solid ${accentColor}`,
+                    boxShadow: `0 0 40px ${accentColor}50`,
+                  }}
+                >
+                  <div className="text-center">
+                    <span className="text-4xl font-black text-white">{level}</span>
+                    <p className="text-[10px] text-white/50 uppercase tracking-wider">Level</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-4"
+              >
+                <p className="text-xl font-bold text-white">{tier.badge} {tier.name}</p>
+                <p className="text-sm text-white/40 mt-1">{totalXP.toLocaleString()} XP gesammelt</p>
+              </motion.div>
+            </div>
+
+            {/* XP Progress to Next Level */}
+            <div
+              className="p-5 rounded-2xl mb-6"
+              style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-bold text-white/70">Fortschritt zu Level {level + 1}</span>
+                <span className="text-sm font-bold" style={{ color: accentColor }}>
+                  {currentXP} / {neededXP} XP
+                </span>
+              </div>
+              <div className="h-4 bg-white/5 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full relative"
+                  style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}cc)` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                >
+                  <motion.div
+                    className="absolute inset-0"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                    }}
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.5 }}
+                  />
+                </motion.div>
+              </div>
+              <p className="text-[10px] text-white/30 mt-2">
+                Noch {neededXP - currentXP} XP bis zum nächsten Level
+              </p>
+            </div>
+
+            {/* Milestones */}
+            <div className="mb-6">
+              <h3 className="text-sm font-bold text-white/70 mb-3 flex items-center gap-2">
+                <Target size={14} />
+                Meilensteine
+              </h3>
+              <div className="space-y-2">
+                {milestones.map((milestone, index) => (
+                  <motion.div
+                    key={milestone.level}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + index * 0.05 }}
+                    className="flex items-center gap-3 p-3 rounded-xl"
+                    style={{
+                      background: milestone.unlocked
+                        ? `linear-gradient(135deg, ${accentColor}15, ${accentColor}05)`
+                        : 'rgba(255, 255, 255, 0.02)',
+                      border: milestone.unlocked
+                        ? `1px solid ${accentColor}30`
+                        : '1px solid rgba(255, 255, 255, 0.05)',
+                    }}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: milestone.unlocked ? `${accentColor}20` : 'rgba(255, 255, 255, 0.05)',
+                        color: milestone.unlocked ? accentColor : 'rgba(255, 255, 255, 0.3)',
+                      }}
+                    >
+                      {milestone.icon}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-white">{milestone.title}</span>
+                        <span className="text-[10px] text-white/30">LV.{milestone.level}</span>
+                      </div>
+                      <p className="text-xs text-white/40">{milestone.reward}</p>
+                    </div>
+                    {milestone.unlocked ? (
+                      <Check size={16} className="text-green-400" />
+                    ) : milestone === nextMilestone ? (
+                      <ChevronRight size={16} className="text-white/30" />
+                    ) : (
+                      <Lock size={14} className="text-white/20" />
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* XP Sources */}
+            <div
+              className="p-4 rounded-2xl"
+              style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              <h3 className="text-sm font-bold text-white/70 mb-3 flex items-center gap-2">
+                <TrendingUp size={14} />
+                So verdienst du XP
+              </h3>
+              <div className="space-y-2 text-xs text-white/50">
+                <div className="flex justify-between">
+                  <span>🎤 Voice Chat (pro Minute)</span>
+                  <span className="text-green-400">+5 XP</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>👂 Zuhören (pro Minute)</span>
+                  <span className="text-green-400">+1 XP</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>👋 Neuen Freund hinzufügen</span>
+                  <span className="text-green-400">+25 XP</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>📨 Freund einladen</span>
+                  <span className="text-green-400">+100 XP</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>⭐ Aura-Bewertung erhalten</span>
+                  <span className="text-green-400">+10 XP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AURA HISTORIE CARD
+// ═══════════════════════════════════════════════════════════════════════════
+
+interface AuraHistoryItem {
+  type: 'sync' | 'star' | 'friend' | 'milestone';
+  title: string;
+  subtitle: string;
+  timestamp: number;
+  icon: React.ReactNode;
+  color: string;
+}
+
+const AuraHistorieSection = ({ accentColor }: { accentColor: string }) => {
+  // Mock data - in production this would come from Firestore
+  const historyItems: AuraHistoryItem[] = [
+    { type: 'sync', title: 'Late Night Talk', subtitle: '45 Min Sync', timestamp: Date.now() - 3600000, icon: <Mic size={14} />, color: '#22c55e' },
+    { type: 'star', title: '5-Sterne erhalten', subtitle: 'von @luna_vibes', timestamp: Date.now() - 7200000, icon: <Star size={14} />, color: '#fbbf24' },
+    { type: 'friend', title: 'Neuer Freund', subtitle: '@max_sync', timestamp: Date.now() - 86400000, icon: <UserPlus size={14} />, color: '#3b82f6' },
+    { type: 'milestone', title: 'Level 15 erreicht!', subtitle: 'Priority Match freigeschaltet', timestamp: Date.now() - 172800000, icon: <Trophy size={14} />, color: '#a855f7' },
+  ];
+
+  const formatTime = (timestamp: number) => {
+    const diff = Date.now() - timestamp;
+    const hours = Math.floor(diff / 3600000);
+    if (hours < 1) return 'Gerade eben';
+    if (hours < 24) return `vor ${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `vor ${days}d`;
+  };
+
+  return (
+    <div className="space-y-3">
+      {historyItems.map((item, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.1 }}
+          className="flex items-center gap-3 p-3 rounded-xl"
+          style={{
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{
+              background: `${item.color}20`,
+              border: `1px solid ${item.color}30`,
+            }}
+          >
+            <span style={{ color: item.color }}>{item.icon}</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-white truncate">{item.title}</p>
+            <p className="text-xs text-white/40">{item.subtitle}</p>
+          </div>
+          <span className="text-[10px] text-white/30">{formatTime(item.timestamp)}</span>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATTLE PASS TEASER CARD
+// ═══════════════════════════════════════════════════════════════════════════
+
+const BattlePassTeaser = ({ onInvite }: { onInvite: () => void }) => {
+  const navigate = useNavigate();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1))',
+        border: '1px solid rgba(168, 85, 247, 0.3)',
+      }}
+    >
+      {/* Header */}
+      <div className="p-4 pb-3">
+        <div className="flex items-center gap-2 mb-2">
+          <Trophy size={18} className="text-purple-400" />
+          <span className="text-sm font-black text-white">BATTLE PASS</span>
+          <div
+            className="px-2 py-0.5 rounded-full text-[9px] font-bold"
+            style={{ background: 'rgba(251, 191, 36, 0.2)', color: '#fbbf24' }}
+          >
+            COMING SOON
+          </div>
+        </div>
+        <p className="text-xs text-white/50">
+          SUMMER 2026 - Bereite dich auf die Evolution vor.
+        </p>
+      </div>
+
+      {/* Divider */}
+      <div className="h-px bg-white/5" />
+
+      {/* CTA Section */}
+      <div className="p-4">
+        <p className="text-xs text-white/60 mb-3">
+          Sichere dir jetzt schon XP-Boosts für den Sommer!
+        </p>
+
+        <div className="flex gap-2">
+          <motion.button
+            onClick={onInvite}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm"
+            style={{
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(168, 85, 247, 0.2))',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              color: 'white',
+            }}
+          >
+            <UserPlus size={16} />
+            Freunde einladen
+          </motion.button>
+
+          <motion.button
+            onClick={() => navigate('/battlepass')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="px-4 py-3 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <ChevronRight size={18} className="text-white/50" />
+          </motion.button>
+        </div>
+
+        <p className="text-[10px] text-white/30 mt-2 text-center">
+          +100 XP pro eingeladenem Freund
+        </p>
+      </div>
+    </motion.div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEVEL COMMAND BUTTON
+// ═══════════════════════════════════════════════════════════════════════════
+
+const LevelCommandButton = ({
+  level,
+  progress,
+  accentColor,
+  onClick,
+}: {
+  level: number;
+  progress: number;
+  accentColor: string;
+  onClick: () => void;
+}) => {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="w-full p-4 rounded-2xl flex items-center gap-4"
+      style={{
+        background: 'linear-gradient(135deg, rgba(20, 15, 35, 0.9), rgba(15, 10, 25, 0.95))',
+        border: `2px solid ${accentColor}40`,
+        boxShadow: `0 0 20px ${accentColor}20, inset 0 0 30px ${accentColor}10`,
+      }}
+    >
+      {/* Level Circle */}
+      <div className="relative">
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          style={{ background: `radial-gradient(circle, ${accentColor}30 0%, transparent 70%)` }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        <div
+          className="relative w-14 h-14 rounded-full flex items-center justify-center"
+          style={{
+            background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}10)`,
+            border: `2px solid ${accentColor}`,
+          }}
+        >
+          <span className="text-xl font-black text-white">{level}</span>
+        </div>
+      </div>
+
+      {/* Progress Info */}
+      <div className="flex-1">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-sm font-bold text-white">Dein Level</span>
+          <ChevronRight size={16} className="text-white/30" />
+        </div>
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}cc)` }}
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-[10px] text-white/40 mt-1">Tippe für Details & Meilensteine</p>
+      </div>
+    </motion.button>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
 // AURA RATING BUTTON (Clickable)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -801,6 +1268,7 @@ export default function ProfileSovereign() {
   const [isUploading, setIsUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showRatingPanel, setShowRatingPanel] = useState(false);
+  const [showLevelOverlay, setShowLevelOverlay] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState('');
 
@@ -1131,6 +1599,16 @@ export default function ProfileSovereign() {
         </div>
       </div>
 
+      {/* Level Command Button - Prominent above network */}
+      <div className="px-5 mt-6">
+        <LevelCommandButton
+          level={levelData.level}
+          progress={progress}
+          accentColor={accentColor}
+          onClick={() => setShowLevelOverlay(true)}
+        />
+      </div>
+
       {/* Stats Row */}
       <div className="px-5 mt-6">
         <div className="flex gap-3">
@@ -1140,47 +1618,18 @@ export default function ProfileSovereign() {
         </div>
       </div>
 
-      {/* XP Progress - Smooth Animation */}
+      {/* Battle Pass Summer Teaser */}
       <div className="px-5 mt-6">
-        <div
-          className="p-4 rounded-2xl"
-          style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-              >
-                <Zap size={16} style={{ color: accentColor }} />
-              </motion.div>
-              <span className="text-xs font-bold text-white/50">Level {levelData.level}</span>
-            </div>
-            <span className="text-xs font-bold" style={{ color: accentColor }}>
-              {levelData.currentXP} / {levelData.neededXP} XP
-            </span>
+        <BattlePassTeaser onInvite={() => navigate('/invites')} />
+      </div>
+
+      {/* Aura-Historie Section */}
+      <div className="px-5 mt-6">
+        <PanelGroup title="Aura-Historie">
+          <div className="p-4">
+            <AuraHistorieSection accentColor={accentColor} />
           </div>
-          <div className="h-3 bg-white/5 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full rounded-full relative"
-              style={{ background: `linear-gradient(90deg, ${accentColor}, ${profile?.isFounder ? '#fde047' : '#c084fc'})` }}
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              {/* Shimmer effect */}
-              <motion.div
-                className="absolute inset-0"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
-                }}
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-              />
-            </motion.div>
-          </div>
-          <p className="text-[10px] text-white/30 mt-2">{tier.name} • {tier.badge}</p>
-        </div>
+        </PanelGroup>
       </div>
 
       {/* Aura-Präsenz (Activity Heatmap) */}
@@ -1230,6 +1679,18 @@ export default function ProfileSovereign() {
         onClose={() => setShowRatingPanel(false)}
         rating={profile?.auraRating || 0}
         count={profile?.auraRatingCount || 0}
+      />
+
+      {/* Level Command Overlay */}
+      <LevelCommandOverlay
+        isOpen={showLevelOverlay}
+        onClose={() => setShowLevelOverlay(false)}
+        level={levelData.level}
+        currentXP={levelData.currentXP}
+        totalXP={profile?.xp || 0}
+        neededXP={levelData.neededXP}
+        tier={tier}
+        accentColor={accentColor}
       />
 
       {/* Upload Indicator */}

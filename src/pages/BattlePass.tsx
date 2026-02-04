@@ -31,6 +31,8 @@ import {
   Gem,
   Flame,
   Shield,
+  UserPlus,
+  Calendar,
 } from 'lucide-react';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -458,6 +460,55 @@ export default function BattlePass() {
       </div>
 
       <div className="px-5 py-6 relative z-10">
+        {/* Coming Summer 2026 Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-5 rounded-2xl overflow-hidden relative"
+          style={{
+            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.15))',
+            border: '1px solid rgba(168, 85, 247, 0.3)',
+          }}
+        >
+          {/* Animated glow */}
+          <motion.div
+            className="absolute top-0 right-0 w-32 h-32 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, transparent 70%)' }}
+            animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar size={18} className="text-pink-400" />
+              <span className="text-xs font-black text-pink-400 uppercase tracking-wider">
+                COMING SUMMER 2026
+              </span>
+            </div>
+            <h3 className="text-lg font-bold text-white mb-1">
+              Battle Pass Evolution
+            </h3>
+            <p className="text-sm text-white/60 mb-4">
+              Bereite dich auf die nächste Stufe vor. Sammle jetzt XP-Boosts!
+            </p>
+
+            <motion.button
+              onClick={() => navigate('/invites')}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm"
+              style={{
+                background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.4), rgba(168, 85, 247, 0.3))',
+                border: '1px solid rgba(236, 72, 153, 0.4)',
+                color: 'white',
+              }}
+            >
+              <UserPlus size={18} />
+              Freunde einladen = +100 XP
+            </motion.button>
+          </div>
+        </motion.div>
+
         {/* Level Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
