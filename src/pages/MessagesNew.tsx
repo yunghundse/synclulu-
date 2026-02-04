@@ -1,12 +1,11 @@
 /**
  * MessagesNew.tsx
- * Chat-System 2.0 - Radikal Neuaufbau
+ * Chat-System 2.0 - Unified Panel Design Edition
  *
  * Features:
- * - Dunkles Obsidian-Glas Design
- * - Pulsierende Wölkchen-Avatare (Kaugummi-Style)
- * - Klick auf Avatar = Profil öffnen
- * - Klick auf Text = Chat öffnen
+ * - Unified Panel Design (Settings-Style)
+ * - Glass-Morphism Kacheln
+ * - Pulsierende Online-Status Indikatoren
  * - Global Header mit Profil
  * - Real-time Updates
  */
@@ -14,7 +13,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Cloud, Crown, Edit } from 'lucide-react';
+import { Search, Crown, Edit, MessageCircle, Users, Plus } from 'lucide-react';
 import {
   collection,
   query,
@@ -28,7 +27,11 @@ import {
 import { db } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { useUserProfile } from '../contexts/UserProfileContext';
-import { CloudChatList } from '../components/SovereignUI/CloudChatList';
+import {
+  UnifiedPanel,
+  PanelGroup,
+  StatusPanel,
+} from '../components/SovereignUI/UnifiedPanel';
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -41,6 +44,7 @@ interface ChatConversation {
   lastMessageTime?: string;
   isOnline?: boolean;
   unreadCount?: number;
+  friendId?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -77,9 +81,7 @@ const MessagesHeader = ({
                 src={profile.photoURL}
                 alt={profile.displayName}
                 className="w-10 h-10 rounded-xl object-cover"
-                style={{
-                  border: `2px solid ${accentColor}40`,
-                }}
+                style={{ border: `2px solid ${accentColor}40` }}
               />
             ) : (
               <div
@@ -98,9 +100,7 @@ const MessagesHeader = ({
             {profile?.isFounder && (
               <div
                 className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-                }}
+                style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)' }}
               >
                 <Crown size={8} className="text-black" />
               </div>
@@ -178,6 +178,7 @@ const SearchOverlay = ({
           style={{
             background: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(20px)',
           }}
         >
           <Search size={18} className="text-white/40" />
@@ -224,7 +225,6 @@ export default function MessagesNew() {
     setIsLoading(true);
 
     try {
-      // Query für Conversations des Users
       const conversationsQuery = query(
         collection(db, 'conversations'),
         where('participants', 'array-contains', user.id),
@@ -239,18 +239,16 @@ export default function MessagesNew() {
 
           for (const docSnap of snapshot.docs) {
             const data = docSnap.data();
-
-            // Get the other participant's ID
             const otherUserId = data.participants?.find((p: string) => p !== user.id);
 
             if (otherUserId) {
-              // Fetch other user's profile
               try {
                 const otherUserDoc = await getDoc(doc(db, 'users', otherUserId));
                 const otherUserData = otherUserDoc.data();
 
                 convos.push({
                   id: docSnap.id,
+                  friendId: otherUserId,
                   name: otherUserData?.displayName || otherUserData?.username || 'Unbekannt',
                   avatar: otherUserData?.photoURL,
                   lastMessage: data.lastMessage || 'Keine Nachricht',
@@ -267,8 +265,7 @@ export default function MessagesNew() {
           setConversations(convos);
           setIsLoading(false);
         },
-        (error) => {
-          console.log('Conversations query:', error.code);
+        () => {
           setConversations([]);
           setIsLoading(false);
         }
@@ -283,15 +280,11 @@ export default function MessagesNew() {
   // ───────────────────────────────────────────────────────────
   // Handlers
   // ───────────────────────────────────────────────────────────
-  const handleProfileClick = useCallback((friendId: string) => {
-    navigate(`/user/${friendId}`);
-  }, [navigate]);
-
   const handleChatClick = useCallback((conversationId: string) => {
     navigate(`/chat/${conversationId}`);
   }, [navigate]);
 
-  // Filter conversations by search
+  // Filter conversations
   const filteredConversations = searchQuery
     ? conversations.filter((c) =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -335,12 +328,102 @@ export default function MessagesNew() {
             />
           </div>
         ) : (
-          <CloudChatList
-            friends={filteredConversations}
-            onProfileClick={handleProfileClick}
-            onChatClick={handleChatClick}
-            emptyMessage="Noch keine Gespräche. Starte ein neues!"
-          />
+          <>
+            {/* New Chat CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <UnifiedPanel
+                icon={<Plus size={20} />}
+                iconColor="#a855f7"
+                iconBg="rgba(168, 85, 247, 0.15)"
+                title="Neues Gespräch"
+                description="Starte einen Chat mit Freunden"
+                onClick={() => navigate('/friends')}
+                variant="highlight"
+              />
+            </motion.div>
+
+            {/* Conversations List */}
+            <PanelGroup title={`Gespräche (${filteredConversations.length})`}>
+              {filteredConversations.length === 0 ? (
+                <UnifiedPanel
+                  icon={<MessageCircle size={20} />}
+                  iconColor="#6b7280"
+                  title="Noch keine Gespräche"
+                  description="Starte dein erstes Gespräch mit Freunden!"
+                  onClick={() => navigate('/discover')}
+                />
+              ) : (
+                filteredConversations.map((conversation, index) => (
+                  <motion.div
+                    key={conversation.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                  >
+                    <StatusPanel
+                      icon={
+                        conversation.avatar ? (
+                          <img
+                            src={conversation.avatar}
+                            alt={conversation.name}
+                            className="w-5 h-5 rounded-full object-cover"
+                          />
+                        ) : (
+                          <MessageCircle size={20} />
+                        )
+                      }
+                      iconColor={conversation.isOnline ? '#22c55e' : '#a855f7'}
+                      title={conversation.name}
+                      description={
+                        conversation.lastMessage.length > 30
+                          ? `${conversation.lastMessage.substring(0, 30)}...`
+                          : conversation.lastMessage
+                      }
+                      status={conversation.isOnline ? 'online' : 'offline'}
+                      statusText={conversation.lastMessageTime}
+                      onClick={() => handleChatClick(conversation.id)}
+                    />
+
+                    {/* Unread Badge */}
+                    {conversation.unreadCount && conversation.unreadCount > 0 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute right-14 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white"
+                        style={{
+                          background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                        }}
+                      >
+                        {conversation.unreadCount > 9 ? '9+' : conversation.unreadCount}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))
+              )}
+            </PanelGroup>
+
+            {/* Discover More Friends */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-6 mb-8"
+            >
+              <UnifiedPanel
+                icon={<Users size={20} />}
+                iconColor="#fbbf24"
+                iconBg="rgba(251, 191, 36, 0.15)"
+                title="Neue Leute entdecken"
+                description="Erweitere deinen Freundeskreis"
+                onClick={() => navigate('/discover')}
+                variant="warning"
+              />
+            </motion.div>
+          </>
         )}
       </div>
     </div>

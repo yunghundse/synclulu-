@@ -127,11 +127,11 @@ export const GlobalDock = memo(function GlobalDock({
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="max-w-md mx-auto h-[72px] flex items-center justify-around px-4 rounded-[28px]"
           style={{
-            background: 'rgba(5, 5, 10, 0.88)',
+            background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(30px) saturate(180%)',
             WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
-            boxShadow: '0 -8px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 -8px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(168, 85, 247, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
           }}
         >
           {/* HOME */}
