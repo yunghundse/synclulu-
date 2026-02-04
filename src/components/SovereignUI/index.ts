@@ -13,6 +13,7 @@ export { GlobalDiscoveryButton } from './GlobalDiscoveryButton';
 export { LiquidGumButton } from './LiquidGumButton';
 export { ObsidianNav } from './ObsidianNav';
 export { CloudChatList, CloudChatItem } from './CloudChatList';
+export { GlobalDock } from './GlobalDock';
 
 // Re-export ascension system
 export {

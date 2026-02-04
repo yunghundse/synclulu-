@@ -23,6 +23,7 @@ import HomeLegacy from '@/pages/HomeLegacy';
 import SovereignNexusHome from '@/pages/SovereignNexusHome';
 import Discover from '@/pages/Discover';
 import Messages from '@/pages/Messages';
+import MessagesNew from '@/pages/MessagesNew';
 import Profile from '@/pages/Profile';
 import ProfileMinimal from '@/pages/ProfileMinimal';
 import Statistics from '@/pages/Statistics';
@@ -67,10 +68,12 @@ import { ConsentScreen } from '@/components/ConsentScreen/ConsentScreen';
 import { FloatingDock } from '@/components/SovereignUI/FloatingDock';
 import { DeepSpaceGrid } from '@/components/SovereignUI/DeepSpaceGrid';
 import { ObsidianNav } from '@/components/SovereignUI/ObsidianNav';
+import { GlobalDock } from '@/components/SovereignUI/GlobalDock';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { UserProfileProvider, useUserProfile } from '@/contexts/UserProfileContext';
 
 // XP Toast Component
 const XPToast = () => {
@@ -239,61 +242,68 @@ function App() {
     <GlobalErrorBoundary>
       <ThemeProvider>
         <NotificationProvider>
-          {/* 🛡️ First-Start Consent Screen */}
-          {!hasAcceptedConsent && (
-            <ConsentScreen onAccept={() => setHasAcceptedConsent(true)} />
-          )}
+          <UserProfileProvider>
+            {/* 🛡️ First-Start Consent Screen */}
+            {!hasAcceptedConsent && (
+              <ConsentScreen onAccept={() => setHasAcceptedConsent(true)} />
+            )}
 
-          <div className="min-h-screen min-h-[100dvh] bg-black pb-24 theme-transition relative sovereign-app">
-            {/* 🌌 Deep Space Grid Background - Sovereign Design */}
-            <DeepSpaceGrid intensity="normal" showNebula={true} />
+            <div className="min-h-screen min-h-[100dvh] bg-black pb-28 theme-transition relative sovereign-app">
+              {/* 🌌 Deep Space Grid Background - Sovereign Design */}
+              <DeepSpaceGrid intensity="normal" showNebula={true} />
 
-            <NotificationToast />
-            <XPToast />
-            <Routes>
-            <Route path="/" element={<SovereignNexusHome />} />
-            <Route path="/discover" element={<Discover />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/profile" element={<ProfileMinimal />} />
-            <Route path="/profile/full" element={<Profile />} />
-            <Route path="/profile/trust-stats" element={<TrustStats />} />
-            <Route path="/voice-stats" element={<VoiceStats />} />
-            <Route path="/friends" element={<Friends />} />
-            <Route path="/statistics" element={<Statistics />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/premium" element={<Premium />} />
-            <Route path="/settings" element={<SettingsHub />} />
-            <Route path="/settings/legacy" element={<Settings />} />
-            <Route path="/settings/security" element={<Settings />} />
-            <Route path="/settings/blocked" element={<BlockedUsers />} />
-            <Route path="/settings/devices" element={<DevicesSettings />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/invites" element={<InvitesPage />} />
-            <Route path="/referral-status" element={<InvitesPage />} />
-            <Route path="/radar" element={<RadarPage />} />
-            <Route path="/stars/apply" element={<StarsApplication />} />
-            <Route path="/stars/dashboard" element={<StarsDashboard />} />
-            <Route path="/stars/schedule" element={<StarsSchedule />} />
-            <Route path="/user/:userId" element={<UserProfile />} />
-            <Route path="/blocked-users" element={<BlockedUsers />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/creator" element={<CreatorDashboard />} />
-            <Route path="/creator/dashboard" element={<CreatorDashboard />} />
-            <Route path="/creator/new-content" element={<NewLockedContent />} />
-            <Route path="/creator-application" element={<StarsApplication />} />
-            <Route path="/impressum" element={<Impressum />} />
-            <Route path="/datenschutz" element={<Datenschutz />} />
-            <Route path="/legal" element={<LegalCenter />} />
-            <Route path="/legal-center" element={<LegalCenter />} />
-            <Route path="/legal-popup" element={<LegalPopup />} />
-            <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
-            <Route path="/nexus-admin" element={<NexusDashboard />} />
-            <Route path="/onboarding" element={<Navigate to="/" replace />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-            {/* Obsidian Navigation - Liquid Gum Button */}
-            {location.pathname !== '/' && <ObsidianNav />}
-          </div>
+              <NotificationToast />
+              <XPToast />
+              <Routes>
+                <Route path="/" element={<SovereignNexusHome />} />
+                <Route path="/home" element={<SovereignNexusHome />} />
+                <Route path="/discover" element={<Discover />} />
+                <Route path="/map" element={<Discover />} />
+                <Route path="/messages" element={<MessagesNew />} />
+                <Route path="/chat" element={<MessagesNew />} />
+                <Route path="/chat/:conversationId" element={<Messages />} />
+                <Route path="/profile" element={<ProfileMinimal />} />
+                <Route path="/profile/full" element={<Profile />} />
+                <Route path="/profile/trust-stats" element={<TrustStats />} />
+                <Route path="/voice-stats" element={<VoiceStats />} />
+                <Route path="/friends" element={<Friends />} />
+                <Route path="/statistics" element={<Statistics />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/premium" element={<Premium />} />
+                <Route path="/settings" element={<SettingsHub />} />
+                <Route path="/settings/legacy" element={<Settings />} />
+                <Route path="/settings/security" element={<Settings />} />
+                <Route path="/settings/blocked" element={<BlockedUsers />} />
+                <Route path="/settings/devices" element={<DevicesSettings />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/invites" element={<InvitesPage />} />
+                <Route path="/referral-status" element={<InvitesPage />} />
+                <Route path="/radar" element={<RadarPage />} />
+                <Route path="/stars/apply" element={<StarsApplication />} />
+                <Route path="/stars/dashboard" element={<StarsDashboard />} />
+                <Route path="/stars/schedule" element={<StarsSchedule />} />
+                <Route path="/user/:userId" element={<UserProfile />} />
+                <Route path="/blocked-users" element={<BlockedUsers />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/creator" element={<CreatorDashboard />} />
+                <Route path="/creator/dashboard" element={<CreatorDashboard />} />
+                <Route path="/creator/new-content" element={<NewLockedContent />} />
+                <Route path="/creator-application" element={<StarsApplication />} />
+                <Route path="/impressum" element={<Impressum />} />
+                <Route path="/datenschutz" element={<Datenschutz />} />
+                <Route path="/legal" element={<LegalCenter />} />
+                <Route path="/legal-center" element={<LegalCenter />} />
+                <Route path="/legal-popup" element={<LegalPopup />} />
+                <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
+                <Route path="/nexus-admin" element={<NexusDashboard />} />
+                <Route path="/onboarding" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+
+              {/* 🎯 Global Dock - Universal Navigation auf allen Seiten */}
+              <GlobalDock />
+            </div>
+          </UserProfileProvider>
         </NotificationProvider>
       </ThemeProvider>
     </GlobalErrorBoundary>
