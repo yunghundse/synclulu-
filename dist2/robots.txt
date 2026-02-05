@@ -1,0 +1,134 @@
+# DELULU APP - ROBOTS.TXT
+# Copyright © 2025-2026 Butterbread UG. All Rights Reserved.
+# Unauthorized reproduction, training, or scraping is prohibited.
+
+# =================================================
+# AI/ML TRAINING CRAWLER BLOCKING
+# =================================================
+
+# Block OpenAI
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+# Block Google AI/Bard
+User-agent: Google-Extended
+Disallow: /
+
+# Block Anthropic Claude
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+# Block Common Crawl (often used for training)
+User-agent: CCBot
+Disallow: /
+
+# Block Meta/Facebook AI
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+# Block Perplexity AI
+User-agent: PerplexityBot
+Disallow: /
+
+# Block Cohere AI
+User-agent: cohere-ai
+Disallow: /
+
+# Block ByteDance/TikTok
+User-agent: Bytespider
+Disallow: /
+
+# Block Applebot-Extended (Apple AI)
+User-agent: Applebot-Extended
+Disallow: /
+
+# Block Amazon AI
+User-agent: Amazonbot
+Disallow: /
+
+# Block Diffbot (scraping)
+User-agent: Diffbot
+Disallow: /
+
+# Block Omgili (content scraping)
+User-agent: omgili
+Disallow: /
+
+# Block YouBot (You.com AI)
+User-agent: YouBot
+Disallow: /
+
+# Block Generic scrapers
+User-agent: Scrapy
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: HTTrack
+Disallow: /
+
+User-agent: SiteSnagger
+Disallow: /
+
+User-agent: WebZIP
+Disallow: /
+
+User-agent: Teleport
+Disallow: /
+
+User-agent: wget
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+# =================================================
+# STANDARD SEARCH ENGINE ACCESS (ALLOWED)
+# =================================================
+
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# =================================================
+# PROTECT SENSITIVE PATHS
+# =================================================
+
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.env
+Disallow: /firebase
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /private/
+
+# Sitemap (optional)
+# Sitemap: https://delulu.app/sitemap.xml

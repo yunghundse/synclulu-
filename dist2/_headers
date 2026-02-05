@@ -1,0 +1,32 @@
+# DELULU APP - SECURITY HEADERS
+# For Netlify, Cloudflare Pages, and other CDNs
+# Copyright © 2025-2026 Butterbread UG
+
+/*
+  # AI/ML Opt-Out Headers
+  X-Robots-Tag: noai, noimageai, noarchive, nosnippet, notranslate, noimageindex
+
+  # Security Headers
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Permissions Policy (disable features for scrapers)
+  Permissions-Policy: geolocation=(self), microphone=(self), camera=(self)
+
+  # Copyright Declaration
+  X-Copyright: Butterbread UG 2025-2026
+  X-Content-License: Proprietary - All Rights Reserved
+  X-AI-Training-Opt-Out: true
+  X-Data-Mining-Opt-Out: true
+
+# Protect API routes
+/api/*
+  X-Robots-Tag: noindex, nofollow, noarchive, noai
+  Cache-Control: no-store, no-cache, must-revalidate
+
+# Protect source files
+/src/*
+  X-Robots-Tag: noindex, nofollow, noarchive, noai
+  Cache-Control: no-store
