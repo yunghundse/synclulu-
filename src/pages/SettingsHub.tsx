@@ -1,13 +1,12 @@
 /**
- * synclulu SETTINGS HUB v2.0
+ * synclulu SETTINGS HUB v3.0 - SOVEREIGN GLASS EDITION
  * "The Sovereign Control Hub"
  *
  * ARCHITECTURE:
  * ┌─────────────────────────────────┐
  * │  🖼️ Banner + Avatar Header     │
- * │  (Wie auf der Profilseite)     │
+ * │  (Sovereign Glass Design)      │
  * ├─────────────────────────────────┤
- * │  🎨 Creator werden              │
  * │  ✉️  Einladungssystem           │
  * │  👁️  Sichtbarkeit               │
  * │  📍 Friend Radar                │
@@ -20,8 +19,8 @@
  * │  ℹ️  Über & Support             │
  * └─────────────────────────────────┘
  *
- * @design Sovereign + Glassmorphism
- * @version 2.0.0 - Social-Nexus Edition
+ * @design Sovereign Glass (bg-white/5 backdrop-blur-xl border-white/10)
+ * @version 3.0.0 - Sovereign Glass Edition
  */
 
 import { useState, useEffect } from 'react';
@@ -43,39 +42,39 @@ import {
 } from 'lucide-react';
 
 // ═══════════════════════════════════════
-// GLASSMORPHISM CARD COMPONENT
+// SOVEREIGN GLASS CARD COMPONENT
 // ═══════════════════════════════════════
 
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
-  gradient?: string;
+  glowColor?: string;
 }
 
 const GlassCard: React.FC<GlassCardProps> = ({
   children,
   className = '',
   onClick,
-  gradient
+  glowColor
 }) => (
   <div
     onClick={onClick}
     className={`
-      relative overflow-hidden rounded-3xl
-      bg-white/70 dark:bg-gray-900/70
-      backdrop-blur-xl backdrop-saturate-150
-      border border-white/20 dark:border-gray-700/30
-      shadow-xl shadow-purple-500/5
+      relative overflow-hidden rounded-2xl
       transition-all duration-300
-      ${onClick ? 'cursor-pointer hover:scale-[1.01] hover:shadow-2xl hover:shadow-purple-500/10 active:scale-[0.99]' : ''}
+      ${onClick ? 'cursor-pointer hover:scale-[1.01] active:scale-[0.99]' : ''}
       ${className}
     `}
+    style={{
+      background: 'rgba(255, 255, 255, 0.05)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: glowColor ? `0 0 30px ${glowColor}20` : 'none',
+    }}
   >
-    {gradient && (
-      <div className={`absolute inset-0 opacity-10 bg-gradient-to-br ${gradient}`} />
-    )}
-    <div className="relative">{children}</div>
+    {children}
   </div>
 );
 
@@ -85,7 +84,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
 
 interface SettingsRowProps {
   icon: React.ReactNode;
-  iconBg: string;
+  iconColor: string;
   label: string;
   description?: string;
   value?: string | React.ReactNode;
@@ -99,7 +98,7 @@ interface SettingsRowProps {
 
 const SettingsRow: React.FC<SettingsRowProps> = ({
   icon,
-  iconBg,
+  iconColor,
   label,
   description,
   value,
@@ -117,45 +116,57 @@ const SettingsRow: React.FC<SettingsRowProps> = ({
       } else if (onClick) {
         onClick();
       }
-      // Haptic
       if ('vibrate' in navigator) navigator.vibrate(10);
     }}
-    className={`w-full p-4 flex items-center gap-4 transition-colors ${
-      danger ? 'hover:bg-red-50 dark:hover:bg-red-900/20' : 'hover:bg-gray-50/50 dark:hover:bg-gray-800/50'
-    }`}
+    className="w-full p-4 flex items-center gap-4 transition-colors hover:bg-white/5"
   >
-    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${iconBg}`}>
-      {icon}
+    <div
+      className="w-10 h-10 rounded-xl flex items-center justify-center"
+      style={{
+        background: `${iconColor}20`,
+        border: `1px solid ${iconColor}40`,
+      }}
+    >
+      <span style={{ color: iconColor }}>{icon}</span>
     </div>
 
     <div className="flex-1 text-left">
       <div className="flex items-center gap-2">
-        <span className={`font-medium ${danger ? 'text-red-600' : 'text-gray-900 dark:text-white'}`}>
+        <span className={`text-sm font-semibold ${danger ? 'text-red-400' : 'text-white'}`}>
           {label}
         </span>
         {badge && (
-          <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full">
+          <span className="px-2 py-0.5 text-[9px] font-black uppercase bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full">
             {badge}
           </span>
         )}
       </div>
       {description && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
+        <p className="text-xs text-white/40 mt-0.5">{description}</p>
       )}
     </div>
 
     {toggle ? (
-      <div className={`w-14 h-8 rounded-full p-1 transition-colors ${
-        isOn ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-200 dark:bg-gray-700'
-      }`}>
-        <div className={`w-6 h-6 rounded-full bg-white shadow-md transition-transform ${
-          isOn ? 'translate-x-6' : 'translate-x-0'
-        }`} />
+      <div
+        className="w-12 h-7 rounded-full p-1 transition-colors"
+        style={{
+          background: isOn
+            ? 'linear-gradient(135deg, #8b5cf6, #a855f7)'
+            : 'rgba(255, 255, 255, 0.1)',
+        }}
+      >
+        <div
+          className="w-5 h-5 rounded-full bg-white transition-transform"
+          style={{
+            transform: isOn ? 'translateX(20px)' : 'translateX(0)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+          }}
+        />
       </div>
     ) : value ? (
-      <span className="text-sm text-gray-500">{value}</span>
+      <span className="text-xs text-white/50">{value}</span>
     ) : (
-      <ChevronRight size={20} className="text-gray-400" />
+      <ChevronRight size={18} className="text-white/30" />
     )}
   </button>
 );
@@ -176,16 +187,19 @@ const RadarSlider: React.FC<RadarSliderProps> = ({ value, onChange, disabled }) 
   return (
     <div className={`px-4 py-3 ${disabled ? 'opacity-50' : ''}`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600 dark:text-gray-400">Suchradius</span>
-        <span className="text-sm font-semibold text-purple-600">
+        <span className="text-xs text-white/50">Suchradius</span>
+        <span className="text-xs font-bold text-violet-400">
           {value >= 1000 ? `${(value / 1000).toFixed(1)}km` : `${value}m`}
         </span>
       </div>
       <div className="relative">
-        <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all"
-            style={{ width: `${percentage}%` }}
+            className="h-full rounded-full transition-all"
+            style={{
+              width: `${percentage}%`,
+              background: 'linear-gradient(90deg, #8b5cf6, #a855f7)',
+            }}
           />
         </div>
         <input
@@ -200,8 +214,8 @@ const RadarSlider: React.FC<RadarSliderProps> = ({ value, onChange, disabled }) 
         />
       </div>
       <div className="flex justify-between mt-1">
-        <span className="text-[10px] text-gray-400">100m</span>
-        <span className="text-[10px] text-gray-400">5km MAX</span>
+        <span className="text-[10px] text-white/30">100m</span>
+        <span className="text-[10px] text-white/30">5km MAX</span>
       </div>
     </div>
   );
@@ -215,7 +229,7 @@ const SettingsHub = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, setUser } = useStore();
-  const avatarUrl = user?.avatarUrl || user?.photoURL || null;
+  const avatarUrl = user?.avatarUrl || (user as any)?.photoURL || null;
   const bannerUrl = (user as any)?.bannerURL || null;
   const bio = (user as any)?.bio || '';
   const isFounder = (user as any)?.role === 'founder' || (user as any)?.isAdmin === true;
@@ -225,10 +239,11 @@ const SettingsHub = () => {
   const [visibility, setVisibility] = useState<'everyone' | 'friends' | 'nobody'>('everyone');
   const [notifications, setNotifications] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [referralCode, setReferralCode] = useState('');
   const [copied, setCopied] = useState(false);
-  const [isCreator, setIsCreator] = useState(false);
+
+  // Accent color based on founder status
+  const accentColor = isFounder ? '#fbbf24' : '#a855f7';
 
   // Load settings
   useEffect(() => {
@@ -242,9 +257,7 @@ const SettingsHub = () => {
           setVisibility(data.visibility || 'everyone');
           setNotifications(data.notifications !== false);
           setSoundEnabled(data.soundEnabled !== false);
-          setDarkMode(data.darkMode === true);
           setReferralCode(data.referralCode || `synclulu-${user.id.slice(0, 6).toUpperCase()}`);
-          setIsCreator(data.isCreator === true);
         }
       } catch (error) {
         console.error('[SettingsHub] Load failed:', error);
@@ -290,37 +303,39 @@ const SettingsHub = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50/80 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-black">
+    <div className="min-h-screen pb-32" style={{ background: '#050505' }}>
       {/* ═══════════════════════════════════════ */}
-      {/* HEADER */}
+      {/* HEADER - Sovereign Glass Style */}
       {/* ═══════════════════════════════════════ */}
-      <div className="sticky top-0 z-50 px-4 pt-6 pb-4 bg-gradient-to-b from-purple-50/95 via-white/95 to-transparent dark:from-gray-900/95 dark:via-gray-900/95 backdrop-blur-lg">
+      <div
+        className="sticky top-0 z-50 px-5 py-4"
+        style={{
+          background: 'rgba(5, 5, 5, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        }}
+      >
         <div className="flex items-center gap-4">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-xl bg-white/80 dark:bg-gray-800/80 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
           >
-            <ChevronLeft size={20} className="text-gray-600 dark:text-gray-300" />
-          </button>
-          <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white">
-            Einstellungen
-          </h1>
+            <ChevronLeft size={20} className="text-white/60" />
+          </motion.button>
+          <h1 className="text-xl font-bold text-white">Einstellungen</h1>
         </div>
       </div>
 
-      <div className="px-4 pb-32 space-y-6">
+      <div className="px-5 py-6 space-y-4">
         {/* ═══════════════════════════════════════ */}
-        {/* SOVEREIGN PROFILE HEADER (Wie auf Profilseite) */}
+        {/* SOVEREIGN PROFILE HEADER */}
         {/* ═══════════════════════════════════════ */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl overflow-hidden"
-          style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-          }}
-        >
+        <GlassCard glowColor={accentColor}>
           {/* Banner */}
           <div className="relative h-24 w-full overflow-hidden">
             {bannerUrl ? (
@@ -332,7 +347,7 @@ const SettingsHub = () => {
               >
                 <motion.div
                   className="absolute inset-0"
-                  style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(168, 85, 247, 0.15) 0%, transparent 60%)' }}
+                  style={{ background: `radial-gradient(ellipse at 30% 50%, ${accentColor}20 0%, transparent 60%)` }}
                   animate={{ opacity: [0.5, 0.8, 0.5] }}
                   transition={{ duration: 4, repeat: Infinity }}
                 />
@@ -346,7 +361,6 @@ const SettingsHub = () => {
 
           {/* Avatar & Info */}
           <div className="relative px-4 pb-4">
-            {/* Avatar - Overlapping Banner */}
             <div className="relative -mt-10 flex items-end justify-between">
               <motion.button
                 onClick={() => navigate('/profile')}
@@ -357,7 +371,7 @@ const SettingsHub = () => {
                 <motion.div
                   className="absolute -inset-1 rounded-full"
                   style={{
-                    background: `linear-gradient(135deg, ${isFounder ? '#fbbf24' : '#a855f7'}, ${isFounder ? '#fde047' : '#c084fc'})`,
+                    background: `linear-gradient(135deg, ${accentColor}, ${isFounder ? '#fde047' : '#c084fc'})`,
                   }}
                   animate={{ rotate: 360 }}
                   transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
@@ -371,7 +385,7 @@ const SettingsHub = () => {
                   ) : (
                     <div
                       className="w-full h-full flex items-center justify-center"
-                      style={{ background: `linear-gradient(135deg, ${isFounder ? '#fbbf2440' : '#a855f740'}, ${isFounder ? '#fbbf2420' : '#a855f720'})` }}
+                      style={{ background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}20)` }}
                     >
                       <span className="text-xl font-black text-white/80">
                         {(user?.displayName || 'A').charAt(0).toUpperCase()}
@@ -389,26 +403,24 @@ const SettingsHub = () => {
                 )}
               </motion.button>
 
-              {/* Edit Profile Button */}
               <motion.button
                 onClick={() => navigate('/profile')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl"
                 style={{
-                  background: `${isFounder ? '#fbbf24' : '#a855f7'}20`,
-                  border: `1px solid ${isFounder ? '#fbbf24' : '#a855f7'}40`,
+                  background: `${accentColor}20`,
+                  border: `1px solid ${accentColor}40`,
                 }}
               >
-                <Edit2 size={14} style={{ color: isFounder ? '#fbbf24' : '#a855f7' }} />
-                <span className="text-xs font-bold" style={{ color: isFounder ? '#fbbf24' : '#a855f7' }}>Profil</span>
+                <Edit2 size={14} style={{ color: accentColor }} />
+                <span className="text-xs font-bold" style={{ color: accentColor }}>Profil</span>
               </motion.button>
             </div>
 
-            {/* Name & Username */}
             <div className="mt-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-black text-white">
+                <h2 className="text-lg font-bold text-white">
                   {user?.displayName || 'Anonym'}
                 </h2>
                 {isFounder && (
@@ -423,86 +435,96 @@ const SettingsHub = () => {
               <p className="text-sm text-white/40">@{user?.username || 'username'}</p>
             </div>
 
-            {/* Bio Preview */}
             {bio && (
               <p className="mt-2 text-sm text-white/60 line-clamp-2">{bio}</p>
             )}
           </div>
-        </motion.div>
+        </GlassCard>
 
         {/* ═══════════════════════════════════════ */}
-        {/* CREATOR & INVITE SECTION */}
+        {/* INVITE SECTION */}
         {/* ═══════════════════════════════════════ */}
-        <GlassCard gradient="from-amber-400 to-orange-500">
-          <div className="divide-y divide-gray-100/50 dark:divide-gray-800/50">
-            {/* Creator werden */}
-            <SettingsRow
-              icon={<Crown size={20} className="text-amber-500" />}
-              iconBg="bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30"
-              label="Creator werden"
-              description={isCreator ? "Du bist bereits Creator ✨" : "Verdiene Geld mit deinem Content"}
-              badge={isCreator ? "AKTIV" : "NEU"}
-              onClick={() => navigate('/creator-application')}
-            />
-
-            {/* Einladungssystem */}
-            <div className="p-4">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 flex items-center justify-center">
-                  <Gift size={20} className="text-pink-500" />
-                </div>
-                <div className="flex-1">
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    Einladungssystem
-                  </span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Lade Freunde ein & erhalte Rewards
-                  </p>
-                </div>
+        <GlassCard glowColor="#ec4899">
+          <div className="p-4">
+            <div className="flex items-center gap-4 mb-4">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{
+                  background: 'rgba(236, 72, 153, 0.2)',
+                  border: '1px solid rgba(236, 72, 153, 0.4)',
+                }}
+              >
+                <Gift size={18} className="text-pink-400" />
               </div>
-
-              {/* Referral Code Card */}
-              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl p-4 border border-purple-200/50 dark:border-purple-700/30">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs text-gray-500 uppercase tracking-wider">Dein Code</span>
-                  <span className="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-600 rounded-full font-semibold">
-                    🎁 7 Tage Premium pro Einladung
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl px-4 py-3 font-mono text-lg font-bold text-purple-600 dark:text-purple-400 tracking-wider">
-                    {referralCode}
-                  </div>
-                  <button
-                    onClick={handleCopyCode}
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                      copied
-                        ? 'bg-green-500 text-white'
-                        : 'bg-purple-500 text-white hover:bg-purple-600'
-                    }`}
-                  >
-                    {copied ? <Check size={20} /> : <Copy size={20} />}
-                  </button>
-                </div>
+              <div className="flex-1">
+                <span className="text-sm font-semibold text-white">Einladungssystem</span>
+                <p className="text-xs text-white/40">Lade Freunde ein & erhalte Rewards</p>
               </div>
+            </div>
 
-              {/* Quick Actions */}
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={() => navigate('/invites')}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-purple-500 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-purple-600 transition-colors"
+            {/* Referral Code Card */}
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))',
+                border: '1px solid rgba(168, 85, 247, 0.2)',
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] text-white/40 uppercase tracking-wider">Dein Code</span>
+                <span className="text-[10px] px-2 py-0.5 bg-violet-500/20 text-violet-400 rounded-full font-semibold">
+                  🎁 +100 XP pro Einladung
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex-1 rounded-xl px-4 py-3 font-mono text-lg font-bold text-violet-400 tracking-wider"
+                  style={{ background: 'rgba(0, 0, 0, 0.3)' }}
                 >
-                  <UserPlus size={16} />
-                  Einladen
-                </button>
-                <button
-                  onClick={() => navigate('/referral-status')}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  {referralCode}
+                </div>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleCopyCode}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center transition-colors"
+                  style={{
+                    background: copied
+                      ? 'rgba(34, 197, 94, 0.3)'
+                      : 'linear-gradient(135deg, #8b5cf6, #a855f7)',
+                    border: copied ? '1px solid rgba(34, 197, 94, 0.5)' : 'none',
+                  }}
                 >
-                  <Users size={16} />
-                  Status
-                </button>
+                  {copied ? <Check size={20} className="text-emerald-400" /> : <Copy size={20} className="text-white" />}
+                </motion.button>
               </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex gap-2 mt-3">
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate('/invites')}
+                className="flex-1 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                style={{
+                  background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
+                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)',
+                }}
+              >
+                <UserPlus size={16} />
+                Einladen
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate('/referral-status')}
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-white/70 flex items-center justify-center gap-2"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                }}
+              >
+                <Users size={16} />
+                Status
+              </motion.button>
             </div>
           </div>
         </GlassCard>
@@ -511,28 +533,29 @@ const SettingsHub = () => {
         {/* PRIVACY & RADAR SECTION */}
         {/* ═══════════════════════════════════════ */}
         <GlassCard>
-          <div className="divide-y divide-gray-100/50 dark:divide-gray-800/50">
+          <div className="divide-y divide-white/5">
             {/* Sichtbarkeit */}
             <div className="p-4">
               <div className="flex items-center gap-4 mb-3">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 flex items-center justify-center">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: 'rgba(139, 92, 246, 0.2)',
+                    border: '1px solid rgba(139, 92, 246, 0.4)',
+                  }}
+                >
                   {visibility === 'nobody' ? (
-                    <EyeOff size={20} className="text-violet-500" />
+                    <EyeOff size={18} className="text-violet-400" />
                   ) : (
-                    <Eye size={20} className="text-violet-500" />
+                    <Eye size={18} className="text-violet-400" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    Sichtbarkeit
-                  </span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Wer kann dich im Radar sehen?
-                  </p>
+                  <span className="text-sm font-semibold text-white">Sichtbarkeit</span>
+                  <p className="text-xs text-white/40">Wer kann dich im Radar sehen?</p>
                 </div>
               </div>
 
-              {/* Visibility Options */}
               <div className="flex gap-2">
                 {[
                   { key: 'everyone', label: 'Alle', icon: Globe },
@@ -542,22 +565,27 @@ const SettingsHub = () => {
                   const Icon = option.icon;
                   const isSelected = visibility === option.key;
                   return (
-                    <button
+                    <motion.button
                       key={option.key}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => {
                         setVisibility(option.key as any);
                         saveSetting('visibility', option.key);
                         if ('vibrate' in navigator) navigator.vibrate(10);
                       }}
-                      className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all ${
-                        isSelected
-                          ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
-                      }`}
+                      className="flex-1 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all"
+                      style={{
+                        background: isSelected
+                          ? 'linear-gradient(135deg, #8b5cf6, #a855f7)'
+                          : 'rgba(255, 255, 255, 0.05)',
+                        border: isSelected ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+                        color: isSelected ? '#fff' : 'rgba(255, 255, 255, 0.5)',
+                        boxShadow: isSelected ? '0 4px 15px rgba(139, 92, 246, 0.3)' : 'none',
+                      }}
                     >
-                      <Icon size={16} />
+                      <Icon size={14} />
                       {option.label}
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
@@ -566,16 +594,14 @@ const SettingsHub = () => {
             {/* Friend Radar */}
             <div>
               <SettingsRow
-                icon={<Radar size={20} className="text-cyan-500" />}
-                iconBg="bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30"
+                icon={<Radar size={18} />}
+                iconColor="#22d3ee"
                 label="Friend Radar"
                 description="Entdecke synclulu-User in deiner Nähe"
                 toggle
                 isOn={radarEnabled}
                 onToggle={toggleRadar}
               />
-
-              {/* Radar Slider */}
               <RadarSlider
                 value={radius}
                 onChange={setRadius}
@@ -589,10 +615,10 @@ const SettingsHub = () => {
         {/* APP SETTINGS SECTION */}
         {/* ═══════════════════════════════════════ */}
         <GlassCard>
-          <div className="divide-y divide-gray-100/50 dark:divide-gray-800/50">
+          <div className="divide-y divide-white/5">
             <SettingsRow
-              icon={<Bell size={20} className="text-rose-500" />}
-              iconBg="bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30"
+              icon={<Bell size={18} />}
+              iconColor="#f43f5e"
               label="Push-Benachrichtigungen"
               description="Erhalte Updates zu Matches & Messages"
               toggle
@@ -604,8 +630,8 @@ const SettingsHub = () => {
             />
 
             <SettingsRow
-              icon={<Volume2 size={20} className="text-emerald-500" />}
-              iconBg="bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30"
+              icon={<Volume2 size={18} />}
+              iconColor="#22c55e"
               label="Sound-Effekte"
               description="Töne bei Aktionen & Benachrichtigungen"
               toggle
@@ -615,23 +641,6 @@ const SettingsHub = () => {
                 saveSetting('soundEnabled', val);
               }}
             />
-
-            <SettingsRow
-              icon={darkMode ? <Moon size={20} className="text-indigo-500" /> : <Sun size={20} className="text-amber-500" />}
-              iconBg={darkMode
-                ? "bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-900/30 dark:to-violet-900/30"
-                : "bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30"
-              }
-              label="Dark Mode"
-              description="Dunkles Erscheinungsbild aktivieren"
-              toggle
-              isOn={darkMode}
-              onToggle={(val) => {
-                setDarkMode(val);
-                saveSetting('darkMode', val);
-                document.documentElement.classList.toggle('dark', val);
-              }}
-            />
           </div>
         </GlassCard>
 
@@ -639,26 +648,26 @@ const SettingsHub = () => {
         {/* ACCOUNT & SECURITY */}
         {/* ═══════════════════════════════════════ */}
         <GlassCard>
-          <div className="divide-y divide-gray-100/50 dark:divide-gray-800/50">
+          <div className="divide-y divide-white/5">
             <SettingsRow
-              icon={<Shield size={20} className="text-blue-500" />}
-              iconBg="bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30"
+              icon={<Shield size={18} />}
+              iconColor="#3b82f6"
               label="Account & Sicherheit"
               description="Passwort, Email, Zwei-Faktor"
               onClick={() => navigate('/settings/security')}
             />
 
             <SettingsRow
-              icon={<Lock size={20} className="text-gray-500" />}
-              iconBg="bg-gradient-to-br from-gray-100 to-slate-100 dark:from-gray-800/50 dark:to-slate-800/50"
+              icon={<Lock size={18} />}
+              iconColor="#6b7280"
               label="Blockierte Nutzer"
               description="Verwalte blockierte Profile"
               onClick={() => navigate('/settings/blocked')}
             />
 
             <SettingsRow
-              icon={<Smartphone size={20} className="text-purple-500" />}
-              iconBg="bg-gradient-to-br from-purple-100 to-fuchsia-100 dark:from-purple-900/30 dark:to-fuchsia-900/30"
+              icon={<Smartphone size={18} />}
+              iconColor="#a855f7"
               label="Verknüpfte Geräte"
               description="Aktive Sessions verwalten"
               onClick={() => navigate('/settings/devices')}
@@ -670,26 +679,26 @@ const SettingsHub = () => {
         {/* SUPPORT & LEGAL */}
         {/* ═══════════════════════════════════════ */}
         <GlassCard>
-          <div className="divide-y divide-gray-100/50 dark:divide-gray-800/50">
+          <div className="divide-y divide-white/5">
             <SettingsRow
-              icon={<HelpCircle size={20} className="text-teal-500" />}
-              iconBg="bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/30 dark:to-cyan-900/30"
+              icon={<HelpCircle size={18} />}
+              iconColor="#14b8a6"
               label="Hilfe & Support"
               description="FAQ, Kontakt, Bug melden"
               onClick={() => navigate('/help')}
             />
 
             <SettingsRow
-              icon={<Star size={20} className="text-yellow-500" />}
-              iconBg="bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30"
+              icon={<Star size={18} />}
+              iconColor="#fbbf24"
               label="App bewerten"
               description="Hilf uns mit einer Bewertung"
               onClick={() => window.open('https://apps.apple.com/app/synclulu', '_blank')}
             />
 
             <SettingsRow
-              icon={<FileText size={20} className="text-gray-500" />}
-              iconBg="bg-gradient-to-br from-gray-100 to-slate-100 dark:from-gray-800/50 dark:to-slate-800/50"
+              icon={<FileText size={18} />}
+              iconColor="#6b7280"
               label="Rechtliches"
               description="Impressum, Datenschutz, AGB"
               onClick={() => navigate('/legal')}
@@ -702,8 +711,8 @@ const SettingsHub = () => {
         {/* ═══════════════════════════════════════ */}
         <GlassCard>
           <SettingsRow
-            icon={<LogOut size={20} className="text-red-500" />}
-            iconBg="bg-red-100 dark:bg-red-900/30"
+            icon={<LogOut size={18} />}
+            iconColor="#ef4444"
             label="Abmelden"
             description="Von diesem Gerät abmelden"
             onClick={handleLogout}
@@ -712,19 +721,14 @@ const SettingsHub = () => {
         </GlassCard>
 
         {/* ═══════════════════════════════════════ */}
-        {/* SECURITY NOTE: Firebase UID removed from UI */}
-        {/* User IDs should NEVER be shown to users */}
-        {/* ═══════════════════════════════════════ */}
-
-        {/* ═══════════════════════════════════════ */}
         {/* VERSION INFO */}
         {/* ═══════════════════════════════════════ */}
         <div className="text-center py-6">
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-white/30">
             synclulu v1.5.0 • Made with 💜 in Germany
           </p>
-          <p className="text-[10px] text-gray-300 mt-1">
-            Build 2024.01.15
+          <p className="text-[10px] text-white/20 mt-1">
+            Build 2026.02.05
           </p>
         </div>
       </div>

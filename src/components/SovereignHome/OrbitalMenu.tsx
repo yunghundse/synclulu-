@@ -34,11 +34,11 @@ const menuItems: OrbitalMenuItem[] = [
     gradient: 'from-emerald-500 to-teal-600',
   },
   {
-    id: 'map',
-    icon: Map,
-    label: 'Karte',
-    path: '/radar',
-    gradient: 'from-blue-500 to-indigo-600',
+    id: 'rooms',
+    icon: Radio,
+    label: 'Rooms',
+    path: '/rooms',
+    gradient: 'from-violet-500 to-purple-600',
   },
   {
     id: 'messages',
