@@ -48,7 +48,6 @@ interface UserProfile {
   username: string;
   photoURL?: string;
   xp: number;
-  auraScore: number;
   isFounder: boolean;
   friendsCount: number;
   streakDays: number;
@@ -257,62 +256,74 @@ const ProfileCard = memo(function ProfileCard({
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface StatsRowProps {
-  auraScore: number;
   friendsCount: number;
   streakDays: number;
   onFriendsClick: () => void;
+  onStreaksClick: () => void;
 }
 
 const StatsRow = memo(function StatsRow({
-  auraScore,
   friendsCount,
   streakDays,
   onFriendsClick,
+  onStreaksClick,
 }: StatsRowProps) {
   return (
     <div className="px-5 py-3">
-      <div className="grid grid-cols-3 gap-3">
-        {/* Aura Score */}
-        <GlassCard className="p-4 text-center" glow="rgba(251, 191, 36, 0.15)">
-          <div
-            className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(251, 191, 36, 0.2)' }}
-          >
-            <Star size={20} className="text-amber-400" />
-          </div>
-          <p className="text-2xl font-black text-white">{auraScore || 0}</p>
-          <p className="text-[11px] text-white/50 font-medium mt-1">Aura Score</p>
-        </GlassCard>
-
+      <div className="grid grid-cols-2 gap-3">
         {/* Friends */}
-        <GlassCard
-          className="p-4 text-center"
+        <motion.button
+          whileTap={{ scale: 0.98 }}
           onClick={() => {
             triggerHaptic('light');
             onFriendsClick();
           }}
+          className="p-5 rounded-2xl text-center"
+          style={{
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.15))',
+            border: '2px solid rgba(59, 130, 246, 0.5)',
+            boxShadow: '0 4px 20px rgba(59, 130, 246, 0.3)',
+          }}
         >
           <div
-            className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(59, 130, 246, 0.2)' }}
+            className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.3))',
+              boxShadow: '0 2px 10px rgba(59, 130, 246, 0.3)',
+            }}
           >
-            <Users size={20} className="text-blue-400" />
+            <Users size={24} className="text-white" />
           </div>
-          <p className="text-2xl font-black text-white">{friendsCount || 0}</p>
-          <p className="text-[11px] text-white/50 font-medium mt-1">Freunde</p>
-        </GlassCard>
+          <p className="text-3xl font-black text-white">{friendsCount || 0}</p>
+          <p className="text-sm text-blue-200/80 font-medium mt-1">Freunde</p>
+        </motion.button>
 
-        {/* Streaks */}
-        <GlassCard className="p-4 text-center" glow="rgba(249, 115, 22, 0.15)">
+        {/* Streaks - Links to /streaks */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {
+            triggerHaptic('light');
+            onStreaksClick();
+          }}
+          className="p-5 rounded-2xl text-center"
+          style={{
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.35), rgba(249, 115, 22, 0.15))',
+            border: '2px solid rgba(249, 115, 22, 0.5)',
+            boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3)',
+          }}
+        >
           <div
-            className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(249, 115, 22, 0.2)' }}
+            className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.5), rgba(249, 115, 22, 0.3))',
+              boxShadow: '0 2px 10px rgba(249, 115, 22, 0.3)',
+            }}
           >
-            <Flame size={20} className="text-orange-400" />
+            <Flame size={24} className="text-white" />
           </div>
-          <p className="text-2xl font-black text-white">{streakDays || 0}</p>
-          <p className="text-[11px] text-white/50 font-medium mt-1">Tage Streak</p>
-        </GlassCard>
+          <p className="text-3xl font-black text-white">{streakDays || 0}</p>
+          <p className="text-sm text-orange-200/80 font-medium mt-1">Tage Streak 🔥</p>
+        </motion.button>
       </div>
     </div>
   );
@@ -608,7 +619,6 @@ export default function HomeMinimal() {
             username: data.username || 'anonym',
             photoURL: data.photoURL || data.avatarUrl,
             xp: data.xp || data.totalXP || 0,
-            auraScore: data.auraScore || data.auraRating || 0,
             isFounder: data.role === 'founder' || data.isAdmin === true || user.id === FOUNDER_UID,
             friendsCount: data.friendsCount || 0,
             streakDays: data.streakDays || data.daysActive || 0,
@@ -667,6 +677,7 @@ export default function HomeMinimal() {
   const handleNotificationsClick = useCallback(() => navigate('/notifications'), [navigate]);
   const handleSettingsClick = useCallback(() => navigate('/settings'), [navigate]);
   const handleFriendsClick = useCallback(() => navigate('/friends'), [navigate]);
+  const handleStreaksClick = useCallback(() => navigate('/streaks'), [navigate]);
   const handleRoomJoin = useCallback((roomId: string) => navigate(`/room/${roomId}`), [navigate]);
   const handleViewAllRooms = useCallback(() => navigate('/rooms'), [navigate]);
   const handleCreateRoom = useCallback(() => navigate('/rooms?create=true'), [navigate]);
@@ -686,10 +697,10 @@ export default function HomeMinimal() {
 
       {/* Stats Row */}
       <StatsRow
-        auraScore={profile?.auraScore || 0}
         friendsCount={profile?.friendsCount || 0}
         streakDays={profile?.streakDays || 0}
         onFriendsClick={handleFriendsClick}
+        onStreaksClick={handleStreaksClick}
       />
 
       {/* Active Rooms */}

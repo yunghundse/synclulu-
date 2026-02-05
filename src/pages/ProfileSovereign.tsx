@@ -1586,24 +1586,6 @@ export default function ProfileSovereign() {
           )}
         </div>
 
-        {/* Aura Rating Button */}
-        <div className="mt-4">
-          <AuraRatingButton
-            rating={profile?.auraRating || 0}
-            count={profile?.auraRatingCount || 0}
-            onClick={() => setShowRatingPanel(true)}
-          />
-        </div>
-
-        {/* Friends Trigger Button - Prominenter Link zu /friends */}
-        <div className="mt-4">
-          <FriendsTrigger
-            activeCount={activeCount}
-            totalCount={totalCount}
-            onClick={() => navigate('/friends')}
-            accentColor={accentColor}
-          />
-        </div>
       </div>
 
       {/* Level & Invite Section - Clean unified design */}
