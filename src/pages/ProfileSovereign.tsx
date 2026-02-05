@@ -571,7 +571,7 @@ const LevelCommandOverlay = ({
   currentXP: number;
   totalXP: number;
   neededXP: number;
-  tier: { name: string; badge: string };
+  tier: { title: string; rank: string };
   accentColor: string;
 }) => {
   const milestones: LevelMilestone[] = [
@@ -654,7 +654,7 @@ const LevelCommandOverlay = ({
                 transition={{ delay: 0.2 }}
                 className="mt-4"
               >
-                <p className="text-xl font-bold text-white">{tier.badge} {tier.name}</p>
+                <p className="text-xl font-bold text-white">{tier.rank} {tier.title}</p>
                 <p className="text-sm text-white/40 mt-1">{totalXP.toLocaleString()} XP gesammelt</p>
               </motion.div>
             </div>

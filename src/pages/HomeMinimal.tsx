@@ -165,7 +165,7 @@ const ProfileCard = memo(function ProfileCard({
               <span className="text-xs font-medium text-white/50">Level {levelData.level}</span>
               <span className="text-white/30">•</span>
               <span className="text-xs font-semibold" style={{ color: accentColor }}>
-                {tier.badge} {tier.name}
+                {tier.rank} {tier.title}
               </span>
             </div>
           </div>
