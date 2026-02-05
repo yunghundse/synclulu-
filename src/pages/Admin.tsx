@@ -8,7 +8,7 @@
  * - Premium User Verwaltung
  * - User Sichtbarkeit Toggle
  *
- * @version 34.0.0 - Complete Rebuild
+ * @version 44.0.0 - Visibility Fix + Unified Design
  */
 
 import React, { useState, useEffect } from 'react';
@@ -30,10 +30,12 @@ import {
   Loader2,
   RefreshCw,
   Lock,
+  LogIn,
 } from 'lucide-react';
-import { doc, getDoc, updateDoc, setDoc, collection, getDocs, query, limit, orderBy } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc, collection, getDocs, query, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useStore } from '@/lib/store';
+import { useAuth } from '@/hooks/useAuth';
 
 const FOUNDER_UID = 'MIbamchs82Ve7y0ecX2TpPyymbw1';
 
@@ -53,13 +55,40 @@ interface SystemSettings {
   maintenanceMessage: string;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// GLASS CARD COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════
+
+const GlassCard: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  color?: string;
+}> = ({ children, className = '', color }) => (
+  <div
+    className={`rounded-2xl ${className}`}
+    style={{
+      background: color ? `linear-gradient(135deg, ${color}30, ${color}15)` : 'rgba(255, 255, 255, 0.08)',
+      backdropFilter: 'blur(20px)',
+      border: `2px solid ${color ? `${color}50` : 'rgba(255, 255, 255, 0.15)'}`,
+      boxShadow: color ? `0 4px 20px ${color}30` : undefined,
+    }}
+  >
+    {children}
+  </div>
+);
+
 export default function Admin() {
   const navigate = useNavigate();
-  const { user } = useStore();
+  const { user: storeUser } = useStore();
+  const { user: authUser, signIn } = useAuth();
+
+  // Use either store user or auth user
+  const user = storeUser || authUser;
 
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'settings' | 'users'>('settings');
+  const [signingIn, setSigningIn] = useState(false);
 
   // Settings State
   const [settings, setSettings] = useState<SystemSettings>({
@@ -67,6 +96,7 @@ export default function Admin() {
     maintenanceMessage: 'Wartungsarbeiten. Wir sind bald zurück!',
   });
   const [savingSettings, setSavingSettings] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Users State
   const [users, setUsers] = useState<UserData[]>([]);
@@ -87,6 +117,17 @@ export default function Admin() {
     }
     setLoading(false);
   }, [user?.id]);
+
+  // Handle sign in
+  const handleSignIn = async () => {
+    setSigningIn(true);
+    try {
+      await signIn();
+    } catch (error) {
+      console.error('[Admin] Sign in error:', error);
+    }
+    setSigningIn(false);
+  };
 
   // Load system settings
   const loadSettings = async () => {
@@ -114,6 +155,8 @@ export default function Admin() {
         updatedAt: new Date(),
         updatedBy: FOUNDER_UID,
       }, { merge: true });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
     } catch (error) {
       console.error('[Admin] Error saving settings:', error);
     }
@@ -211,37 +254,128 @@ export default function Admin() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#050505' }}>
-        <Loader2 size={32} className="animate-spin text-purple-400" />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="w-12 h-12 border-3 border-purple-500 border-t-transparent rounded-full"
+        />
       </div>
     );
   }
 
-  // Not authorized
-  if (!isAuthorized) {
+  // Not logged in - Show login button
+  if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#050505' }}>
-        <div className="text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#050505' }}>
+        {/* Back Button */}
+        <motion.button
+          onClick={() => navigate('/')}
+          whileTap={{ scale: 0.95 }}
+          className="absolute top-4 left-4 w-12 h-12 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 4px 15px rgba(139, 92, 246, 0.5)',
+          }}
+        >
+          <ArrowLeft size={22} className="text-white" />
+        </motion.button>
+
+        <GlassCard className="w-full max-w-sm p-8 text-center" color="#8b5cf6">
           <div
-            className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+            className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              boxShadow: '0 8px 30px rgba(139, 92, 246, 0.5)',
+            }}
           >
-            <Lock size={36} className="text-red-400" />
+            <Shield size={48} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Zugriff verweigert</h1>
-          <p className="text-white/50 text-sm mb-6">
-            Dieser Bereich ist nur für den Founder zugänglich.
+
+          <h1 className="text-2xl font-black text-white mb-2">Admin Panel</h1>
+          <p className="text-white/60 text-sm mb-8">
+            Melde dich mit deinem Founder-Account an
           </p>
-          <button
-            onClick={() => navigate('/')}
-            className="px-6 py-3 rounded-xl text-white font-medium"
-            style={{ background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.3)' }}
+
+          <motion.button
+            onClick={handleSignIn}
+            disabled={signingIn}
+            whileTap={{ scale: 0.98 }}
+            className="w-full py-4 rounded-xl flex items-center justify-center gap-3 font-bold text-white"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              boxShadow: '0 6px 25px rgba(139, 92, 246, 0.5)',
+            }}
           >
-            Zurück zur App
-          </button>
-        </div>
+            {signingIn ? (
+              <Loader2 size={22} className="animate-spin" />
+            ) : (
+              <LogIn size={22} />
+            )}
+            {signingIn ? 'Anmelden...' : 'Mit Google anmelden'}
+          </motion.button>
+        </GlassCard>
       </div>
     );
   }
+
+  // Not authorized (logged in but not founder)
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#050505' }}>
+        {/* Back Button */}
+        <motion.button
+          onClick={() => navigate('/')}
+          whileTap={{ scale: 0.95 }}
+          className="absolute top-4 left-4 w-12 h-12 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 4px 15px rgba(139, 92, 246, 0.5)',
+          }}
+        >
+          <ArrowLeft size={22} className="text-white" />
+        </motion.button>
+
+        <GlassCard className="w-full max-w-sm p-8 text-center" color="#ef4444">
+          <div
+            className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              boxShadow: '0 8px 30px rgba(239, 68, 68, 0.5)',
+            }}
+          >
+            <Lock size={48} className="text-white" />
+          </div>
+
+          <h1 className="text-2xl font-black text-white mb-2">Zugriff verweigert</h1>
+          <p className="text-white/60 text-sm mb-4">
+            Dieser Bereich ist nur für den Founder zugänglich.
+          </p>
+          <p className="text-xs text-white/40 mb-8">
+            Angemeldet als: {user.email || user.displayName}
+          </p>
+
+          <motion.button
+            onClick={() => navigate('/')}
+            whileTap={{ scale: 0.98 }}
+            className="w-full py-4 rounded-xl flex items-center justify-center gap-3 font-bold text-white"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              boxShadow: '0 6px 25px rgba(139, 92, 246, 0.5)',
+            }}
+          >
+            <ArrowLeft size={20} />
+            Zurück zur App
+          </motion.button>
+        </GlassCard>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AUTHORIZED ADMIN VIEW
+  // ═══════════════════════════════════════════════════════════════════════════
 
   return (
     <div className="min-h-screen pb-32" style={{ background: '#050505' }}>
@@ -251,48 +385,71 @@ export default function Admin() {
         style={{
           background: 'rgba(5, 5, 5, 0.95)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(168, 85, 247, 0.15)',
+          borderBottom: '2px solid rgba(139, 92, 246, 0.3)',
         }}
       >
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate(-1)}
-          className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+          className="w-12 h-12 rounded-xl flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 4px 15px rgba(139, 92, 246, 0.5)',
+          }}
         >
-          <ArrowLeft size={20} className="text-white/60" />
+          <ArrowLeft size={22} className="text-white" />
         </motion.button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Shield size={20} className="text-purple-400" />
+          <h1 className="text-xl font-black text-white flex items-center gap-2">
+            <Shield size={22} className="text-purple-400" />
             Admin Panel
           </h1>
         </div>
-        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/20">
-          <Crown size={14} className="text-amber-400" />
-          <span className="text-xs font-bold text-amber-400">Founder</span>
+        <div
+          className="flex items-center gap-2 px-4 py-2 rounded-xl"
+          style={{
+            background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+            boxShadow: '0 4px 15px rgba(251, 191, 36, 0.4)',
+          }}
+        >
+          <Crown size={16} className="text-black" />
+          <span className="text-sm font-black text-black">FOUNDER</span>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="px-5 py-4">
-        <div className="flex gap-2 p-1 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
+        <div
+          className="flex gap-2 p-1.5 rounded-2xl"
+          style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
           {[
             { id: 'settings', label: 'Einstellungen', icon: Settings },
             { id: 'users', label: 'User', icon: Users },
           ].map((tab) => (
-            <button
+            <motion.button
               key={tab.id}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex-1 py-3 rounded-lg flex items-center justify-center gap-2 text-sm font-medium transition-all ${
+              className="flex-1 py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all"
+              style={
                 activeTab === tab.id
-                  ? 'bg-purple-500 text-white'
-                  : 'text-white/50 hover:text-white/70'
-              }`}
+                  ? {
+                      background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                      boxShadow: '0 4px 15px rgba(139, 92, 246, 0.4)',
+                    }
+                  : {
+                      background: 'transparent',
+                    }
+              }
             >
-              <tab.icon size={16} />
-              {tab.label}
-            </button>
+              <tab.icon size={18} className={activeTab === tab.id ? 'text-white' : 'text-white/50'} />
+              <span className={activeTab === tab.id ? 'text-white' : 'text-white/50'}>{tab.label}</span>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -302,90 +459,114 @@ export default function Admin() {
         {activeTab === 'settings' && (
           <div className="space-y-4">
             {/* Maintenance Mode */}
-            <div
-              className="p-5 rounded-2xl"
-              style={{
-                background: settings.maintenanceMode
-                  ? 'rgba(239, 68, 68, 0.1)'
-                  : 'rgba(255, 255, 255, 0.02)',
-                border: settings.maintenanceMode
-                  ? '1px solid rgba(239, 68, 68, 0.3)'
-                  : '1px solid rgba(255, 255, 255, 0.05)',
-              }}
+            <GlassCard
+              className="p-5"
+              color={settings.maintenanceMode ? '#ef4444' : undefined}
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: 'rgba(239, 68, 68, 0.2)' }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: settings.maintenanceMode
+                        ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                        : 'rgba(255, 255, 255, 0.1)',
+                      boxShadow: settings.maintenanceMode
+                        ? '0 4px 15px rgba(239, 68, 68, 0.4)'
+                        : undefined,
+                    }}
                   >
-                    <Wrench size={18} className="text-red-400" />
+                    <Wrench size={22} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">Wartungsmodus</p>
-                    <p className="text-xs text-white/40">App für alle sperren</p>
+                    <p className="text-base font-bold text-white">Wartungsmodus</p>
+                    <p className="text-xs text-white/50">App für alle sperren</p>
                   </div>
                 </div>
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setSettings({ ...settings, maintenanceMode: !settings.maintenanceMode })}
-                  className={`w-14 h-8 rounded-full p-1 transition-colors ${
-                    settings.maintenanceMode ? 'bg-red-500' : 'bg-white/10'
-                  }`}
+                  className="w-16 h-9 rounded-full p-1 transition-colors"
+                  style={{
+                    background: settings.maintenanceMode
+                      ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                      : 'rgba(255, 255, 255, 0.1)',
+                    boxShadow: settings.maintenanceMode
+                      ? '0 4px 15px rgba(239, 68, 68, 0.4)'
+                      : undefined,
+                  }}
                 >
                   <motion.div
-                    className="w-6 h-6 rounded-full bg-white"
-                    animate={{ x: settings.maintenanceMode ? 22 : 0 }}
+                    className="w-7 h-7 rounded-full bg-white"
+                    animate={{ x: settings.maintenanceMode ? 26 : 0 }}
+                    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
                   />
-                </button>
+                </motion.button>
               </div>
 
               {settings.maintenanceMode && (
                 <div className="mt-4">
-                  <label className="text-xs text-white/50 mb-2 block">Wartungsnachricht</label>
+                  <label className="text-xs text-white/60 mb-2 block font-medium">Wartungsnachricht</label>
                   <input
                     type="text"
                     value={settings.maintenanceMessage}
                     onChange={(e) => setSettings({ ...settings, maintenanceMessage: e.target.value })}
-                    className="w-full p-3 rounded-xl text-white text-sm"
-                    style={{ background: 'rgba(0, 0, 0, 0.3)', border: 'none', outline: 'none' }}
+                    className="w-full p-4 rounded-xl text-white text-sm font-medium"
+                    style={{
+                      background: 'rgba(0, 0, 0, 0.4)',
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
+                      outline: 'none',
+                    }}
                   />
                 </div>
               )}
-            </div>
+            </GlassCard>
 
             {/* Save Button */}
-            <button
+            <motion.button
               onClick={saveSettings}
               disabled={savingSettings}
-              className="w-full py-4 rounded-xl flex items-center justify-center gap-2 font-medium text-white"
-              style={{ background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.3)' }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 rounded-xl flex items-center justify-center gap-3 font-bold text-white"
+              style={{
+                background: saveSuccess
+                  ? 'linear-gradient(135deg, #10b981, #059669)'
+                  : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                boxShadow: saveSuccess
+                  ? '0 6px 25px rgba(16, 185, 129, 0.5)'
+                  : '0 6px 25px rgba(139, 92, 246, 0.5)',
+              }}
             >
               {savingSettings ? (
-                <Loader2 size={18} className="animate-spin" />
+                <Loader2 size={22} className="animate-spin" />
+              ) : saveSuccess ? (
+                <Check size={22} />
               ) : (
-                <Check size={18} />
+                <Check size={22} />
               )}
-              Einstellungen speichern
-            </button>
+              {saveSuccess ? 'Gespeichert!' : 'Einstellungen speichern'}
+            </motion.button>
 
             {/* Danger Zone */}
-            <div
-              className="p-5 rounded-2xl mt-8"
-              style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <AlertTriangle size={18} className="text-red-400" />
-                <p className="text-sm font-semibold text-red-400">Danger Zone</p>
+            <GlassCard className="p-5 mt-8" color="#ef4444">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle size={22} className="text-red-400" />
+                <p className="text-base font-bold text-red-400">Danger Zone</p>
               </div>
 
-              <button
+              <motion.button
                 onClick={resetAllLevels}
-                className="w-full py-3 rounded-xl text-red-400 font-medium"
-                style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-4 rounded-xl font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                  boxShadow: '0 6px 25px rgba(239, 68, 68, 0.5)',
+                  color: 'white',
+                }}
               >
                 Alle User auf Level 0 zurücksetzen
-              </button>
-            </div>
+              </motion.button>
+            </GlassCard>
           </div>
         )}
 
@@ -393,82 +574,119 @@ export default function Admin() {
           <div className="space-y-4">
             {/* Search */}
             <div className="relative">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
+              <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="User suchen..."
-                className="w-full pl-12 pr-4 py-3 rounded-xl text-white text-sm"
-                style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', outline: 'none' }}
+                className="w-full pl-12 pr-4 py-4 rounded-xl text-white text-sm font-medium"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '2px solid rgba(255, 255, 255, 0.15)',
+                  outline: 'none',
+                }}
               />
             </div>
 
-            {/* Refresh */}
-            <button
+            {/* Refresh Button */}
+            <motion.button
               onClick={loadUsers}
               disabled={loadingUsers}
-              className="flex items-center gap-2 text-sm text-white/50 hover:text-white/70"
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)',
+                color: 'white',
+              }}
             >
-              <RefreshCw size={14} className={loadingUsers ? 'animate-spin' : ''} />
+              <RefreshCw size={16} className={loadingUsers ? 'animate-spin' : ''} />
               Aktualisieren
-            </button>
+            </motion.button>
+
+            {/* User Count */}
+            <p className="text-sm text-white/60">
+              {filteredUsers.length} User gefunden
+            </p>
 
             {/* User List */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               {filteredUsers.map((u) => (
-                <div
-                  key={u.id}
-                  className="p-4 rounded-xl"
-                  style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
-                >
-                  <div className="flex items-center justify-between mb-2">
+                <GlassCard key={u.id} className="p-4">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-sm font-semibold text-white flex items-center gap-2">
+                      <p className="text-base font-bold text-white flex items-center gap-2">
                         {u.displayName}
-                        {u.isPremium && <Star size={12} className="text-amber-400" />}
-                        {u.id === FOUNDER_UID && <Crown size={12} className="text-amber-400" />}
+                        {u.isPremium && <Star size={14} className="text-amber-400" />}
+                        {u.id === FOUNDER_UID && <Crown size={14} className="text-amber-400" />}
                       </p>
-                      <p className="text-xs text-white/40">@{u.username}</p>
+                      <p className="text-xs text-white/50">@{u.username}</p>
                     </div>
-                    <p className="text-xs text-purple-400 font-mono">{u.xp} XP</p>
+                    <div
+                      className="px-3 py-1.5 rounded-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                      }}
+                    >
+                      <span className="text-xs font-bold text-white">{u.xp} XP</span>
+                    </div>
                   </div>
 
-                  <div className="flex gap-2 mt-3">
-                    <button
+                  <div className="flex gap-2">
+                    <motion.button
                       onClick={() => togglePremium(u.id, u.isPremium)}
-                      className={`flex-1 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1 ${
-                        u.isPremium
-                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                          : 'bg-white/5 text-white/50 border border-white/10'
-                      }`}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex-1 py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
+                      style={{
+                        background: u.isPremium
+                          ? 'linear-gradient(135deg, #fbbf24, #f59e0b)'
+                          : 'rgba(255, 255, 255, 0.1)',
+                        boxShadow: u.isPremium
+                          ? '0 4px 15px rgba(251, 191, 36, 0.4)'
+                          : undefined,
+                        color: u.isPremium ? 'black' : 'white',
+                      }}
                     >
-                      <Star size={12} />
+                      <Star size={14} />
                       {u.isPremium ? 'Premium' : 'Free'}
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                       onClick={() => toggleVisibility(u.id, u.isVisible)}
-                      className={`flex-1 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1 ${
-                        u.isVisible
-                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                          : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                      }`}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex-1 py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
+                      style={{
+                        background: u.isVisible
+                          ? 'linear-gradient(135deg, #10b981, #059669)'
+                          : 'linear-gradient(135deg, #ef4444, #dc2626)',
+                        boxShadow: u.isVisible
+                          ? '0 4px 15px rgba(16, 185, 129, 0.4)'
+                          : '0 4px 15px rgba(239, 68, 68, 0.4)',
+                        color: 'white',
+                      }}
                     >
-                      {u.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
+                      {u.isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
                       {u.isVisible ? 'Sichtbar' : 'Versteckt'}
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </GlassCard>
               ))}
             </div>
 
             {filteredUsers.length === 0 && !loadingUsers && (
-              <p className="text-center text-white/40 text-sm py-8">Keine User gefunden</p>
+              <div className="text-center py-12">
+                <Users size={48} className="mx-auto text-white/20 mb-4" />
+                <p className="text-white/50 text-sm">Keine User gefunden</p>
+              </div>
             )}
 
             {loadingUsers && (
-              <div className="text-center py-8">
-                <Loader2 size={24} className="animate-spin text-purple-400 mx-auto" />
+              <div className="text-center py-12">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  className="w-10 h-10 mx-auto border-3 border-purple-500 border-t-transparent rounded-full"
+                />
               </div>
             )}
           </div>
