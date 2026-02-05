@@ -40,6 +40,8 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { useVoiceAnalyzer, AuraColor, AuraState, getAuraGlow } from '@/lib/voiceAudioAnalyzer';
 import { triggerHaptic } from '@/lib/haptics';
+import ProfileOverlay from '@/components/ProfileOverlay';
+import { leaveRoom, subscribeToRoom, updateMuteStatus, updateSpeakingStatus } from '@/lib/roomManagement';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPES & INTERFACES
@@ -89,6 +91,7 @@ interface ParticipantTileProps {
   size: 'large' | 'medium' | 'small';
   isCurrentUser: boolean;
   isActiveSpeaker: boolean;
+  onTap?: () => void;
 }
 
 const ParticipantTile: React.FC<ParticipantTileProps> = ({
@@ -96,6 +99,7 @@ const ParticipantTile: React.FC<ParticipantTileProps> = ({
   size,
   isCurrentUser,
   isActiveSpeaker,
+  onTap,
 }) => {
   const sizeClasses = {
     large: 'w-full aspect-square max-w-[280px]',
@@ -137,7 +141,11 @@ const ParticipantTile: React.FC<ParticipantTileProps> = ({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1, ...pulseAnimation }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className={`relative ${sizeClasses[size]} rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4`}
+      onClick={() => {
+        triggerHaptic('light');
+        onTap?.();
+      }}
+      className={`relative ${sizeClasses[size]} rounded-3xl overflow-hidden flex flex-col items-center justify-center p-4 cursor-pointer`}
       style={{
         background: participant.isSpeaking
           ? `linear-gradient(135deg, ${participant.auraColor.primary}, ${participant.auraColor.secondary})`
@@ -147,6 +155,7 @@ const ParticipantTile: React.FC<ParticipantTileProps> = ({
           : '1px solid rgba(255, 255, 255, 0.08)',
         ...glowStyle,
       }}
+      whileTap={{ scale: 0.98 }}
     >
       {/* Host Badge */}
       {participant.isHost && (
@@ -297,12 +306,14 @@ interface AdaptiveRoomGridProps {
   participants: RoomParticipant[];
   currentUserId: string;
   activeSpeakerId?: string;
+  onParticipantTap?: (participant: RoomParticipant) => void;
 }
 
 const AdaptiveRoomGrid: React.FC<AdaptiveRoomGridProps> = ({
   participants,
   currentUserId,
   activeSpeakerId,
+  onParticipantTap,
 }) => {
   const count = participants.length;
 
@@ -341,6 +352,7 @@ const AdaptiveRoomGrid: React.FC<AdaptiveRoomGridProps> = ({
             size={getTileSize()}
             isCurrentUser={participant.id === currentUserId}
             isActiveSpeaker={participant.id === activeSpeakerId}
+            onTap={() => onParticipantTap?.(participant)}
           />
         ))}
       </AnimatePresence>
@@ -665,6 +677,8 @@ const VoiceRoom: React.FC = () => {
   const [isMuted, setIsMuted] = useState(true); // Start muted
   const [isSpeakerOff, setIsSpeakerOff] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<RoomParticipant | null>(null);
+  const [showProfileOverlay, setShowProfileOverlay] = useState(false);
 
   // XP Tracking
   const [sessionXP, setSessionXP] = useState(0);
@@ -712,12 +726,23 @@ const VoiceRoom: React.FC = () => {
     }
   }, [isMuted, startVoice, stopVoice]);
 
-  // Leave Room
-  const handleLeave = useCallback(() => {
+  // Leave Room - with proper cleanup
+  const handleLeave = useCallback(async () => {
     stopVoice();
     triggerHaptic('heavy');
+
+    // Clean up room participation using room management
+    if (roomId && user?.id) {
+      try {
+        await leaveRoom(roomId, user.id);
+        console.log('[VoiceRoom] Left room successfully');
+      } catch (error) {
+        console.error('[VoiceRoom] Error leaving room:', error);
+      }
+    }
+
     navigate('/discover');
-  }, [stopVoice, navigate]);
+  }, [stopVoice, navigate, roomId, user?.id]);
 
   // XP Accumulation Timer
   useEffect(() => {
@@ -929,6 +954,10 @@ const VoiceRoom: React.FC = () => {
           participants={participants}
           currentUserId={user?.id || ''}
           activeSpeakerId={activeSpeakerId}
+          onParticipantTap={(participant) => {
+            setSelectedParticipant(participant);
+            setShowProfileOverlay(true);
+          }}
         />
       </div>
 
@@ -988,6 +1017,30 @@ const VoiceRoom: React.FC = () => {
           />
         )}
       </AnimatePresence>
+
+      {/* Profile Overlay - Click on participant to view */}
+      {selectedParticipant && (
+        <ProfileOverlay
+          isOpen={showProfileOverlay}
+          onClose={() => {
+            setShowProfileOverlay(false);
+            setSelectedParticipant(null);
+          }}
+          user={{
+            oderId: selectedParticipant.id,
+            displayName: selectedParticipant.displayName,
+            photoURL: selectedParticipant.photoURL,
+            level: selectedParticipant.level,
+            isSpeaking: selectedParticipant.isSpeaking,
+            isMuted: selectedParticipant.isMuted,
+            isHost: selectedParticipant.isHost,
+            joinedAt: new Date(selectedParticipant.joinedAt),
+            voiceMinutes: Math.floor(selectedParticipant.speakingTime / 60),
+          }}
+          currentUserId={user?.id || ''}
+          isAnonymousRoom={room?.isPrivate || false}
+        />
+      )}
     </div>
   );
 };
