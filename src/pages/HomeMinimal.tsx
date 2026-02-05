@@ -1,14 +1,15 @@
 /**
  * HomeMinimal.tsx
- * 🏠 SOVEREIGN HOME v40.0 - VISIBILITY FIXED
+ * 🏠 SOVEREIGN HOME v41.0 - FULL VISIBILITY FIX
  *
- * FIXES:
- * - Removed pt-safe (not standard Tailwind)
- * - Better visibility with higher opacity backgrounds
- * - Proper loading states
- * - Always visible content even without data
+ * FIXES v41.0:
+ * - Settings button: Now visible with violet gradient + glow
+ * - Notifications button: Now visible with amber gradient + glow
+ * - Invite Friends button: High visibility blue gradient with border + shadow
+ * - Room Create button: High visibility violet gradient with border + shadow
+ * - All buttons now have proper contrast against dark background
  *
- * @version 40.0.0 - Visibility Fix Edition
+ * @version 41.0.0 - Button Visibility Fix
  */
 
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
@@ -182,11 +183,12 @@ const ProfileCard = memo(function ProfileCard({
             }}
             className="w-11 h-11 rounded-xl flex items-center justify-center"
             style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(139, 92, 246, 0.15))',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              boxShadow: '0 2px 10px rgba(139, 92, 246, 0.2)',
             }}
           >
-            <Settings size={20} className="text-white/70" />
+            <Settings size={20} className="text-white" />
           </motion.button>
 
           {/* Notifications */}
@@ -198,11 +200,12 @@ const ProfileCard = memo(function ProfileCard({
             }}
             className="relative w-11 h-11 rounded-xl flex items-center justify-center"
             style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.15))',
+              border: '1px solid rgba(251, 191, 36, 0.4)',
+              boxShadow: '0 2px 10px rgba(251, 191, 36, 0.2)',
             }}
           >
-            <Bell size={20} className="text-white/70" />
+            <Bell size={20} className="text-white" />
             {unreadCount > 0 && (
               <motion.div
                 initial={{ scale: 0 }}
@@ -524,18 +527,22 @@ const QuickActions = memo(function QuickActions({
           }}
           className="p-4 rounded-2xl text-left"
           style={{
-            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05))',
-            border: '1px solid rgba(59, 130, 246, 0.25)',
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.20))',
+            border: '2px solid rgba(59, 130, 246, 0.5)',
+            boxShadow: '0 4px 20px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
           }}
         >
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-            style={{ background: 'rgba(59, 130, 246, 0.25)' }}
+            style={{
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.3))',
+              boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+            }}
           >
-            <UserPlus size={20} className="text-blue-400" />
+            <UserPlus size={20} className="text-white" />
           </div>
           <p className="text-sm font-bold text-white">Freunde einladen</p>
-          <p className="text-[11px] text-white/40 mt-1">+100 XP pro Einladung</p>
+          <p className="text-[11px] text-blue-300/70 mt-1">+100 XP pro Einladung</p>
         </motion.button>
 
         {/* Create Room */}
@@ -547,18 +554,22 @@ const QuickActions = memo(function QuickActions({
           }}
           className="p-4 rounded-2xl text-left"
           style={{
-            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05))',
-            border: '1px solid rgba(139, 92, 246, 0.25)',
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(168, 85, 247, 0.20))',
+            border: '2px solid rgba(139, 92, 246, 0.5)',
+            boxShadow: '0 4px 20px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
           }}
         >
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-            style={{ background: 'rgba(139, 92, 246, 0.25)' }}
+            style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(168, 85, 247, 0.3))',
+              boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)',
+            }}
           >
-            <Radio size={20} className="text-violet-400" />
+            <Radio size={20} className="text-white" />
           </div>
           <p className="text-sm font-bold text-white">Room erstellen</p>
-          <p className="text-[11px] text-white/40 mt-1">Starte eine Session</p>
+          <p className="text-[11px] text-violet-300/70 mt-1">Starte eine Session</p>
         </motion.button>
       </div>
     </div>

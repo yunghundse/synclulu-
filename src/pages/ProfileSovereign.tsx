@@ -956,47 +956,56 @@ const LevelCommandButton = ({
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="w-full p-4 rounded-2xl flex items-center gap-4"
+      className="w-full p-5 rounded-2xl flex items-center gap-4"
       style={{
-        background: 'linear-gradient(135deg, rgba(20, 15, 35, 0.9), rgba(15, 10, 25, 0.95))',
-        border: `2px solid ${accentColor}40`,
-        boxShadow: `0 0 20px ${accentColor}20, inset 0 0 30px ${accentColor}10`,
+        background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}15)`,
+        border: `2px solid ${accentColor}60`,
+        boxShadow: `0 4px 30px ${accentColor}30, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
       }}
     >
       {/* Level Circle */}
       <div className="relative">
         <motion.div
           className="absolute inset-0 rounded-full"
-          style={{ background: `radial-gradient(circle, ${accentColor}30 0%, transparent 70%)` }}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+          style={{ background: `radial-gradient(circle, ${accentColor}50 0%, transparent 70%)` }}
+          animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
         <div
-          className="relative w-14 h-14 rounded-full flex items-center justify-center"
+          className="relative w-16 h-16 rounded-full flex items-center justify-center"
           style={{
-            background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}10)`,
-            border: `2px solid ${accentColor}`,
+            background: `linear-gradient(135deg, ${accentColor}50, ${accentColor}30)`,
+            border: `3px solid ${accentColor}`,
+            boxShadow: `0 0 20px ${accentColor}50`,
           }}
         >
-          <span className="text-xl font-black text-white">{level}</span>
+          <span className="text-2xl font-black text-white">{level}</span>
         </div>
       </div>
 
       {/* Progress Info */}
       <div className="flex-1">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-bold text-white">Dein Level</span>
-          <ChevronRight size={16} className="text-white/30" />
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-base font-bold text-white">Dein Level</span>
+          <ChevronRight size={18} className="text-white/60" />
         </div>
-        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-3 bg-white/20 rounded-full overflow-hidden" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}>
           <motion.div
-            className="h-full rounded-full"
-            style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}cc)` }}
+            className="h-full rounded-full relative"
+            style={{
+              background: `linear-gradient(90deg, ${accentColor}, ${accentColor}dd)`,
+              boxShadow: `0 0 10px ${accentColor}80`,
+            }}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-          />
+          >
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 50%)' }}
+            />
+          </motion.div>
         </div>
-        <p className="text-[10px] text-white/40 mt-1">Tippe für Details & Meilensteine</p>
+        <p className="text-xs text-white/60 mt-2">Tippe für Details & Meilensteine</p>
       </div>
     </motion.button>
   );
