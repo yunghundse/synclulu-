@@ -1,16 +1,14 @@
 /**
  * HomeMinimal.tsx
- * 🏠 SOVEREIGN HOME v39.0 - GODMODE MINIMAL
+ * 🏠 SOVEREIGN HOME v40.0 - VISIBILITY FIXED
  *
- * Minimalistisches Dashboard:
- * - User Profile Card (Level, XP, Aura)
- * - Active Rooms Section
- * - Quick Actions
- * - Clean Sovereign Glass Design
+ * FIXES:
+ * - Removed pt-safe (not standard Tailwind)
+ * - Better visibility with higher opacity backgrounds
+ * - Proper loading states
+ * - Always visible content even without data
  *
- * KEINE Map, KEINE Wölkchen, KEINE alte Übersicht
- *
- * @version 39.0.0 - GODMODE Architecture
+ * @version 40.0.0 - Visibility Fix Edition
  */
 
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
@@ -29,6 +27,7 @@ import {
   Star,
   UserPlus,
   Settings,
+  Plus,
 } from 'lucide-react';
 import { doc, onSnapshot, collection, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -55,11 +54,37 @@ interface UserProfile {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// GLASS CARD COMPONENT - REUSABLE
+// ═══════════════════════════════════════════════════════════════════════════
+
+const GlassCard: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  glow?: string;
+}> = ({ children, className = '', onClick, glow }) => (
+  <div
+    onClick={onClick}
+    className={`rounded-2xl ${onClick ? 'cursor-pointer active:scale-[0.98] transition-transform' : ''} ${className}`}
+    style={{
+      background: 'rgba(255, 255, 255, 0.08)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+      boxShadow: glow ? `0 0 30px ${glow}` : undefined,
+    }}
+  >
+    {children}
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════════════════
 // PROFILE CARD COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface ProfileCardProps {
   profile: UserProfile | null;
+  isLoading: boolean;
   onProfileClick: () => void;
   onNotificationsClick: () => void;
   onSettingsClick: () => void;
@@ -68,13 +93,14 @@ interface ProfileCardProps {
 
 const ProfileCard = memo(function ProfileCard({
   profile,
+  isLoading,
   onProfileClick,
   onNotificationsClick,
   onSettingsClick,
   unreadCount,
 }: ProfileCardProps) {
   const levelData = useMemo(() => {
-    if (!profile) return { level: 1, currentXP: 0, neededXP: 100 };
+    if (!profile?.xp) return { level: 1, currentXP: 0, neededXP: 100 };
     return getLevelFromXP(profile.xp);
   }, [profile?.xp]);
 
@@ -83,12 +109,9 @@ const ProfileCard = memo(function ProfileCard({
   const accentColor = profile?.isFounder ? '#fbbf24' : '#a855f7';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="px-5 pt-safe pb-4"
-    >
-      <div className="flex items-center justify-between mb-4">
+    <div className="px-5 pt-6 pb-4">
+      {/* Header Row */}
+      <div className="flex items-center justify-between mb-5">
         {/* Profile Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -100,46 +123,48 @@ const ProfileCard = memo(function ProfileCard({
         >
           {/* Avatar */}
           <div
-            className="w-14 h-14 rounded-2xl overflow-hidden relative"
+            className="w-14 h-14 rounded-2xl overflow-hidden relative flex-shrink-0"
             style={{
-              background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}10)`,
-              border: `2px solid ${accentColor}50`,
-              boxShadow: `0 0 20px ${accentColor}30`,
+              background: `linear-gradient(135deg, ${accentColor}40, ${accentColor}20)`,
+              border: `2px solid ${accentColor}60`,
+              boxShadow: `0 0 25px ${accentColor}40`,
             }}
           >
             {profile?.photoURL ? (
               <img src={profile.photoURL} alt={profile.displayName} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-xl font-bold text-white/70">
+                <span className="text-xl font-black text-white">
                   {profile?.displayName?.charAt(0).toUpperCase() || '?'}
                 </span>
               </div>
             )}
             {profile?.isFounder && (
               <div
-                className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)' }}
+                className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #fbbf24, #f59e0b)', boxShadow: '0 2px 8px rgba(251, 191, 36, 0.5)' }}
               >
-                <Crown size={10} className="text-black" />
+                <Crown size={12} className="text-black" />
               </div>
             )}
           </div>
 
-          {/* Info */}
+          {/* User Info */}
           <div className="text-left">
             <div className="flex items-center gap-2">
-              <p className="text-lg font-bold text-white">{profile?.displayName || 'Willkommen'}</p>
+              <p className="text-lg font-bold text-white">
+                {isLoading ? 'Laden...' : profile?.displayName || 'Willkommen'}
+              </p>
               {profile?.isFounder && (
-                <span className="px-1.5 py-0.5 rounded text-[8px] font-black bg-amber-500/20 text-amber-400">
+                <span className="px-2 py-0.5 rounded text-[9px] font-black bg-amber-500/30 text-amber-400">
                   FOUNDER
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs text-white/40">Level {levelData.level}</span>
-              <span className="text-white/20">•</span>
-              <span className="text-xs" style={{ color: accentColor }}>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs font-medium text-white/50">Level {levelData.level}</span>
+              <span className="text-white/30">•</span>
+              <span className="text-xs font-semibold" style={{ color: accentColor }}>
                 {tier.badge} {tier.name}
               </span>
             </div>
@@ -157,11 +182,11 @@ const ProfileCard = memo(function ProfileCard({
             }}
             className="w-11 h-11 rounded-xl flex items-center justify-center"
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
             }}
           >
-            <Settings size={20} className="text-white/60" />
+            <Settings size={20} className="text-white/70" />
           </motion.button>
 
           {/* Notifications */}
@@ -173,17 +198,16 @@ const ProfileCard = memo(function ProfileCard({
             }}
             className="relative w-11 h-11 rounded-xl flex items-center justify-center"
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
             }}
           >
-            <Bell size={20} className="text-white/60" />
+            <Bell size={20} className="text-white/70" />
             {unreadCount > 0 && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-                style={{ background: '#ef4444' }}
+                className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-red-500"
               >
                 {unreadCount > 9 ? '9+' : unreadCount}
               </motion.div>
@@ -192,34 +216,36 @@ const ProfileCard = memo(function ProfileCard({
         </div>
       </div>
 
-      {/* XP Progress */}
-      <div
-        className="p-4 rounded-2xl"
-        style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-        }}
-      >
-        <div className="flex items-center justify-between mb-2">
+      {/* XP Progress Card */}
+      <GlassCard className="p-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Zap size={14} style={{ color: accentColor }} />
-            <span className="text-xs font-medium text-white/60">Level Fortschritt</span>
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ background: `${accentColor}30` }}
+            >
+              <Zap size={16} style={{ color: accentColor }} />
+            </div>
+            <span className="text-sm font-semibold text-white">Level Fortschritt</span>
           </div>
-          <span className="text-xs font-bold" style={{ color: accentColor }}>
+          <span className="text-sm font-bold" style={{ color: accentColor }}>
             {levelData.currentXP} / {levelData.neededXP} XP
           </span>
         </div>
-        <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-3 bg-white/10 rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full"
             style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}cc)` }}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
           />
         </div>
-      </div>
-    </motion.div>
+        <p className="text-xs text-white/40 mt-2 text-center">
+          Noch {levelData.neededXP - levelData.currentXP} XP bis Level {levelData.level + 1}
+        </p>
+      </GlassCard>
+    </div>
   );
 });
 
@@ -232,7 +258,6 @@ interface StatsRowProps {
   friendsCount: number;
   streakDays: number;
   onFriendsClick: () => void;
-  onStreaksClick: () => void;
 }
 
 const StatsRow = memo(function StatsRow({
@@ -240,59 +265,51 @@ const StatsRow = memo(function StatsRow({
   friendsCount,
   streakDays,
   onFriendsClick,
-  onStreaksClick,
 }: StatsRowProps) {
   return (
     <div className="px-5 py-3">
-      <div className="flex gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {/* Aura Score */}
-        <div
-          className="flex-1 p-4 rounded-2xl text-center"
-          style={{
-            background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05))',
-            border: '1px solid rgba(251, 191, 36, 0.2)',
-          }}
-        >
-          <Star size={18} className="mx-auto text-amber-400 mb-1" />
-          <p className="text-xl font-black text-white">{auraScore || 0}</p>
-          <p className="text-[10px] text-white/40 font-medium">Aura</p>
-        </div>
+        <GlassCard className="p-4 text-center" glow="rgba(251, 191, 36, 0.15)">
+          <div
+            className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
+            style={{ background: 'rgba(251, 191, 36, 0.2)' }}
+          >
+            <Star size={20} className="text-amber-400" />
+          </div>
+          <p className="text-2xl font-black text-white">{auraScore || 0}</p>
+          <p className="text-[11px] text-white/50 font-medium mt-1">Aura Score</p>
+        </GlassCard>
 
         {/* Friends */}
-        <motion.button
-          whileTap={{ scale: 0.95 }}
+        <GlassCard
+          className="p-4 text-center"
           onClick={() => {
             triggerHaptic('light');
             onFriendsClick();
           }}
-          className="flex-1 p-4 rounded-2xl text-center"
-          style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
         >
-          <Users size={18} className="mx-auto text-blue-400 mb-1" />
-          <p className="text-xl font-black text-white">{friendsCount || 0}</p>
-          <p className="text-[10px] text-white/40 font-medium">Friends</p>
-        </motion.button>
+          <div
+            className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
+            style={{ background: 'rgba(59, 130, 246, 0.2)' }}
+          >
+            <Users size={20} className="text-blue-400" />
+          </div>
+          <p className="text-2xl font-black text-white">{friendsCount || 0}</p>
+          <p className="text-[11px] text-white/50 font-medium mt-1">Freunde</p>
+        </GlassCard>
 
         {/* Streaks */}
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            triggerHaptic('light');
-            onStreaksClick();
-          }}
-          className="flex-1 p-4 rounded-2xl text-center"
-          style={{
-            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05))',
-            border: '1px solid rgba(249, 115, 22, 0.2)',
-          }}
-        >
-          <Flame size={18} className="mx-auto text-orange-400 mb-1" />
-          <p className="text-xl font-black text-white">{streakDays || 0}</p>
-          <p className="text-[10px] text-white/40 font-medium">Streak</p>
-        </motion.button>
+        <GlassCard className="p-4 text-center" glow="rgba(249, 115, 22, 0.15)">
+          <div
+            className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
+            style={{ background: 'rgba(249, 115, 22, 0.2)' }}
+          >
+            <Flame size={20} className="text-orange-400" />
+          </div>
+          <p className="text-2xl font-black text-white">{streakDays || 0}</p>
+          <p className="text-[11px] text-white/50 font-medium mt-1">Tage Streak</p>
+        </GlassCard>
       </div>
     </div>
   );
@@ -308,7 +325,7 @@ interface RoomMiniCardProps {
 }
 
 const RoomMiniCard = memo(function RoomMiniCard({ room, onJoin }: RoomMiniCardProps) {
-  const activityLevel = getActivityLevel(room.participants.length);
+  const activityLevel = getActivityLevel(room.participants?.length || 0);
   const activityColor = getActivityColor(activityLevel);
 
   return (
@@ -318,26 +335,26 @@ const RoomMiniCard = memo(function RoomMiniCard({ room, onJoin }: RoomMiniCardPr
         triggerHaptic('light');
         onJoin();
       }}
-      className="w-full p-4 rounded-2xl flex items-center gap-3"
+      className="w-full p-4 rounded-2xl flex items-center gap-4"
       style={{
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'rgba(255, 255, 255, 0.06)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
       {/* Activity Indicator */}
       <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center relative"
+        className="w-12 h-12 rounded-xl flex items-center justify-center relative flex-shrink-0"
         style={{
-          background: `${activityColor}20`,
-          border: `1px solid ${activityColor}40`,
+          background: `${activityColor}25`,
+          border: `2px solid ${activityColor}50`,
         }}
       >
         <Radio size={20} style={{ color: activityColor }} />
-        {room.participants.length > 0 && (
+        {(room.participants?.length || 0) > 0 && (
           <motion.div
             className="absolute inset-0 rounded-xl"
             style={{ border: `2px solid ${activityColor}` }}
-            animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0, 0.5] }}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.6, 0, 0.6] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
         )}
@@ -345,20 +362,35 @@ const RoomMiniCard = memo(function RoomMiniCard({ room, onJoin }: RoomMiniCardPr
 
       {/* Info */}
       <div className="flex-1 text-left min-w-0">
-        <p className="text-sm font-bold text-white truncate">{room.name}</p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <Users size={10} className="text-white/40" />
-          <span className="text-xs text-white/40">
-            {room.participants.length}/{room.maxParticipants}
-          </span>
-          {room.participants.some((p) => p.isSpeaking) && (
-            <span className="text-xs text-emerald-400">• Live</span>
+        <p className="text-base font-bold text-white truncate">{room.name}</p>
+        <div className="flex items-center gap-3 mt-1">
+          <div className="flex items-center gap-1">
+            <Users size={12} className="text-white/50" />
+            <span className="text-xs font-medium text-white/50">
+              {room.participants?.length || 0}/{room.maxParticipants || 8}
+            </span>
+          </div>
+          {room.participants?.some((p) => p.isSpeaking) && (
+            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live
+            </span>
           )}
         </div>
       </div>
 
-      {/* Join Arrow */}
-      <ChevronRight size={16} className="text-white/30" />
+      {/* Join Button */}
+      <div
+        className="px-4 py-2 rounded-xl"
+        style={{
+          background: `${activityColor}20`,
+          border: `1px solid ${activityColor}40`,
+        }}
+      >
+        <span className="text-xs font-bold" style={{ color: activityColor }}>
+          Join
+        </span>
+      </div>
     </motion.button>
   );
 });
@@ -386,18 +418,21 @@ const ActiveRoomsSection = memo(function ActiveRoomsSection({
     <div className="px-5 py-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Radio size={18} className="text-violet-400" />
-          <h2 className="text-base font-bold text-white">Aktive Rooms</h2>
-          {rooms.length > 0 && (
-            <span
-              className="px-2 py-0.5 rounded-full text-[10px] font-bold"
-              style={{ background: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' }}
-            >
-              {rooms.length} LIVE
-            </span>
-          )}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ background: 'rgba(139, 92, 246, 0.2)', border: '1px solid rgba(139, 92, 246, 0.3)' }}
+          >
+            <Radio size={20} className="text-violet-400" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white">Aktive Rooms</h2>
+            {rooms.length > 0 && (
+              <span className="text-xs text-emerald-400 font-medium">{rooms.length} live</span>
+            )}
+          </div>
         </div>
+
         {rooms.length > 0 && (
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -405,7 +440,8 @@ const ActiveRoomsSection = memo(function ActiveRoomsSection({
               triggerHaptic('light');
               onViewAll();
             }}
-            className="text-xs text-violet-400 font-medium flex items-center gap-1"
+            className="px-3 py-1.5 rounded-lg text-xs text-violet-400 font-bold flex items-center gap-1"
+            style={{ background: 'rgba(139, 92, 246, 0.15)' }}
           >
             Alle
             <ChevronRight size={14} />
@@ -415,47 +451,44 @@ const ActiveRoomsSection = memo(function ActiveRoomsSection({
 
       {/* Content */}
       {isLoading ? (
-        <div
-          className="h-24 rounded-2xl animate-pulse"
-          style={{ background: 'rgba(255, 255, 255, 0.03)' }}
-        />
+        <div className="space-y-3">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="h-20 rounded-2xl animate-pulse"
+              style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+            />
+          ))}
+        </div>
       ) : rooms.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-8 rounded-2xl text-center"
-          style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
-          }}
-        >
+        <GlassCard className="p-8 text-center" glow="rgba(139, 92, 246, 0.1)">
           <div
-            className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+            className="w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1))',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1))',
+              border: '1px solid rgba(139, 92, 246, 0.4)',
             }}
           >
-            <Sparkles size={28} className="text-violet-400" />
+            <Sparkles size={36} className="text-violet-400" />
           </div>
-          <p className="text-sm font-medium text-white/70 mb-1">Die Wolken sind leer.</p>
-          <p className="text-xs text-white/40 mb-5">Eröffne den ersten Room!</p>
+          <h3 className="text-lg font-bold text-white mb-2">Die Wolken sind leer</h3>
+          <p className="text-sm text-white/50 mb-6">Eröffne den ersten Room und lade Freunde ein!</p>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               triggerHaptic('medium');
               onCreateRoom();
             }}
-            className="px-6 py-3 rounded-xl inline-flex items-center gap-2 font-bold text-sm text-white"
+            className="px-8 py-4 rounded-xl inline-flex items-center gap-3 font-bold text-white"
             style={{
               background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.4)',
+              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.5)',
             }}
           >
-            <Radio size={16} />
+            <Plus size={20} />
             Room erstellen
           </motion.button>
-        </motion.div>
+        </GlassCard>
       ) : (
         <div className="space-y-3">
           {rooms.slice(0, 3).map((room) => (
@@ -473,46 +506,59 @@ const ActiveRoomsSection = memo(function ActiveRoomsSection({
 
 const QuickActions = memo(function QuickActions({
   onInviteFriends,
-  onViewStats,
+  onCreateRoom,
 }: {
   onInviteFriends: () => void;
-  onViewStats: () => void;
+  onCreateRoom: () => void;
 }) {
   return (
     <div className="px-5 py-4">
-      <div className="flex gap-3">
+      <h3 className="text-sm font-bold text-white/60 mb-3 uppercase tracking-wider">Schnellaktionen</h3>
+      <div className="grid grid-cols-2 gap-3">
+        {/* Invite Friends */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => {
             triggerHaptic('light');
             onInviteFriends();
           }}
-          className="flex-1 p-4 rounded-2xl flex items-center gap-3"
+          className="p-4 rounded-2xl text-left"
           style={{
-            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05))',
+            border: '1px solid rgba(59, 130, 246, 0.25)',
           }}
         >
-          <UserPlus size={20} className="text-blue-400" />
-          <div className="text-left">
-            <p className="text-sm font-bold text-white">Freunde einladen</p>
-            <p className="text-[10px] text-white/40">+100 XP pro Einladung</p>
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+            style={{ background: 'rgba(59, 130, 246, 0.25)' }}
+          >
+            <UserPlus size={20} className="text-blue-400" />
           </div>
+          <p className="text-sm font-bold text-white">Freunde einladen</p>
+          <p className="text-[11px] text-white/40 mt-1">+100 XP pro Einladung</p>
         </motion.button>
 
+        {/* Create Room */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => {
             triggerHaptic('light');
-            onViewStats();
+            onCreateRoom();
           }}
-          className="p-4 rounded-2xl flex items-center justify-center"
+          className="p-4 rounded-2xl text-left"
           style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05))',
+            border: '1px solid rgba(139, 92, 246, 0.25)',
           }}
         >
-          <TrendingUp size={20} className="text-white/60" />
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+            style={{ background: 'rgba(139, 92, 246, 0.25)' }}
+          >
+            <Radio size={20} className="text-violet-400" />
+          </div>
+          <p className="text-sm font-bold text-white">Room erstellen</p>
+          <p className="text-[11px] text-white/40 mt-1">Starte eine Session</p>
         </motion.button>
       </div>
     </div>
@@ -531,57 +577,78 @@ export default function HomeMinimal() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isLoadingRooms, setIsLoadingRooms] = useState(true);
 
   // Subscribe to user profile
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setIsLoadingProfile(false);
+      return;
+    }
 
-    const unsubscribe = onSnapshot(doc(db, 'users', user.id), (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data();
-        setProfile({
-          displayName: data.displayName || data.username || 'Anonym',
-          username: data.username || 'anonym',
-          photoURL: data.photoURL,
-          xp: data.xp || data.totalXP || 0,
-          auraScore: data.auraScore || 0,
-          isFounder: data.role === 'founder' || data.isAdmin === true || user.id === FOUNDER_UID,
-          friendsCount: data.friendsCount || 0,
-          streakDays: data.streakDays || data.daysActive || 0,
-        });
+    const unsubscribe = onSnapshot(
+      doc(db, 'users', user.id),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setProfile({
+            displayName: data.displayName || data.username || 'Anonym',
+            username: data.username || 'anonym',
+            photoURL: data.photoURL || data.avatarUrl,
+            xp: data.xp || data.totalXP || 0,
+            auraScore: data.auraScore || data.auraRating || 0,
+            isFounder: data.role === 'founder' || data.isAdmin === true || user.id === FOUNDER_UID,
+            friendsCount: data.friendsCount || 0,
+            streakDays: data.streakDays || data.daysActive || 0,
+          });
+        }
+        setIsLoadingProfile(false);
+      },
+      (error) => {
+        console.error('Profile subscription error:', error);
+        setIsLoadingProfile(false);
       }
-    });
+    );
 
     return () => unsubscribe();
   }, [user?.id]);
 
   // Subscribe to active rooms
   useEffect(() => {
-    const unsubscribe = subscribeToActiveRooms((fetchedRooms) => {
-      setRooms(fetchedRooms);
-      setIsLoading(false);
-    }, 10);
+    try {
+      const unsubscribe = subscribeToActiveRooms((fetchedRooms) => {
+        setRooms(fetchedRooms || []);
+        setIsLoadingRooms(false);
+      }, 10);
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } catch (error) {
+      console.error('Rooms subscription error:', error);
+      setIsLoadingRooms(false);
+    }
   }, []);
 
   // Subscribe to notifications count
   useEffect(() => {
     if (!user?.id) return;
 
-    const notificationsQuery = query(
-      collection(db, 'users', user.id, 'notifications'),
-      where('read', '==', false),
-      orderBy('createdAt', 'desc'),
-      limit(50)
-    );
+    try {
+      const notificationsQuery = query(
+        collection(db, 'users', user.id, 'notifications'),
+        where('read', '==', false),
+        orderBy('createdAt', 'desc'),
+        limit(50)
+      );
 
-    const unsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
-      setUnreadNotifications(snapshot.size);
-    });
+      const unsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
+        setUnreadNotifications(snapshot.size);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } catch (error) {
+      console.error('Notifications subscription error:', error);
+    }
   }, [user?.id]);
 
   // Navigation handlers
@@ -589,18 +656,17 @@ export default function HomeMinimal() {
   const handleNotificationsClick = useCallback(() => navigate('/notifications'), [navigate]);
   const handleSettingsClick = useCallback(() => navigate('/settings'), [navigate]);
   const handleFriendsClick = useCallback(() => navigate('/friends'), [navigate]);
-  const handleStreaksClick = useCallback(() => navigate('/streaks'), [navigate]);
   const handleRoomJoin = useCallback((roomId: string) => navigate(`/room/${roomId}`), [navigate]);
   const handleViewAllRooms = useCallback(() => navigate('/rooms'), [navigate]);
   const handleCreateRoom = useCallback(() => navigate('/rooms?create=true'), [navigate]);
   const handleInviteFriends = useCallback(() => navigate('/invites'), [navigate]);
-  const handleViewStats = useCallback(() => navigate('/statistics'), [navigate]);
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#050505' }}>
+    <div className="min-h-screen min-h-[100dvh] pb-32" style={{ background: '#050505' }}>
       {/* Profile Card */}
       <ProfileCard
         profile={profile}
+        isLoading={isLoadingProfile}
         onProfileClick={handleProfileClick}
         onNotificationsClick={handleNotificationsClick}
         onSettingsClick={handleSettingsClick}
@@ -613,20 +679,19 @@ export default function HomeMinimal() {
         friendsCount={profile?.friendsCount || 0}
         streakDays={profile?.streakDays || 0}
         onFriendsClick={handleFriendsClick}
-        onStreaksClick={handleStreaksClick}
       />
 
       {/* Active Rooms */}
       <ActiveRoomsSection
         rooms={rooms}
-        isLoading={isLoading}
+        isLoading={isLoadingRooms}
         onRoomJoin={handleRoomJoin}
         onViewAll={handleViewAllRooms}
         onCreateRoom={handleCreateRoom}
       />
 
       {/* Quick Actions */}
-      <QuickActions onInviteFriends={handleInviteFriends} onViewStats={handleViewStats} />
+      <QuickActions onInviteFriends={handleInviteFriends} onCreateRoom={handleCreateRoom} />
     </div>
   );
 }
