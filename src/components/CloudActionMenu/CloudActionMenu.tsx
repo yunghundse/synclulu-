@@ -113,24 +113,44 @@ export const CloudActionMenu: React.FC<CloudActionMenuProps> = memo(({
                   Wölkchen Optionen
                 </h3>
 
-                {/* Search Button - Main Action */}
+                {/* Create Button - Primary Action */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleCreate}
+                  className="w-full py-6 rounded-2xl flex flex-col items-center gap-3 transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.15) 100%)',
+                    border: '1px solid rgba(34, 197, 94, 0.4)',
+                    boxShadow: '0 4px 20px rgba(34, 197, 94, 0.2)',
+                  }}
+                >
+                  <span className="text-4xl">☁️</span>
+                  <span className="text-[12px] font-black tracking-[0.15em] uppercase text-emerald-400">
+                    Wölkchen erstellen
+                  </span>
+                  <span className="text-[10px] text-white/40">
+                    Starte deinen eigenen Voice-Raum
+                  </span>
+                </motion.button>
+
+                {/* Search Button - Secondary Action */}
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSearch}
-                  className="w-full py-6 rounded-2xl flex flex-col items-center gap-3 transition-all"
+                  className="w-full py-5 rounded-2xl flex flex-col items-center gap-2 transition-all"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(168, 85, 247, 0.15) 100%)',
-                    border: '1px solid rgba(124, 58, 237, 0.4)',
-                    boxShadow: '0 4px 20px rgba(124, 58, 237, 0.2)',
+                    background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%)',
+                    border: '1px solid rgba(124, 58, 237, 0.3)',
                   }}
                 >
-                  <span className="text-4xl">🔍</span>
-                  <span className="text-[12px] font-black tracking-[0.15em] uppercase text-purple-400">
+                  <span className="text-3xl">🔍</span>
+                  <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-purple-400">
                     Wölkchen entdecken
                   </span>
                   <span className="text-[10px] text-white/40">
-                    Finde Räume und Leute in deiner Nähe
+                    Finde Räume in deiner Nähe
                   </span>
                 </motion.button>
 

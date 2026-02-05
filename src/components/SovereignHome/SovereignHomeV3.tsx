@@ -36,6 +36,7 @@ import { SovereignHeader } from './SovereignHeader';
 import { useNebulaToast } from '../NebulaToast';
 import { AuraOrb } from '../SovereignUI/AuraOrb';
 import { getAscensionTier, getLevelFromXP } from '../../lib/ascensionSystem';
+import ActiveWölkchen from '../ActiveWölkchen';
 
 // Types
 interface UserProfile {
@@ -470,17 +471,29 @@ export default function SovereignHomeV3() {
         accuracy={preciseLocation?.accuracy}
       />
 
-      {/* Full-Screen Map */}
-      <div className="absolute inset-0 pt-[240px] pb-24">
-        <NebulaMap
-          userLocation={userCoords}
-          hotspots={mapHotspots}
-          selectedHotspotId={selectedMapHotspot}
-          onHotspotSelect={setSelectedMapHotspot}
-          onHotspotJoin={(id) => navigate(`/room/${id}`)}
-          maxDistance={2000}
-          isLoading={locationLoading && !userCoords}
-        />
+      {/* Main Content Area - Map + Active Wölkchen */}
+      <div className="absolute inset-0 pt-[240px] pb-24 overflow-y-auto">
+        {/* Map Section */}
+        <div className="h-[300px] relative">
+          <NebulaMap
+            userLocation={userCoords}
+            hotspots={mapHotspots}
+            selectedHotspotId={selectedMapHotspot}
+            onHotspotSelect={setSelectedMapHotspot}
+            onHotspotJoin={(id) => navigate(`/room/${id}`)}
+            maxDistance={2000}
+            isLoading={locationLoading && !userCoords}
+          />
+        </div>
+
+        {/* Active Wölkchen Section - Below Map */}
+        <div className="mt-4">
+          <ActiveWölkchen
+            maxDisplay={5}
+            showHeader={true}
+            onCreateRoom={() => navigate('/discover')}
+          />
+        </div>
       </div>
 
       {/* Permission Overlay - Only show AFTER consent was given */}
