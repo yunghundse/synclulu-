@@ -178,11 +178,11 @@ export default function Discover() {
 
   return (
     <div className="min-h-screen pb-24" style={{ background: '#050505' }}>
-      {/* Header */}
+      {/* Header - z-[998] below nav but above content */}
       <div
-        className="sticky top-0 z-50 px-5 py-4"
+        className="sticky top-0 z-[998] px-5 py-4"
         style={{
-          background: 'rgba(5, 5, 5, 0.95)',
+          background: 'rgba(5, 5, 5, 0.98)',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(168, 85, 247, 0.15)',
         }}
@@ -352,15 +352,15 @@ export default function Discover() {
         )}
       </div>
 
-      {/* Create Room Modal */}
+      {/* Create Room Modal - z-[1001] above nav */}
       <AnimatePresence>
         {showCreateModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6"
-            style={{ background: 'rgba(0, 0, 0, 0.8)' }}
+            className="fixed inset-0 z-[1001] flex items-center justify-center p-6"
+            style={{ background: 'rgba(0, 0, 0, 0.9)', backdropFilter: 'blur(10px)' }}
             onClick={() => setShowCreateModal(false)}
           >
             <motion.div

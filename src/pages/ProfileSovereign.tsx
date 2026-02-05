@@ -1446,6 +1446,15 @@ export default function ProfileSovereign() {
     { icon: '🏆', title: 'Top Contributor', unlocked: levelData.level >= 10 },
   ];
 
+  // Voice Pionier Stats
+  const voiceStats = {
+    roomsVisited: profile?.roomsJoined || 0,
+    talkTimeMinutes: Math.floor((profile?.xp || 0) / 5), // Estimate based on XP
+  };
+
+  // Top Contributor check
+  const isTopContributor = levelData.level >= 10 || (profile?.xp || 0) >= 1000;
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#050505' }}>
@@ -1616,6 +1625,123 @@ export default function ProfileSovereign() {
           <StatCard icon={<MessageCircle size={18} className="text-green-400" />} value={profile?.roomsJoined || 0} label="Räume" color="#22c55e" />
           <StatCard icon={<Flame size={18} className="text-orange-400" />} value={profile?.daysActive || 1} label="Tage" color="#f97316" />
         </div>
+      </div>
+
+      {/* Voice Pionier & Top Contributor & Streaks - Activity Stack */}
+      <div className="px-5 mt-6 space-y-3">
+        {/* Voice Pionier Button */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {/* Could open voice stats modal */}}
+          className="w-full p-4 rounded-2xl flex items-center gap-4"
+          style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1))',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+            }}
+          >
+            <Mic size={22} className="text-violet-400" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-bold text-white flex items-center gap-2">
+              Voice Pionier
+              {(profile?.roomsJoined || 0) >= 5 && (
+                <span className="px-2 py-0.5 rounded-full text-[9px] bg-violet-500/20 text-violet-400 font-bold">
+                  UNLOCKED
+                </span>
+              )}
+            </p>
+            <div className="flex items-center gap-4 text-xs text-white/40">
+              <span>{voiceStats.roomsVisited} Räume besucht</span>
+              <span>•</span>
+              <span>{voiceStats.talkTimeMinutes}m Talk Time</span>
+            </div>
+          </div>
+          <ChevronRight size={18} className="text-white/30" />
+        </motion.button>
+
+        {/* Top Contributor Button */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setShowLevelOverlay(true)}
+          className="w-full p-4 rounded-2xl flex items-center gap-4"
+          style={{
+            background: isTopContributor
+              ? 'linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05))'
+              : 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: isTopContributor
+              ? '1px solid rgba(251, 191, 36, 0.3)'
+              : '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{
+              background: isTopContributor
+                ? 'linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.1))'
+                : 'rgba(255, 255, 255, 0.05)',
+              border: `1px solid ${isTopContributor ? 'rgba(251, 191, 36, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+            }}
+          >
+            <Trophy size={22} className={isTopContributor ? 'text-amber-400' : 'text-white/40'} />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-bold text-white flex items-center gap-2">
+              Top Contributor
+              {isTopContributor && (
+                <span className="px-2 py-0.5 rounded-full text-[9px] bg-amber-500/20 text-amber-400 font-bold">
+                  EARNED
+                </span>
+              )}
+            </p>
+            <p className="text-xs text-white/40">
+              {isTopContributor ? 'Du gehörst zu den Aktivsten!' : `Erreiche Level 10 (${levelData.level}/10)`}
+            </p>
+          </div>
+          <ChevronRight size={18} className="text-white/30" />
+        </motion.button>
+
+        {/* Streaks Button - Links to /profile/streaks */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/streaks')}
+          className="w-full p-4 rounded-2xl flex items-center gap-4"
+          style={{
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05))',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(249, 115, 22, 0.3)',
+          }}
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(249, 115, 22, 0.1))',
+              border: '1px solid rgba(249, 115, 22, 0.4)',
+            }}
+          >
+            <Flame size={22} className="text-orange-400" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-bold text-white flex items-center gap-2">
+              🔥 Tägliche Streaks
+              <span className="px-2 py-0.5 rounded-full text-[9px] bg-orange-500/20 text-orange-400 font-bold">
+                {profile?.daysActive || 0} TAGE
+              </span>
+            </p>
+            <p className="text-xs text-white/40">
+              Halte deine Serie aufrecht für Bonus-XP
+            </p>
+          </div>
+          <ChevronRight size={18} className="text-white/30" />
+        </motion.button>
       </div>
 
       {/* Battle Pass Summer Teaser */}

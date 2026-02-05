@@ -103,12 +103,12 @@ const BottomNav = () => {
         onCreate={handleCreateClick}
       />
 
-      {/* Central Action Button (+) - Floating above nav */}
+      {/* Central Action Button (+) - Floating above nav with high z-index */}
       <div
         className="fixed left-1/2 -translate-x-1/2 pointer-events-auto"
         style={{
           bottom: 56,
-          zIndex: 100,
+          zIndex: 1000,
         }}
       >
         <motion.button
@@ -210,14 +210,14 @@ const BottomNav = () => {
         />
       )}
 
-      {/* Navigation Bar */}
+      {/* Navigation Bar - z-[999] for visibility above all content */}
       <nav
-        className="fixed bottom-0 left-0 right-0 safe-bottom z-50 will-change-transform"
+        className="fixed bottom-0 left-0 right-0 safe-bottom z-[999] will-change-transform"
         style={{
-          background: 'rgba(5, 5, 5, 0.9)',
+          background: 'rgba(5, 5, 5, 0.95)',
           backdropFilter: 'blur(40px) saturate(180%)',
           WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.04)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
           transform: 'translateZ(0)', // GPU acceleration
         }}
       >
