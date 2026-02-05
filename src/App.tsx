@@ -1,6 +1,6 @@
 /**
  * synclulu APP - Main Application Router
- * @version 3.0.0 - Clean Production Build
+ * @version 39.0.0 - GODMODE Architecture
  */
 
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
@@ -63,7 +63,8 @@ import VoiceStats from '@/pages/VoiceStats';
 import ProfileVisitors from '@/pages/ProfileVisitors';
 import BattlePass from '@/pages/BattlePass';
 import VoiceRoom from '@/pages/VoiceRoom';
-import Rooms from '@/pages/Rooms';
+import RoomsV2 from '@/pages/RoomsV2';
+import HomeMinimal from '@/pages/HomeMinimal';
 import NexusDashboard from '@/pages/NexusDashboard';
 import LegalCenter from '@/pages/LegalCenter';
 import LegalPopup from '@/pages/LegalPopup';
@@ -81,6 +82,7 @@ import { FloatingDock } from '@/components/SovereignUI/FloatingDock';
 import { DeepSpaceGrid } from '@/components/SovereignUI/DeepSpaceGrid';
 import { ObsidianNav } from '@/components/SovereignUI/ObsidianNav';
 import { GlobalDock } from '@/components/SovereignUI/GlobalDock';
+import { SovereignNav } from '@/components/SovereignNav';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -267,12 +269,13 @@ function App() {
               <NotificationToast />
               <XPToast />
               <Routes>
-                <Route path="/" element={<HomeSovereign />} />
-                <Route path="/home" element={<HomeSovereign />} />
-                <Route path="/home-legacy" element={<SovereignNexusHome />} />
-                <Route path="/discover" element={<Discover />} />
-                <Route path="/rooms" element={<Rooms />} />
-                <Route path="/map" element={<Discover />} />
+                <Route path="/" element={<HomeMinimal />} />
+                <Route path="/home" element={<HomeMinimal />} />
+                <Route path="/home-legacy" element={<HomeSovereign />} />
+                <Route path="/home-old" element={<SovereignNexusHome />} />
+                <Route path="/discover" element={<RoomsV2 />} />
+                <Route path="/rooms" element={<RoomsV2 />} />
+                <Route path="/map" element={<RoomsV2 />} />
                 <Route path="/messages" element={<MessagesNew />} />
                 <Route path="/chat" element={<MessagesNew />} />
                 <Route path="/chat/:conversationId" element={<Messages />} />
@@ -324,8 +327,8 @@ function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
 
-              {/* 🎯 Global Dock - Universal Navigation auf allen Seiten */}
-              <GlobalDock />
+              {/* 🎯 Sovereign Navigation - GODMODE z-[999] */}
+              <SovereignNav />
             </div>
           </UserProfileProvider>
         </NotificationProvider>
