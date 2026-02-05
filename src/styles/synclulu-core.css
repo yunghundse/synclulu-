@@ -38,6 +38,7 @@
   --sc-violet: #8B5CF6;
   --sc-violet-light: #A78BFA;
   --sc-violet-dark: #7C3AED;
+  --sc-violet-alpha: rgba(139, 92, 246, 0.15);
   --sc-purple: #A855F7;
   --sc-pink: #EC4899;
   --sc-cyan: #22D3EE;
