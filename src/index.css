@@ -59,6 +59,26 @@
 
   /* System Status Bar Color */
   color-scheme: light;
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     SYNCLULU ALIASES (für Komponenten-Kompatibilität)
+     ───────────────────────────────────────────────────────────────────────── */
+  --synclulu-bg: var(--delulu-bg);
+  --synclulu-surface: var(--delulu-surface);
+  --synclulu-text: var(--delulu-text);
+  --synclulu-text-secondary: var(--delulu-text-secondary);
+  --synclulu-muted: var(--delulu-muted);
+  --synclulu-border: var(--delulu-border);
+  --synclulu-card: var(--delulu-card);
+  --synclulu-nav: var(--delulu-nav);
+  --synclulu-accent: var(--delulu-accent);
+  --synclulu-violet: var(--delulu-violet);
+  --synclulu-violet-light: var(--delulu-violet-light);
+  --synclulu-violet-dark: var(--delulu-violet-dark);
+  --synclulu-success: var(--delulu-success);
+  --synclulu-error: var(--delulu-error);
+  --synclulu-warning: var(--delulu-warning);
+  --synclulu-info: var(--delulu-info);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -110,6 +130,24 @@
   --gradient-decorative-3: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.06));
 
   color-scheme: dark;
+
+  /* SYNCLULU ALIASES (Dark Mode) */
+  --synclulu-bg: var(--delulu-bg);
+  --synclulu-surface: var(--delulu-surface);
+  --synclulu-text: var(--delulu-text);
+  --synclulu-text-secondary: var(--delulu-text-secondary);
+  --synclulu-muted: var(--delulu-muted);
+  --synclulu-border: var(--delulu-border);
+  --synclulu-card: var(--delulu-card);
+  --synclulu-nav: var(--delulu-nav);
+  --synclulu-accent: var(--delulu-accent);
+  --synclulu-violet: var(--delulu-violet);
+  --synclulu-violet-light: var(--delulu-violet-light);
+  --synclulu-violet-dark: var(--delulu-violet-dark);
+  --synclulu-success: var(--delulu-success);
+  --synclulu-error: var(--delulu-error);
+  --synclulu-warning: var(--delulu-warning);
+  --synclulu-info: var(--delulu-info);
 }
 
 /* Auto Dark Mode Detection via System Preference */
@@ -146,6 +184,24 @@
     --gradient-decorative-2: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(139, 92, 246, 0.06));
     --gradient-decorative-3: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.06));
     color-scheme: dark;
+
+    /* SYNCLULU ALIASES (Auto Dark) */
+    --synclulu-bg: var(--delulu-bg);
+    --synclulu-surface: var(--delulu-surface);
+    --synclulu-text: var(--delulu-text);
+    --synclulu-text-secondary: var(--delulu-text-secondary);
+    --synclulu-muted: var(--delulu-muted);
+    --synclulu-border: var(--delulu-border);
+    --synclulu-card: var(--delulu-card);
+    --synclulu-nav: var(--delulu-nav);
+    --synclulu-accent: var(--delulu-accent);
+    --synclulu-violet: var(--delulu-violet);
+    --synclulu-violet-light: var(--delulu-violet-light);
+    --synclulu-violet-dark: var(--delulu-violet-dark);
+    --synclulu-success: var(--delulu-success);
+    --synclulu-error: var(--delulu-error);
+    --synclulu-warning: var(--delulu-warning);
+    --synclulu-info: var(--delulu-info);
   }
 }
 
