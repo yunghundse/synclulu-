@@ -1,16 +1,13 @@
 /**
  * Legal.tsx
- * ⚖️ SOVEREIGN LEGAL CENTER v30.0
+ * ⚖️ SOVEREIGN LEGAL CENTER - Glass Panel Design
  *
- * SEKTIONEN:
- * - AGB: Verhaltensregeln & Nutzungsbedingungen
- * - Nutzerbestimmungen: Haftungsausschluss für User-Content
- * - Datenschutz: Transparenz über GPS- und Audiodaten
- * - Impressum: Anbieterkennzeichnung
+ * DESIGN: Sovereign Glass Rezept
+ * - bg-[#050505] (OLED Black)
+ * - bg-white/5 backdrop-blur-xl border border-white/10
+ * - Purple Glow accent
  *
- * DESIGN: Minimalistisch, seriös, OLED-Black
- *
- * @version 30.0.0 - Legal Sovereign Edition
+ * @version 35.0.0 - Sovereign Glass Edition
  */
 
 import React, { useState } from 'react';
@@ -24,7 +21,6 @@ import {
   Building,
   Scale,
   Mail,
-  Phone,
   MapPin,
   Mic,
   Users,
@@ -36,17 +32,11 @@ import {
 type LegalSection = 'agb' | 'nutzung' | 'datenschutz' | 'impressum';
 
 const SECTIONS = [
-  { id: 'agb' as const, title: 'AGB', subtitle: 'Allgemeine Geschäftsbedingungen', icon: FileText, color: '#60a5fa' },
-  { id: 'nutzung' as const, title: 'Nutzerbestimmungen', subtitle: 'Haftung & User-Content', icon: Users, color: '#a855f7' },
+  { id: 'agb' as const, title: 'AGB', subtitle: 'Allgemeine Geschäftsbedingungen', icon: FileText, color: '#a855f7' },
+  { id: 'nutzung' as const, title: 'Nutzerbestimmungen', subtitle: 'Haftung & User-Content', icon: Users, color: '#ec4899' },
   { id: 'datenschutz' as const, title: 'Datenschutz', subtitle: 'GPS, Audio & Privatsphäre', icon: Shield, color: '#22d3ee' },
   { id: 'impressum' as const, title: 'Impressum', subtitle: 'Anbieterkennzeichnung', icon: Building, color: '#f97316' },
 ];
-
-function triggerHaptic(type: 'light' | 'medium' = 'light') {
-  if (typeof navigator !== 'undefined' && navigator.vibrate) {
-    navigator.vibrate(type === 'light' ? 10 : 25);
-  }
-}
 
 // ═══════════════════════════════════════════════════════════════
 // AGB CONTENT
@@ -128,7 +118,13 @@ const NutzungContent = () => (
 
     <section>
       <h3 className="text-white font-semibold mb-2">2. Haftungsausschluss</h3>
-      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-3">
+      <div
+        className="p-4 rounded-xl mb-3"
+        style={{
+          background: 'rgba(245, 158, 11, 0.1)',
+          border: '1px solid rgba(245, 158, 11, 0.2)',
+        }}
+      >
         <div className="flex items-start gap-3">
           <AlertCircle size={18} className="text-amber-400 flex-shrink-0 mt-0.5" />
           <p className="text-amber-200/80 text-xs">
@@ -192,7 +188,13 @@ const DatenschutzContent = () => (
       <h3 className="text-white font-semibold mb-3">2. Erhobene Daten</h3>
       <div className="space-y-3">
         {/* GPS Data */}
-        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+        <div
+          className="p-4 rounded-xl"
+          style={{
+            background: 'rgba(59, 130, 246, 0.1)',
+            border: '1px solid rgba(59, 130, 246, 0.2)',
+          }}
+        >
           <div className="flex items-center gap-3 mb-2">
             <MapPin size={18} className="text-blue-400" />
             <span className="font-semibold text-white">Standortdaten (GPS)</span>
@@ -206,7 +208,13 @@ const DatenschutzContent = () => (
         </div>
 
         {/* Audio Data */}
-        <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+        <div
+          className="p-4 rounded-xl"
+          style={{
+            background: 'rgba(168, 85, 247, 0.1)',
+            border: '1px solid rgba(168, 85, 247, 0.2)',
+          }}
+        >
           <div className="flex items-center gap-3 mb-2">
             <Mic size={18} className="text-violet-400" />
             <span className="font-semibold text-white">Audiodaten</span>
@@ -219,7 +227,13 @@ const DatenschutzContent = () => (
         </div>
 
         {/* Profile Data */}
-        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+        <div
+          className="p-4 rounded-xl"
+          style={{
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.2)',
+          }}
+        >
           <div className="flex items-center gap-3 mb-2">
             <Users size={18} className="text-emerald-400" />
             <span className="font-semibold text-white">Profildaten</span>
@@ -282,7 +296,13 @@ const ImpressumContent = () => (
   <div className="space-y-6 text-sm text-white/70 leading-relaxed">
     <section>
       <h3 className="text-white font-semibold mb-3">Angaben gemäß § 5 TMG</h3>
-      <div className="p-4 rounded-xl space-y-3 bg-orange-500/5 border border-orange-500/10">
+      <div
+        className="p-4 rounded-xl space-y-3"
+        style={{
+          background: 'rgba(249, 115, 22, 0.1)',
+          border: '1px solid rgba(249, 115, 22, 0.2)',
+        }}
+      >
         <div className="flex items-start gap-3">
           <Building size={18} className="text-orange-400 mt-0.5" />
           <div>
@@ -302,7 +322,13 @@ const ImpressumContent = () => (
 
     <section>
       <h3 className="text-white font-semibold mb-3">Kontakt</h3>
-      <div className="p-4 rounded-xl space-y-3 bg-orange-500/5 border border-orange-500/10">
+      <div
+        className="p-4 rounded-xl"
+        style={{
+          background: 'rgba(249, 115, 22, 0.1)',
+          border: '1px solid rgba(249, 115, 22, 0.2)',
+        }}
+      >
         <div className="flex items-center gap-3">
           <Mail size={18} className="text-orange-400" />
           <a href="mailto:contact@synclulu.app" className="text-orange-400 hover:underline">
@@ -349,7 +375,6 @@ export default function Legal() {
   const [activeSection, setActiveSection] = useState<LegalSection | null>('agb');
 
   const toggleSection = (section: LegalSection) => {
-    triggerHaptic('light');
     setActiveSection(activeSection === section ? null : section);
   };
 
@@ -364,30 +389,31 @@ export default function Legal() {
 
   return (
     <div className="min-h-screen pb-32" style={{ background: '#050505' }}>
-      {/* Header */}
+      {/* Header - Sovereign Glass Style */}
       <div
-        className="sticky top-0 z-50"
+        className="sticky top-0 z-50 px-5 py-4"
         style={{
-          background: 'rgba(5, 5, 5, 0.92)',
-          backdropFilter: 'blur(40px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          background: 'rgba(5, 5, 5, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         }}
       >
-        <div className="px-5 py-4 flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(-1)}
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{
               background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
             }}
           >
             <ArrowLeft size={20} className="text-white/60" />
           </motion.button>
-          <div className="flex-1">
+          <div>
             <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <Scale size={20} className="text-cyan-400" />
+              <Scale size={20} className="text-purple-400" />
               Rechtliches
             </h1>
             <p className="text-xs text-white/40">AGB, Datenschutz & Impressum</p>
@@ -395,19 +421,22 @@ export default function Legal() {
         </div>
       </div>
 
+      {/* Content */}
       <div className="px-5 py-6 space-y-3">
-        {/* Info Banner */}
+        {/* Info Banner - Sovereign Glass */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="p-4 rounded-2xl mb-4"
           style={{
-            background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(34, 211, 238, 0.02))',
-            border: '1px solid rgba(34, 211, 238, 0.15)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 0 20px rgba(168, 85, 247, 0.1)',
           }}
         >
           <div className="flex items-start gap-3">
-            <Lock size={18} className="text-cyan-400 flex-shrink-0" />
+            <Lock size={18} className="text-purple-400 flex-shrink-0" />
             <div>
               <p className="text-sm text-white/70">
                 Ihre Sicherheit und Privatsphäre sind uns wichtig.
@@ -419,7 +448,7 @@ export default function Legal() {
           </div>
         </motion.div>
 
-        {/* Sections */}
+        {/* Sections - Sovereign Glass Panels */}
         {SECTIONS.map((section, index) => {
           const Icon = section.icon;
           const isActive = activeSection === section.id;
@@ -427,21 +456,22 @@ export default function Legal() {
           return (
             <motion.div
               key={section.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              layout
+              transition={{ delay: index * 0.1 }}
               className="rounded-2xl overflow-hidden"
               style={{
                 background: isActive
-                  ? `linear-gradient(135deg, ${section.color}10, ${section.color}03)`
-                  : 'rgba(255, 255, 255, 0.02)',
+                  ? `linear-gradient(135deg, ${section.color}15, ${section.color}05)`
+                  : 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(20px)',
                 border: isActive
-                  ? `1px solid ${section.color}30`
-                  : '1px solid rgba(255, 255, 255, 0.04)',
+                  ? `1px solid ${section.color}40`
+                  : '1px solid rgba(255, 255, 255, 0.1)',
               }}
             >
               <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={() => toggleSection(section.id)}
                 className="w-full p-4 flex items-center justify-between"
               >
@@ -450,10 +480,10 @@ export default function Legal() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center"
                     style={{
                       background: isActive ? `${section.color}20` : 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${isActive ? `${section.color}40` : 'rgba(255, 255, 255, 0.06)'}`,
+                      border: `1px solid ${isActive ? `${section.color}40` : 'rgba(255, 255, 255, 0.1)'}`,
                     }}
                   >
-                    <Icon size={18} style={{ color: isActive ? section.color : 'rgba(255, 255, 255, 0.4)' }} />
+                    <Icon size={18} style={{ color: isActive ? section.color : 'rgba(255, 255, 255, 0.5)' }} />
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-semibold text-white">{section.title}</p>
@@ -474,11 +504,16 @@ export default function Legal() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 pb-4 pt-2 border-t border-white/5">
-                      {renderContent(section.id)}
+                    <div className="px-4 pb-4">
+                      <div
+                        className="p-4 rounded-xl"
+                        style={{ background: 'rgba(0, 0, 0, 0.3)' }}
+                      >
+                        {renderContent(section.id)}
+                      </div>
                     </div>
                   </motion.div>
                 )}

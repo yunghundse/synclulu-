@@ -44,6 +44,7 @@ import Admin from '@/pages/Admin';
 import CreatorDashboard from '@/pages/CreatorDashboard';
 import NewLockedContent from '@/pages/NewLockedContent';
 import BlockedUsers from '@/pages/BlockedUsers';
+import SecuritySettings from '@/pages/SecuritySettings';
 import Impressum from '@/pages/Impressum';
 import Datenschutz from '@/pages/Datenschutz';
 import ResetPassword from '@/pages/ResetPassword';
@@ -290,7 +291,7 @@ function App() {
                 <Route path="/premium" element={<Premium />} />
                 <Route path="/settings" element={<SettingsHub />} />
                 <Route path="/settings/legacy" element={<Settings />} />
-                <Route path="/settings/security" element={<Settings />} />
+                <Route path="/settings/security" element={<SecuritySettings />} />
                 <Route path="/settings/blocked" element={<BlockedUsers />} />
                 <Route path="/settings/devices" element={<DevicesSettings />} />
                 <Route path="/help" element={<HelpCenter />} />

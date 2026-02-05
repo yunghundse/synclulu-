@@ -1,8 +1,13 @@
 /**
  * HelpCenter.tsx
- * 📚 HELP CENTER - Clean FAQ Design
+ * 📚 SOVEREIGN HELP CENTER - Glass Panel Design
  *
- * @version 34.0.0 - Complete Rebuild
+ * DESIGN: Sovereign Glass Rezept
+ * - bg-[#050505] (OLED Black)
+ * - bg-white/5 backdrop-blur-xl border border-white/10
+ * - Purple Glow accent
+ *
+ * @version 35.0.0 - Sovereign Glass Edition
  */
 
 import React, { useState } from 'react';
@@ -18,6 +23,8 @@ import {
   UserPlus,
   Shield,
   Mail,
+  MessageCircle,
+  ExternalLink,
 } from 'lucide-react';
 
 interface FAQItem {
@@ -71,50 +78,70 @@ export default function HelpCenter() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: '#050505' }}>
-      {/* Header */}
+    <div className="min-h-screen pb-32" style={{ background: '#050505' }}>
+      {/* Header - Sovereign Glass Style */}
       <div
-        className="sticky top-0 z-50 px-5 py-4 flex items-center gap-4"
+        className="sticky top-0 z-50 px-5 py-4"
         style={{
           background: 'rgba(5, 5, 5, 0.95)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(168, 85, 247, 0.15)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         }}
       >
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => navigate(-1)}
-          className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{ background: 'rgba(255, 255, 255, 0.05)' }}
-        >
-          <ArrowLeft size={20} className="text-white/60" />
-        </motion.button>
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <HelpCircle size={20} className="text-purple-400" />
-          Hilfe
-        </h1>
+        <div className="flex items-center gap-4">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <ArrowLeft size={20} className="text-white/60" />
+          </motion.button>
+          <div>
+            <h1 className="text-xl font-bold text-white flex items-center gap-2">
+              <HelpCircle size={20} className="text-purple-400" />
+              Hilfe
+            </h1>
+            <p className="text-xs text-white/40">FAQ & Support</p>
+          </div>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="px-5 py-8">
-        {/* Hero */}
-        <div className="text-center mb-8">
+      <div className="px-5 py-6">
+        {/* Hero Panel - Sovereign Glass */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-6 rounded-2xl mb-6 text-center"
+          style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 0 20px rgba(168, 85, 247, 0.1)',
+          }}
+        >
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1))',
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1))',
               border: '1px solid rgba(168, 85, 247, 0.3)',
+              boxShadow: '0 0 20px rgba(168, 85, 247, 0.3)',
             }}
           >
-            <HelpCircle size={36} className="text-purple-400" />
+            <HelpCircle size={32} className="text-purple-400" />
           </motion.div>
-          <h2 className="text-2xl font-bold text-white mb-2">Häufige Fragen</h2>
-          <p className="text-white/50 text-sm">Alles was du wissen musst</p>
-        </div>
+          <h2 className="text-xl font-bold text-white mb-2">Häufige Fragen</h2>
+          <p className="text-sm text-white/40">Alles was du wissen musst</p>
+        </motion.div>
 
-        {/* FAQ List */}
+        {/* FAQ List - Sovereign Glass Panels */}
         <div className="space-y-3 mb-8">
           {faqItems.map((item, index) => (
             <motion.div
@@ -125,14 +152,16 @@ export default function HelpCenter() {
               className="rounded-2xl overflow-hidden"
               style={{
                 background: openId === item.id
-                  ? 'rgba(168, 85, 247, 0.08)'
-                  : 'rgba(255, 255, 255, 0.02)',
+                  ? 'rgba(168, 85, 247, 0.1)'
+                  : 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(20px)',
                 border: openId === item.id
-                  ? '1px solid rgba(168, 85, 247, 0.25)'
-                  : '1px solid rgba(255, 255, 255, 0.05)',
+                  ? '1px solid rgba(168, 85, 247, 0.3)'
+                  : '1px solid rgba(255, 255, 255, 0.1)',
               }}
             >
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setOpenId(openId === item.id ? null : item.id)}
                 className="w-full p-4 flex items-center gap-3"
               >
@@ -151,7 +180,7 @@ export default function HelpCenter() {
                 >
                   <ChevronDown size={18} className="text-white/40" />
                 </motion.div>
-              </button>
+              </motion.button>
 
               <AnimatePresence>
                 {openId === item.id && (
@@ -176,27 +205,49 @@ export default function HelpCenter() {
           ))}
         </div>
 
-        {/* Contact */}
-        <div
-          className="p-5 rounded-2xl text-center"
+        {/* Contact Panel - Sovereign Glass */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="p-5 rounded-2xl"
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
           }}
         >
-          <p className="text-white/50 text-sm mb-3">Noch Fragen?</p>
-          <a
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{
+                background: 'rgba(168, 85, 247, 0.2)',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+              }}
+            >
+              <MessageCircle size={18} className="text-purple-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white">Noch Fragen?</h3>
+              <p className="text-xs text-white/40">Wir helfen dir gerne</p>
+            </div>
+          </div>
+
+          <motion.a
             href="mailto:support@synclulu.app"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm text-white"
+            whileTap={{ scale: 0.98 }}
+            className="w-full py-3 px-4 rounded-xl flex items-center justify-center gap-2 font-medium text-sm text-white"
             style={{
-              background: 'rgba(168, 85, 247, 0.15)',
+              background: 'rgba(168, 85, 247, 0.2)',
               border: '1px solid rgba(168, 85, 247, 0.3)',
+              boxShadow: '0 0 20px rgba(168, 85, 247, 0.2)',
             }}
           >
             <Mail size={16} className="text-purple-400" />
             support@synclulu.app
-          </a>
-        </div>
+            <ExternalLink size={14} className="text-purple-400/50" />
+          </motion.a>
+        </motion.div>
       </div>
     </div>
   );

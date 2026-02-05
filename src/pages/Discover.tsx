@@ -2,13 +2,17 @@
  * Discover.tsx
  * 🔍 DISCOVER - Voice Rooms & Hotspots
  *
- * Features:
- * - Echte DB Räume anzeigen
- * - Räume erstellen
- * - Aktive Räume sehen
- * - Keine Demo-Daten
+ * DESIGN: Sovereign Glass Rezept
+ * - bg-[#050505] (OLED Black)
+ * - bg-white/5 backdrop-blur-xl border border-white/10
+ * - Purple Glow accent
  *
- * @version 34.0.0 - Complete Rebuild
+ * Features:
+ * - Echte DB Räume anzeigen (no demo data)
+ * - Clean Room Creation (empty participants array)
+ * - Aktive Räume sehen
+ *
+ * @version 35.0.0 - Sovereign Glass Edition
  */
 
 import React, { useState, useEffect } from 'react';
@@ -117,21 +121,17 @@ export default function Discover() {
 
     setCreating(true);
     try {
+      // CLEAN ROOM CREATION: Room starts EMPTY - only creatorId is stored
+      // No test users, no dummy data, no participants until someone joins
       const roomData = {
         name: newRoomName.trim(),
         type: newRoomType,
         isAnonymous: newRoomAnonymous,
-        participants: [{
-          oderId: user.id,
-          displayName: newRoomAnonymous ? 'Wanderer' : (user.displayName || 'Anonym'),
-          isSpeaking: false,
-          isMuted: true,
-          joinedAt: Timestamp.now(),
-        }],
+        participants: [], // Room starts completely empty
         maxParticipants: 8,
         isActive: true,
         createdAt: Timestamp.now(),
-        createdBy: user.id,
+        createdBy: user.id, // Only creator ID is stored
       };
 
       const docRef = await addDoc(collection(db, 'rooms'), roomData);
@@ -268,8 +268,9 @@ export default function Discover() {
                 transition={{ delay: index * 0.05 }}
                 className="p-4 rounded-2xl"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
                 }}
               >
                 {/* Room Header */}
@@ -367,7 +368,12 @@ export default function Discover() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="w-full max-w-sm p-6 rounded-3xl"
-              style={{ background: '#0a0a0a', border: '1px solid rgba(168, 85, 247, 0.2)' }}
+              style={{
+                background: 'rgba(5, 5, 5, 0.98)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 0 30px rgba(168, 85, 247, 0.2)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
