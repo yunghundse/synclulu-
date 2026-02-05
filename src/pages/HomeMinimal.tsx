@@ -181,14 +181,14 @@ const ProfileCard = memo(function ProfileCard({
               triggerHaptic('light');
               onSettingsClick();
             }}
-            className="w-11 h-11 rounded-xl flex items-center justify-center"
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(139, 92, 246, 0.15))',
-              border: '1px solid rgba(168, 85, 247, 0.4)',
-              boxShadow: '0 2px 10px rgba(139, 92, 246, 0.2)',
+              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 4px 15px rgba(139, 92, 246, 0.5)',
             }}
           >
-            <Settings size={20} className="text-white" />
+            <Settings size={22} className="text-white" />
           </motion.button>
 
           {/* Notifications */}

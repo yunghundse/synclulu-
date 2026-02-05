@@ -943,72 +943,59 @@ const BattlePassTeaser = ({ onInvite }: { onInvite: () => void }) => {
 const LevelCommandButton = ({
   level,
   progress,
+  currentXP,
+  neededXP,
   accentColor,
   onClick,
 }: {
   level: number;
   progress: number;
+  currentXP: number;
+  neededXP: number;
   accentColor: string;
   onClick: () => void;
 }) => {
   return (
     <motion.button
       onClick={onClick}
-      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="w-full p-5 rounded-2xl flex items-center gap-4"
+      className="w-full p-4 rounded-2xl flex items-center gap-4"
       style={{
-        background: `linear-gradient(135deg, ${accentColor}50, ${accentColor}30)`,
-        border: `3px solid ${accentColor}`,
-        boxShadow: `0 8px 40px ${accentColor}50, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+        background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+        border: '2px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: '0 6px 25px rgba(139, 92, 246, 0.5)',
       }}
     >
       {/* Level Circle */}
-      <div className="relative">
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{ background: `radial-gradient(circle, ${accentColor}70 0%, transparent 70%)` }}
-          animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        <div
-          className="relative w-18 h-18 rounded-full flex items-center justify-center"
-          style={{
-            width: '72px',
-            height: '72px',
-            background: `linear-gradient(135deg, ${accentColor}70, ${accentColor}50)`,
-            border: `4px solid white`,
-            boxShadow: `0 0 30px ${accentColor}70`,
-          }}
-        >
-          <span className="text-3xl font-black text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>{level}</span>
-        </div>
+      <div
+        className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0"
+        style={{
+          background: 'rgba(255, 255, 255, 0.2)',
+          border: '3px solid white',
+          boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)',
+        }}
+      >
+        <span className="text-2xl font-black text-white">{level}</span>
       </div>
 
       {/* Progress Info */}
-      <div className="flex-1">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-lg font-black text-white">Dein Level</span>
-          <ChevronRight size={20} className="text-white" />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-base font-bold text-white">Level {level}</span>
+          <span className="text-xs text-white/80">{currentXP}/{neededXP} XP</span>
         </div>
-        <div className="h-4 bg-white/30 rounded-full overflow-hidden" style={{ boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3)' }}>
+        <div className="h-3 bg-white/20 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full relative"
-            style={{
-              background: `linear-gradient(90deg, white, ${accentColor})`,
-              boxShadow: `0 0 15px white`,
-            }}
+            className="h-full rounded-full"
+            style={{ background: 'linear-gradient(90deg, #fbbf24, #f59e0b)' }}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-          >
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, transparent 50%)' }}
-            />
-          </motion.div>
+          />
         </div>
-        <p className="text-sm text-white/80 mt-2 font-medium">Tippe für Details & Meilensteine</p>
+        <p className="text-xs text-white/70 mt-1.5">Tippe für Details</p>
       </div>
+
+      <ChevronRight size={20} className="text-white/80 flex-shrink-0" />
     </motion.button>
   );
 };
@@ -1619,14 +1606,44 @@ export default function ProfileSovereign() {
         </div>
       </div>
 
-      {/* Level Command Button - Prominent above network */}
-      <div className="px-5 mt-6">
+      {/* Level & Invite Section - Clean unified design */}
+      <div className="px-5 mt-6 space-y-3">
+        {/* Level Button */}
         <LevelCommandButton
           level={levelData.level}
           progress={progress}
+          currentXP={levelData.currentXP}
+          neededXP={levelData.neededXP}
           accentColor={accentColor}
           onClick={() => setShowLevelOverlay(true)}
         />
+
+        {/* Invite Friends Button */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/invites')}
+          className="w-full p-4 rounded-2xl flex items-center gap-4"
+          style={{
+            background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 6px 25px rgba(59, 130, 246, 0.5)',
+          }}
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <UserPlus size={22} className="text-white" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-base font-bold text-white">Freunde einladen</p>
+            <p className="text-xs text-white/70">+100 XP pro Einladung</p>
+          </div>
+          <ChevronRight size={20} className="text-white/80 flex-shrink-0" />
+        </motion.button>
       </div>
 
       {/* Stats Row */}
@@ -1638,120 +1655,60 @@ export default function ProfileSovereign() {
         </div>
       </div>
 
-      {/* Voice Pionier & Top Contributor & Streaks - Activity Stack */}
-      <div className="px-5 mt-6 space-y-3">
+      {/* Activity Buttons - Clean unified design */}
+      <div className="px-5 mt-4 space-y-3">
         {/* Voice Pionier Button */}
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate('/voice-stats')}
           className="w-full p-4 rounded-2xl flex items-center gap-4"
           style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 6px 25px rgba(139, 92, 246, 0.5)',
           }}
         >
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1))',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
             }}
           >
-            <Mic size={22} className="text-violet-400" />
+            <Mic size={22} className="text-white" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-bold text-white flex items-center gap-2">
-              Voice Pionier
-              {(profile?.roomsJoined || 0) >= 5 && (
-                <span className="px-2 py-0.5 rounded-full text-[9px] bg-violet-500/20 text-violet-400 font-bold">
-                  UNLOCKED
-                </span>
-              )}
-            </p>
-            <div className="flex items-center gap-4 text-xs text-white/40">
-              <span>{voiceStats.roomsVisited} Räume besucht</span>
-              <span>•</span>
-              <span>{voiceStats.talkTimeMinutes}m Talk Time</span>
-            </div>
+            <p className="text-base font-bold text-white">Voice Statistik</p>
+            <p className="text-xs text-white/70">{voiceStats.roomsVisited} Räume • {voiceStats.talkTimeMinutes}m Talk</p>
           </div>
-          <ChevronRight size={18} className="text-white/30" />
+          <ChevronRight size={20} className="text-white/80 flex-shrink-0" />
         </motion.button>
 
-        {/* Top Contributor Button */}
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowLevelOverlay(true)}
-          className="w-full p-4 rounded-2xl flex items-center gap-4"
-          style={{
-            background: isTopContributor
-              ? 'linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05))'
-              : 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(20px)',
-            border: isTopContributor
-              ? '1px solid rgba(251, 191, 36, 0.3)'
-              : '1px solid rgba(255, 255, 255, 0.1)',
-          }}
-        >
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
-            style={{
-              background: isTopContributor
-                ? 'linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.1))'
-                : 'rgba(255, 255, 255, 0.05)',
-              border: `1px solid ${isTopContributor ? 'rgba(251, 191, 36, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
-            }}
-          >
-            <Trophy size={22} className={isTopContributor ? 'text-amber-400' : 'text-white/40'} />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-sm font-bold text-white flex items-center gap-2">
-              Top Contributor
-              {isTopContributor && (
-                <span className="px-2 py-0.5 rounded-full text-[9px] bg-amber-500/20 text-amber-400 font-bold">
-                  EARNED
-                </span>
-              )}
-            </p>
-            <p className="text-xs text-white/40">
-              {isTopContributor ? 'Du gehörst zu den Aktivsten!' : `Erreiche Level 10 (${levelData.level}/10)`}
-            </p>
-          </div>
-          <ChevronRight size={18} className="text-white/30" />
-        </motion.button>
-
-        {/* Streaks Button - Links to /profile/streaks */}
+        {/* Streaks Button */}
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate('/streaks')}
           className="w-full p-4 rounded-2xl flex items-center gap-4"
           style={{
-            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05))',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(249, 115, 22, 0.3)',
+            background: 'linear-gradient(135deg, #f97316, #ea580c)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 6px 25px rgba(249, 115, 22, 0.5)',
           }}
         >
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(249, 115, 22, 0.1))',
-              border: '1px solid rgba(249, 115, 22, 0.4)',
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
             }}
           >
-            <Flame size={22} className="text-orange-400" />
+            <Flame size={22} className="text-white" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-bold text-white flex items-center gap-2">
-              🔥 Tägliche Streaks
-              <span className="px-2 py-0.5 rounded-full text-[9px] bg-orange-500/20 text-orange-400 font-bold">
-                {profile?.daysActive || 0} TAGE
-              </span>
-            </p>
-            <p className="text-xs text-white/40">
-              Halte deine Serie aufrecht für Bonus-XP
-            </p>
+            <p className="text-base font-bold text-white">Tägliche Streaks</p>
+            <p className="text-xs text-white/70">{profile?.daysActive || 0} Tage aktiv</p>
           </div>
-          <ChevronRight size={18} className="text-white/30" />
+          <ChevronRight size={20} className="text-white/80 flex-shrink-0" />
         </motion.button>
       </div>
 
