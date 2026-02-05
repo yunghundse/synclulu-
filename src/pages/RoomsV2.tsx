@@ -602,6 +602,11 @@ export default function RoomsV2() {
 
   // Subscribe to rooms
   useEffect(() => {
+    // Timeout to prevent infinite loading
+    const loadingTimeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+
     const roomsQuery = query(
       collection(db, 'rooms'),
       where('isActive', '==', true),
@@ -609,31 +614,43 @@ export default function RoomsV2() {
       limit(50)
     );
 
-    const unsubscribe = onSnapshot(roomsQuery, (snapshot) => {
-      const fetchedRooms: Room[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data();
-        return {
-          id: docSnap.id,
-          name: data.name || 'Unnamed Room',
-          description: data.description,
-          type: data.type || 'public',
-          participants: data.participants || [],
-          maxParticipants: data.maxParticipants || 8,
-          isActive: data.isActive !== false,
-          createdAt: data.createdAt,
-          createdBy: data.createdBy,
-          hostId: data.hostId || data.createdBy,
-          userCount: data.userCount || (data.participants || []).length,
-        };
-      });
+    const unsubscribe = onSnapshot(
+      roomsQuery,
+      (snapshot) => {
+        clearTimeout(loadingTimeout);
+        const fetchedRooms: Room[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            id: docSnap.id,
+            name: data.name || 'Unnamed Room',
+            description: data.description,
+            type: data.type || 'public',
+            participants: data.participants || [],
+            maxParticipants: data.maxParticipants || 8,
+            isActive: data.isActive !== false,
+            createdAt: data.createdAt,
+            createdBy: data.createdBy,
+            hostId: data.hostId || data.createdBy,
+            userCount: data.userCount || (data.participants || []).length,
+          };
+        });
 
-      // Sort: Most participants first
-      fetchedRooms.sort((a, b) => b.participants.length - a.participants.length);
-      setRooms(fetchedRooms);
-      setIsLoading(false);
-    });
+        // Sort: Most participants first
+        fetchedRooms.sort((a, b) => b.participants.length - a.participants.length);
+        setRooms(fetchedRooms);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('[RoomsV2] Firebase error:', error);
+        clearTimeout(loadingTimeout);
+        setIsLoading(false);
+      }
+    );
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(loadingTimeout);
+      unsubscribe();
+    };
   }, []);
 
   // Filter rooms
