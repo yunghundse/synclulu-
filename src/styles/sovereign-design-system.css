@@ -54,6 +54,83 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   👑 GODMODE: VISIBILITY GUARANTEE CLASSES
+   Diese Klassen garantieren Sichtbarkeit für ALLE Besucher
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Sovereign Glass Panel - Garantiert sichtbar */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Navigation Dock - Immer sichtbar am unteren Rand */
+.nav-dock {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+  padding-bottom: env(safe-area-inset-bottom);
+  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Overlay Layer - Modal-Background */
+.overlay-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+/* Pulse Glow - Für den zentralen Action Button */
+.pulse-glow {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  animation: sovereign-pulse 2s infinite;
+}
+
+@keyframes sovereign-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 35px rgba(168, 85, 247, 0.6); }
+  100% { transform: scale(1); box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+}
+
+/* Visibility Override - Erzwinge Sichtbarkeit */
+.force-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+}
+
+/* Solid Button - Garantiert lesbar */
+.solid-button {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    GPU-ACCELERATED BASE LAYERS
    ═══════════════════════════════════════════════════════════════ */
 
