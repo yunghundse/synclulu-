@@ -58,6 +58,7 @@ import TrustStats from '@/pages/TrustStats';
 import Friends from '@/pages/Friends';
 import FriendsList from '@/pages/FriendsList';
 import FriendStreaks from '@/pages/FriendStreaks';
+import Streaks from '@/pages/Streaks';
 import VoiceStats from '@/pages/VoiceStats';
 import ProfileVisitors from '@/pages/ProfileVisitors';
 import BattlePass from '@/pages/BattlePass';
@@ -281,6 +282,8 @@ function App() {
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/friends-list" element={<FriendsList />} />
                 <Route path="/friend-streaks" element={<FriendStreaks />} />
+                <Route path="/profile/streaks" element={<Streaks />} />
+                <Route path="/streaks" element={<Streaks />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/profile-visitors" element={<ProfileVisitors />} />
