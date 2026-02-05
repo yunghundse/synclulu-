@@ -1,11 +1,13 @@
 /**
  * SovereignHomeV3.tsx
- * CLEAN HOME - Minimalistisches Design
+ * CLEAN HOME - Minimalistisches Design v38.0
  *
  * Nur das Wesentliche:
  * - Header mit Profil & Notifications
  * - Nebula Map (Hauptelement)
- * - Schnellzugriff auf Wölkchen
+ * - Active Rooms Dashboard
+ *
+ * @version 38.0.0 - Rooms Dashboard Edition
  */
 
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
@@ -36,7 +38,7 @@ import { SovereignHeader } from './SovereignHeader';
 import { useNebulaToast } from '../NebulaToast';
 import { AuraOrb } from '../SovereignUI/AuraOrb';
 import { getAscensionTier, getLevelFromXP } from '../../lib/ascensionSystem';
-import ActiveWölkchen from '../ActiveWölkchen';
+import ActiveRooms from '../ActiveRooms';
 
 // Types
 interface UserProfile {
@@ -486,12 +488,12 @@ export default function SovereignHomeV3() {
           />
         </div>
 
-        {/* Active Wölkchen Section - Below Map */}
+        {/* Active Rooms Section - Below Map */}
         <div className="mt-4">
-          <ActiveWölkchen
+          <ActiveRooms
             maxDisplay={5}
             showHeader={true}
-            onCreateRoom={() => navigate('/discover')}
+            onCreateRoom={() => navigate('/rooms')}
           />
         </div>
       </div>

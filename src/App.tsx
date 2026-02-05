@@ -63,6 +63,7 @@ import VoiceStats from '@/pages/VoiceStats';
 import ProfileVisitors from '@/pages/ProfileVisitors';
 import BattlePass from '@/pages/BattlePass';
 import VoiceRoom from '@/pages/VoiceRoom';
+import Rooms from '@/pages/Rooms';
 import NexusDashboard from '@/pages/NexusDashboard';
 import LegalCenter from '@/pages/LegalCenter';
 import LegalPopup from '@/pages/LegalPopup';
@@ -270,6 +271,7 @@ function App() {
                 <Route path="/home" element={<HomeSovereign />} />
                 <Route path="/home-legacy" element={<SovereignNexusHome />} />
                 <Route path="/discover" element={<Discover />} />
+                <Route path="/rooms" element={<Rooms />} />
                 <Route path="/map" element={<Discover />} />
                 <Route path="/messages" element={<MessagesNew />} />
                 <Route path="/chat" element={<MessagesNew />} />

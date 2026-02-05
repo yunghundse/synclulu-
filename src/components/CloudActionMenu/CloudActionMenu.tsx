@@ -110,7 +110,7 @@ export const CloudActionMenu: React.FC<CloudActionMenuProps> = memo(({
               <div className="p-6 pt-2 space-y-4">
                 {/* Title */}
                 <h3 className="text-center text-xs font-bold uppercase tracking-[0.3em] text-white/40 mb-6">
-                  Wölkchen Optionen
+                  Room Optionen
                 </h3>
 
                 {/* Create Button - Primary Action */}
@@ -125,12 +125,12 @@ export const CloudActionMenu: React.FC<CloudActionMenuProps> = memo(({
                     boxShadow: '0 4px 20px rgba(34, 197, 94, 0.2)',
                   }}
                 >
-                  <span className="text-4xl">☁️</span>
+                  <span className="text-4xl">🎙️</span>
                   <span className="text-[12px] font-black tracking-[0.15em] uppercase text-emerald-400">
-                    Wölkchen erstellen
+                    Room erstellen
                   </span>
                   <span className="text-[10px] text-white/40">
-                    Starte deinen eigenen Voice-Raum
+                    Starte deinen eigenen Voice Room
                   </span>
                 </motion.button>
 
@@ -147,10 +147,10 @@ export const CloudActionMenu: React.FC<CloudActionMenuProps> = memo(({
                 >
                   <span className="text-3xl">🔍</span>
                   <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-purple-400">
-                    Wölkchen entdecken
+                    Rooms entdecken
                   </span>
                   <span className="text-[10px] text-white/40">
-                    Finde Räume in deiner Nähe
+                    Finde Voice Rooms in deiner Nähe
                   </span>
                 </motion.button>
 

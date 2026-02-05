@@ -12,7 +12,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Compass, MessageCircle, User, Plus } from 'lucide-react';
+import { Home, Radio, MessageCircle, User, Plus } from 'lucide-react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { CloudActionMenu } from './CloudActionMenu';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -75,7 +75,7 @@ const BottomNav = () => {
   }, [triggerHaptic]);
 
   const handleSearchClick = useCallback(() => {
-    navigate('/discover');
+    navigate('/rooms');
   }, [navigate]);
 
   const handleCreateClick = useCallback(() => {
@@ -85,7 +85,7 @@ const BottomNav = () => {
   // Navigation items (split for central button)
   const leftNavItems = [
     { to: '/', icon: Home, label: 'Home' },
-    { to: '/discover', icon: Compass, label: 'Entdecken' },
+    { to: '/rooms', icon: Radio, label: 'Rooms' },
   ];
 
   const rightNavItems = [
