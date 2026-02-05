@@ -28,6 +28,7 @@ import {
   TrendingUp,
   Star,
   UserPlus,
+  Settings,
 } from 'lucide-react';
 import { doc, onSnapshot, collection, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -61,6 +62,7 @@ interface ProfileCardProps {
   profile: UserProfile | null;
   onProfileClick: () => void;
   onNotificationsClick: () => void;
+  onSettingsClick: () => void;
   unreadCount: number;
 }
 
@@ -68,6 +70,7 @@ const ProfileCard = memo(function ProfileCard({
   profile,
   onProfileClick,
   onNotificationsClick,
+  onSettingsClick,
   unreadCount,
 }: ProfileCardProps) {
   const levelData = useMemo(() => {
@@ -143,31 +146,50 @@ const ProfileCard = memo(function ProfileCard({
           </div>
         </motion.button>
 
-        {/* Notifications */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={() => {
-            triggerHaptic('light');
-            onNotificationsClick();
-          }}
-          className="relative w-11 h-11 rounded-xl flex items-center justify-center"
-          style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-          }}
-        >
-          <Bell size={20} className="text-white/60" />
-          {unreadCount > 0 && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-              style={{ background: '#ef4444' }}
-            >
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </motion.div>
-          )}
-        </motion.button>
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2">
+          {/* Settings */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              triggerHaptic('light');
+              onSettingsClick();
+            }}
+            className="w-11 h-11 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <Settings size={20} className="text-white/60" />
+          </motion.button>
+
+          {/* Notifications */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              triggerHaptic('light');
+              onNotificationsClick();
+            }}
+            className="relative w-11 h-11 rounded-xl flex items-center justify-center"
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <Bell size={20} className="text-white/60" />
+            {unreadCount > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+                style={{ background: '#ef4444' }}
+              >
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </motion.div>
+            )}
+          </motion.button>
+        </div>
       </div>
 
       {/* XP Progress */}
@@ -565,6 +587,7 @@ export default function HomeMinimal() {
   // Navigation handlers
   const handleProfileClick = useCallback(() => navigate('/profile'), [navigate]);
   const handleNotificationsClick = useCallback(() => navigate('/notifications'), [navigate]);
+  const handleSettingsClick = useCallback(() => navigate('/settings'), [navigate]);
   const handleFriendsClick = useCallback(() => navigate('/friends'), [navigate]);
   const handleStreaksClick = useCallback(() => navigate('/streaks'), [navigate]);
   const handleRoomJoin = useCallback((roomId: string) => navigate(`/room/${roomId}`), [navigate]);
@@ -580,6 +603,7 @@ export default function HomeMinimal() {
         profile={profile}
         onProfileClick={handleProfileClick}
         onNotificationsClick={handleNotificationsClick}
+        onSettingsClick={handleSettingsClick}
         unreadCount={unreadNotifications}
       />
 

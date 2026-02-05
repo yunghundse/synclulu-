@@ -1,6 +1,6 @@
 /**
  * synclulu APP - Main Application Router
- * @version 39.0.0 - GODMODE Architecture
+ * @version 41.0.0 - ULTRA PURGE - MINIMAL CORE
  */
 
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
@@ -13,81 +13,44 @@ import { Zap } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-// Pages
+// Pages - MINIMAL CORE ONLY
 import Welcome from '@/pages/Welcome';
 import Login from '@/pages/Login';
-import Register from '@/pages/Register';
 import Onboarding from '@/pages/Onboarding';
-import Home from '@/pages/Home';
-import HomeLegacy from '@/pages/HomeLegacy';
-import SovereignNexusHome from '@/pages/SovereignNexusHome';
-import HomeSovereign from '@/pages/HomeSovereign';
-import Legal from '@/pages/Legal';
-import Discover from '@/pages/Discover';
-import Messages from '@/pages/Messages';
-import MessagesNew from '@/pages/MessagesNew';
-import Profile from '@/pages/Profile';
-import ProfileMinimal from '@/pages/ProfileMinimal';
+import HomeMinimal from '@/pages/HomeMinimal';
+import RoomsV2 from '@/pages/RoomsV2';
+import VoiceRoom from '@/pages/VoiceRoom';
 import ProfileSovereign from '@/pages/ProfileSovereign';
-import Statistics from '@/pages/Statistics';
+import Friends from '@/pages/Friends';
 import Notifications from '@/pages/Notifications';
-import Premium from '@/pages/Premium';
-import Settings from '@/pages/Settings';
-import SettingsHub from '@/pages/SettingsHub';
-import HelpCenter from '@/pages/HelpCenter';
-import StarsApplication from '@/pages/StarsApplication';
-import CreatorApplication from '@/pages/CreatorApplication';
-import StarsDashboard from '@/pages/StarsDashboard';
-import StarsSchedule from '@/pages/StarsSchedule';
+import ProfileVisitors from '@/pages/ProfileVisitors';
 import UserProfile from '@/pages/UserProfile';
+import SettingsHub from '@/pages/SettingsHub';
+import DevicesSettings from '@/pages/DevicesSettings';
+import HelpCenter from '@/pages/HelpCenter';
+import InvitesPage from '@/pages/InvitesPage';
 import Admin from '@/pages/Admin';
-import CreatorDashboard from '@/pages/CreatorDashboard';
-import NewLockedContent from '@/pages/NewLockedContent';
-import BlockedUsers from '@/pages/BlockedUsers';
-import SecuritySettings from '@/pages/SecuritySettings';
+import NexusDashboard from '@/pages/NexusDashboard';
 import Impressum from '@/pages/Impressum';
 import Datenschutz from '@/pages/Datenschutz';
+import Legal from '@/pages/Legal';
 import ResetPassword from '@/pages/ResetPassword';
-import InvitesPage from '@/pages/InvitesPage';
-import RadarPage from '@/pages/RadarPage';
 import RegisterInvite from '@/pages/RegisterInvite';
 import SyncluluRegister from '@/pages/SyncluluRegister';
 import OnboardingFlow from '@/pages/OnboardingFlow';
-import DevicesSettings from '@/pages/DevicesSettings';
-import TrustStats from '@/pages/TrustStats';
-import Friends from '@/pages/Friends';
-import FriendsList from '@/pages/FriendsList';
-import FriendStreaks from '@/pages/FriendStreaks';
-import Streaks from '@/pages/Streaks';
-import VoiceStats from '@/pages/VoiceStats';
-import ProfileVisitors from '@/pages/ProfileVisitors';
-import BattlePass from '@/pages/BattlePass';
-import VoiceRoom from '@/pages/VoiceRoom';
-import RoomsV2 from '@/pages/RoomsV2';
-import HomeMinimal from '@/pages/HomeMinimal';
-import NexusDashboard from '@/pages/NexusDashboard';
-import LegalCenter from '@/pages/LegalCenter';
-import LegalPopup from '@/pages/LegalPopup';
-import DatenschutzPopup from '@/pages/DatenschutzPopup';
 
 // Components
-import GhostOrbitDock from '@/components/GhostOrbitDock';
 import LoadingScreen from '@/components/LoadingScreen';
 import NotificationToast from '@/components/NotificationToast';
-import MaintenanceOverlay from '@/components/MaintenanceOverlay';
-import { NebulaBackground } from '@/components/NebulaBackground';
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 import { ConsentScreen } from '@/components/ConsentScreen/ConsentScreen';
-import { FloatingDock } from '@/components/SovereignUI/FloatingDock';
 import { DeepSpaceGrid } from '@/components/SovereignUI/DeepSpaceGrid';
-import { ObsidianNav } from '@/components/SovereignUI/ObsidianNav';
-import { GlobalDock } from '@/components/SovereignUI/GlobalDock';
 import { SovereignNav } from '@/components/SovereignNav';
 
 // Context
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { UserProfileProvider, useUserProfile } from '@/contexts/UserProfileContext';
+import { UserProfileProvider } from '@/contexts/UserProfileContext';
 
 // XP Toast Component
 const XPToast = () => {
@@ -133,48 +96,35 @@ function App() {
   });
   const location = useLocation();
 
-  // Listen for consent changes (reactive update when ConsentScreen accepts)
+  // Listen for consent changes
   useEffect(() => {
     const checkConsent = () => {
       const consent = localStorage.getItem('synclulu_consent_accepted') === 'true';
       setHasAcceptedConsent(consent);
     };
-
-    // Listen for storage events (cross-tab)
     window.addEventListener('storage', checkConsent);
-
-    // Poll for same-tab changes
     const interval = setInterval(checkConsent, 500);
-
     return () => {
       window.removeEventListener('storage', checkConsent);
       clearInterval(interval);
     };
   }, []);
 
-  // Timeout für Loading - nach 5 Sekunden überspringen
+  // Loading timeout - skip after 5 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoadingTimeout(true);
-    }, 5000);
+    const timer = setTimeout(() => setLoadingTimeout(true), 5000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Check if user is admin/founder (to bypass maintenance mode)
-  // Also check if user has already accepted consent in Firestore (from registration)
+  // Check admin status and consent
   useEffect(() => {
     const checkAdminAndConsent = async () => {
       if (user?.id) {
         try {
           const userDoc = await getDoc(doc(db, 'users', user.id));
           const data = userDoc.data();
-          const hasAdminAccess = data?.isAdmin === true ||
-                                  data?.role === 'founder' ||
-                                  data?.role === 'admin';
+          const hasAdminAccess = data?.isAdmin === true || data?.role === 'founder' || data?.role === 'admin';
           setIsAdmin(hasAdminAccess);
-
-          // Check if user already gave consent during registration
-          // If hasAcceptedTerms is true in Firestore, set localStorage and skip ConsentScreen
           if (data?.hasAcceptedTerms === true) {
             localStorage.setItem('synclulu_consent_accepted', 'true');
             setHasAcceptedConsent(true);
@@ -193,22 +143,9 @@ function App() {
     return <LoadingScreen />;
   }
 
-  // Maintenance Mode
-  const isAdminPath = location.pathname.startsWith('/admin');
-  const isLoginPath = location.pathname === '/login';
-  const isLegalPath = ['/impressum', '/datenschutz'].includes(location.pathname);
-
-  // TEMPORARILY DISABLED FOR TESTING
-  // if (isMaintenanceMode && !isAdmin && !isAdminPath && !isLoginPath && !isLegalPath) {
-  //   return (
-  //     <MaintenanceOverlay
-  //       message={maintenanceMessage}
-  //       estimatedEnd={maintenanceEstimatedEnd}
-  //     />
-  //   );
-  // }
-
-  // Not logged in - Public routes
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PUBLIC ROUTES (Not Authenticated)
+  // ═══════════════════════════════════════════════════════════════════════════
   if (!isAuthenticated) {
     return (
       <ThemeProvider>
@@ -224,8 +161,6 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
-          <Route path="/legal-popup" element={<LegalPopup />} />
-          <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -233,7 +168,9 @@ function App() {
     );
   }
 
-  // Logged in but onboarding not completed
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ONBOARDING (Not Completed)
+  // ═══════════════════════════════════════════════════════════════════════════
   const onboardingCompleted = (user as any)?.onboardingCompleted === true;
 
   if (!onboardingCompleted) {
@@ -243,15 +180,15 @@ function App() {
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
-          <Route path="/legal-popup" element={<LegalPopup />} />
-          <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
           <Route path="*" element={<Navigate to="/onboarding" replace />} />
         </Routes>
       </ThemeProvider>
     );
   }
 
-  // Fully authenticated and onboarded
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AUTHENTICATED ROUTES - MINIMAL CORE
+  // ═══════════════════════════════════════════════════════════════════════════
   return (
     <GlobalErrorBoundary>
       <ThemeProvider>
@@ -263,67 +200,51 @@ function App() {
             )}
 
             <div className="min-h-screen min-h-[100dvh] bg-black pb-28 theme-transition relative sovereign-app">
-              {/* 🌌 Deep Space Grid Background - Sovereign Design */}
+              {/* 🌌 Deep Space Grid Background */}
               <DeepSpaceGrid intensity="normal" showNebula={true} />
 
               <NotificationToast />
               <XPToast />
+
               <Routes>
+                {/* ═══ HOME ═══ */}
                 <Route path="/" element={<HomeMinimal />} />
                 <Route path="/home" element={<HomeMinimal />} />
-                <Route path="/home-legacy" element={<HomeSovereign />} />
-                <Route path="/home-old" element={<SovereignNexusHome />} />
-                <Route path="/discover" element={<RoomsV2 />} />
+
+                {/* ═══ ROOMS (Central Feature) ═══ */}
                 <Route path="/rooms" element={<RoomsV2 />} />
+                <Route path="/discover" element={<RoomsV2 />} />
                 <Route path="/map" element={<RoomsV2 />} />
-                <Route path="/messages" element={<MessagesNew />} />
-                <Route path="/chat" element={<MessagesNew />} />
-                <Route path="/chat/:conversationId" element={<Messages />} />
-                <Route path="/profile" element={<ProfileSovereign />} />
-                <Route path="/profile/minimal" element={<ProfileMinimal />} />
-                <Route path="/profile/full" element={<Profile />} />
-                <Route path="/profile/trust-stats" element={<TrustStats />} />
-                <Route path="/voice-stats" element={<VoiceStats />} />
-                <Route path="/friends" element={<Friends />} />
-                <Route path="/friends-list" element={<FriendsList />} />
-                <Route path="/friend-streaks" element={<FriendStreaks />} />
-                <Route path="/profile/streaks" element={<Streaks />} />
-                <Route path="/streaks" element={<Streaks />} />
-                <Route path="/statistics" element={<Statistics />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/profile-visitors" element={<ProfileVisitors />} />
-                <Route path="/battlepass" element={<BattlePass />} />
-                <Route path="/battle-pass" element={<BattlePass />} />
                 <Route path="/room/:roomId" element={<VoiceRoom />} />
                 <Route path="/voice-room/:roomId" element={<VoiceRoom />} />
-                <Route path="/premium" element={<Premium />} />
+
+                {/* ═══ PROFILE & SOCIAL ═══ */}
+                <Route path="/profile" element={<ProfileSovereign />} />
+                <Route path="/user/:userId" element={<UserProfile />} />
+                <Route path="/friends" element={<Friends />} />
+                <Route path="/profile-visitors" element={<ProfileVisitors />} />
+                <Route path="/notifications" element={<Notifications />} />
+
+                {/* ═══ SETTINGS ═══ */}
                 <Route path="/settings" element={<SettingsHub />} />
-                <Route path="/settings/legacy" element={<Settings />} />
-                <Route path="/settings/security" element={<SecuritySettings />} />
-                <Route path="/settings/blocked" element={<BlockedUsers />} />
                 <Route path="/settings/devices" element={<DevicesSettings />} />
                 <Route path="/help" element={<HelpCenter />} />
+
+                {/* ═══ INVITES ═══ */}
                 <Route path="/invites" element={<InvitesPage />} />
                 <Route path="/referral-status" element={<InvitesPage />} />
-                <Route path="/radar" element={<RadarPage />} />
-                <Route path="/stars/apply" element={<StarsApplication />} />
-                <Route path="/stars/dashboard" element={<StarsDashboard />} />
-                <Route path="/stars/schedule" element={<StarsSchedule />} />
-                <Route path="/user/:userId" element={<UserProfile />} />
-                <Route path="/blocked-users" element={<BlockedUsers />} />
+
+                {/* ═══ ADMIN ═══ */}
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/creator" element={<CreatorDashboard />} />
-                <Route path="/creator/dashboard" element={<CreatorDashboard />} />
-                <Route path="/creator/new-content" element={<NewLockedContent />} />
-                <Route path="/creator-application" element={<CreatorApplication />} />
+                <Route path="/nexus-admin" element={<NexusDashboard />} />
+
+                {/* ═══ LEGAL ═══ */}
                 <Route path="/impressum" element={<Impressum />} />
                 <Route path="/datenschutz" element={<Datenschutz />} />
                 <Route path="/legal" element={<Legal />} />
                 <Route path="/legal-center" element={<Legal />} />
-                <Route path="/legal-popup" element={<LegalPopup />} />
-                <Route path="/datenschutz-popup" element={<DatenschutzPopup />} />
-                <Route path="/nexus-admin" element={<NexusDashboard />} />
-                <Route path="/onboarding" element={<Navigate to="/" replace />} />
+
+                {/* ═══ 404 FALLBACK → HOME ═══ */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
 
