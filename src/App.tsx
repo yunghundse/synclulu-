@@ -38,6 +38,8 @@ import ResetPassword from '@/pages/ResetPassword';
 import RegisterInvite from '@/pages/RegisterInvite';
 import SyncluluRegister from '@/pages/SyncluluRegister';
 import OnboardingFlow from '@/pages/OnboardingFlow';
+import VoiceStats from '@/pages/VoiceStats';
+import Streaks from '@/pages/Streaks';
 
 // Components
 import LoadingScreen from '@/components/LoadingScreen';
@@ -224,6 +226,8 @@ function App() {
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/profile-visitors" element={<ProfileVisitors />} />
                 <Route path="/notifications" element={<Notifications />} />
+                <Route path="/voice-stats" element={<VoiceStats />} />
+                <Route path="/streaks" element={<Streaks />} />
 
                 {/* ═══ SETTINGS ═══ */}
                 <Route path="/settings" element={<SettingsHub />} />

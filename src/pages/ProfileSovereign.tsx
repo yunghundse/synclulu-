@@ -958,54 +958,56 @@ const LevelCommandButton = ({
       whileTap={{ scale: 0.98 }}
       className="w-full p-5 rounded-2xl flex items-center gap-4"
       style={{
-        background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}15)`,
-        border: `2px solid ${accentColor}60`,
-        boxShadow: `0 4px 30px ${accentColor}30, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+        background: `linear-gradient(135deg, ${accentColor}50, ${accentColor}30)`,
+        border: `3px solid ${accentColor}`,
+        boxShadow: `0 8px 40px ${accentColor}50, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
       }}
     >
       {/* Level Circle */}
       <div className="relative">
         <motion.div
           className="absolute inset-0 rounded-full"
-          style={{ background: `radial-gradient(circle, ${accentColor}50 0%, transparent 70%)` }}
-          animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
+          style={{ background: `radial-gradient(circle, ${accentColor}70 0%, transparent 70%)` }}
+          animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
         <div
-          className="relative w-16 h-16 rounded-full flex items-center justify-center"
+          className="relative w-18 h-18 rounded-full flex items-center justify-center"
           style={{
-            background: `linear-gradient(135deg, ${accentColor}50, ${accentColor}30)`,
-            border: `3px solid ${accentColor}`,
-            boxShadow: `0 0 20px ${accentColor}50`,
+            width: '72px',
+            height: '72px',
+            background: `linear-gradient(135deg, ${accentColor}70, ${accentColor}50)`,
+            border: `4px solid white`,
+            boxShadow: `0 0 30px ${accentColor}70`,
           }}
         >
-          <span className="text-2xl font-black text-white">{level}</span>
+          <span className="text-3xl font-black text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>{level}</span>
         </div>
       </div>
 
       {/* Progress Info */}
       <div className="flex-1">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-base font-bold text-white">Dein Level</span>
-          <ChevronRight size={18} className="text-white/60" />
+          <span className="text-lg font-black text-white">Dein Level</span>
+          <ChevronRight size={20} className="text-white" />
         </div>
-        <div className="h-3 bg-white/20 rounded-full overflow-hidden" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}>
+        <div className="h-4 bg-white/30 rounded-full overflow-hidden" style={{ boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3)' }}>
           <motion.div
             className="h-full rounded-full relative"
             style={{
-              background: `linear-gradient(90deg, ${accentColor}, ${accentColor}dd)`,
-              boxShadow: `0 0 10px ${accentColor}80`,
+              background: `linear-gradient(90deg, white, ${accentColor})`,
+              boxShadow: `0 0 15px white`,
             }}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
           >
             <div
               className="absolute inset-0 rounded-full"
-              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 50%)' }}
+              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, transparent 50%)' }}
             />
           </motion.div>
         </div>
-        <p className="text-xs text-white/60 mt-2">Tippe für Details & Meilensteine</p>
+        <p className="text-sm text-white/80 mt-2 font-medium">Tippe für Details & Meilensteine</p>
       </div>
     </motion.button>
   );
@@ -1641,7 +1643,7 @@ export default function ProfileSovereign() {
         {/* Voice Pionier Button */}
         <motion.button
           whileTap={{ scale: 0.98 }}
-          onClick={() => {/* Could open voice stats modal */}}
+          onClick={() => navigate('/voice-stats')}
           className="w-full p-4 rounded-2xl flex items-center gap-4"
           style={{
             background: 'rgba(255, 255, 255, 0.05)',
@@ -1751,51 +1753,6 @@ export default function ProfileSovereign() {
           </div>
           <ChevronRight size={18} className="text-white/30" />
         </motion.button>
-      </div>
-
-      {/* Battle Pass Summer Teaser */}
-      <div className="px-5 mt-6">
-        <BattlePassTeaser onInvite={() => navigate('/invites')} />
-      </div>
-
-      {/* Aura-Historie Section */}
-      <div className="px-5 mt-6">
-        <PanelGroup title="Aura-Historie">
-          <div className="p-4">
-            <AuraHistorieSection accentColor={accentColor} />
-          </div>
-        </PanelGroup>
-      </div>
-
-      {/* Aura-Präsenz (Activity Heatmap) */}
-      <div className="px-5 mt-6">
-        <PanelGroup title="Aura-Präsenz">
-          <div className="p-4">
-            <ActivityHeatmap
-              locations={activityLocations}
-              isPrivate={false}
-              city={profile?.city}
-              isFriend={true} // Self-view always shows detailed
-            />
-          </div>
-        </PanelGroup>
-      </div>
-
-      {/* Achievements */}
-      <div className="px-5 mt-6">
-        <PanelGroup title="Erfolge">
-          <div className="grid grid-cols-3 gap-2 p-2">
-            {achievements.map((achievement, index) => (
-              <AchievementBadge
-                key={index}
-                icon={achievement.icon}
-                title={achievement.title}
-                unlocked={achievement.unlocked}
-                color={accentColor}
-              />
-            ))}
-          </div>
-        </PanelGroup>
       </div>
 
       {/* Clean ending - keine zusätzlichen Buttons mehr */}
