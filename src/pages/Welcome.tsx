@@ -1,11 +1,16 @@
+/**
+ * SYNCLULU WELCOME PAGE
+ * Modern dark landing page with unified design system
+ * @version 3.0.0
+ */
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
-import { ChevronDown } from 'lucide-react';
-import { GirlMascot, FloatingMascot } from '@/components/Mascots';
+import { ChevronDown, MapPin, Users, Shield } from 'lucide-react';
 
-const Welcome = () => {
-  const { t, language, setLanguage, languages } = useTranslation();
+export default function Welcome() {
+  const { language, setLanguage, languages } = useTranslation();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
 
   // Load saved language on mount
@@ -14,7 +19,7 @@ const Welcome = () => {
     if (saved && ['de', 'en', 'es', 'fr', 'pt'].includes(saved)) {
       setLanguage(saved as any);
     }
-  }, []);
+  }, [setLanguage]);
 
   const welcomeText = {
     de: {
@@ -72,40 +77,140 @@ const Welcome = () => {
   const text = welcomeText[language] || welcomeText.de;
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-to-b from-violet-50 via-white to-purple-50 flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 right-10 w-72 h-72 bg-gradient-to-br from-violet-300/30 to-purple-400/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-5 w-64 h-64 bg-gradient-to-tr from-pink-300/25 to-violet-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 left-1/4 w-48 h-48 bg-gradient-to-r from-blue-200/20 to-purple-200/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }} />
+    <div className="sc-page sc-safe-top" style={{
+      minHeight: '100dvh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Animated Background */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+        {/* Glowing orbs */}
+        <div
+          className="sc-animate-pulse"
+          style={{
+            position: 'absolute',
+            top: '10%',
+            right: '5%',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
+            borderRadius: '50%',
+            filter: 'blur(40px)',
+          }}
+        />
+        <div
+          className="sc-animate-pulse"
+          style={{
+            position: 'absolute',
+            bottom: '15%',
+            left: '5%',
+            width: '250px',
+            height: '250px',
+            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%)',
+            borderRadius: '50%',
+            filter: 'blur(40px)',
+            animationDelay: '1s',
+          }}
+        />
+        <div
+          className="sc-animate-pulse"
+          style={{
+            position: 'absolute',
+            top: '40%',
+            left: '20%',
+            width: '200px',
+            height: '200px',
+            background: 'radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, transparent 70%)',
+            borderRadius: '50%',
+            filter: 'blur(30px)',
+            animationDelay: '2s',
+          }}
+        />
 
         {/* Floating clouds */}
-        <div className="absolute top-20 left-10 text-4xl opacity-20 animate-bounce" style={{ animationDuration: '3s' }}>☁️</div>
-        <div className="absolute top-40 right-20 text-3xl opacity-15 animate-bounce" style={{ animationDuration: '4s', animationDelay: '0.5s' }}>☁️</div>
-        <div className="absolute bottom-40 left-20 text-2xl opacity-10 animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '1s' }}>☁️</div>
-
-        {/* Mascot decoration - bottom left */}
-        <div className="absolute bottom-10 left-4 opacity-40 hidden sm:block">
-          <FloatingMascot delay={0.5}>
-            <GirlMascot size={100} />
-          </FloatingMascot>
-        </div>
+        <div
+          style={{
+            position: 'absolute',
+            top: '15%',
+            left: '8%',
+            fontSize: '32px',
+            opacity: 0.15,
+            animation: 'sc-float 4s ease-in-out infinite',
+          }}
+        >☁️</div>
+        <div
+          style={{
+            position: 'absolute',
+            top: '25%',
+            right: '12%',
+            fontSize: '24px',
+            opacity: 0.1,
+            animation: 'sc-float 5s ease-in-out infinite',
+            animationDelay: '1s',
+          }}
+        >☁️</div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '30%',
+            left: '15%',
+            fontSize: '20px',
+            opacity: 0.08,
+            animation: 'sc-float 4.5s ease-in-out infinite',
+            animationDelay: '0.5s',
+          }}
+        >☁️</div>
       </div>
 
-      {/* Language Selector - Top Right */}
-      <div className="absolute top-6 right-6 z-20">
+      {/* Language Selector */}
+      <div style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 20 }}>
         <button
           onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-          className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all"
+          className="sc-btn sc-btn-ghost"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '10px 16px',
+            background: 'var(--sc-bg-card)',
+            border: '1px solid var(--sc-border)',
+          }}
         >
-          <span className="text-lg">{languages[language].flag}</span>
-          <span className="text-sm font-medium text-gray-700">{languages[language].native}</span>
-          <ChevronDown size={16} className={`text-gray-400 transition-transform ${showLanguageMenu ? 'rotate-180' : ''}`} />
+          <span style={{ fontSize: '18px' }}>{languages[language].flag}</span>
+          <span style={{ fontSize: '14px', color: 'var(--sc-text-secondary)' }}>
+            {languages[language].native}
+          </span>
+          <ChevronDown
+            size={14}
+            style={{
+              color: 'var(--sc-text-muted)',
+              transition: 'transform 0.2s',
+              transform: showLanguageMenu ? 'rotate(180deg)' : 'rotate(0)',
+            }}
+          />
         </button>
 
         {/* Language Dropdown */}
         {showLanguageMenu && (
-          <div className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden min-w-[180px] animate-fade-in">
+          <div
+            className="sc-animate-fade-in"
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: '8px',
+              background: 'var(--sc-bg-card)',
+              borderRadius: '16px',
+              border: '1px solid var(--sc-border)',
+              overflow: 'hidden',
+              minWidth: '180px',
+              boxShadow: 'var(--sc-shadow-lg)',
+            }}
+          >
             {Object.entries(languages).map(([code, lang]) => (
               <button
                 key={code}
@@ -113,14 +218,28 @@ const Welcome = () => {
                   setLanguage(code as any);
                   setShowLanguageMenu(false);
                 }}
-                className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-violet-50 transition-colors ${
-                  language === code ? 'bg-violet-100' : ''
-                }`}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  background: language === code ? 'var(--sc-violet-alpha)' : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (language !== code) e.currentTarget.style.background = 'var(--sc-bg-elevated)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = language === code ? 'var(--sc-violet-alpha)' : 'transparent';
+                }}
               >
-                <span className="text-xl">{lang.flag}</span>
-                <span className="font-medium text-gray-800">{lang.native}</span>
+                <span style={{ fontSize: '20px' }}>{lang.flag}</span>
+                <span style={{ fontWeight: 500, color: 'var(--sc-text-primary)' }}>{lang.native}</span>
                 {language === code && (
-                  <span className="ml-auto text-violet-600">✓</span>
+                  <span style={{ marginLeft: 'auto', color: 'var(--sc-violet)' }}>✓</span>
                 )}
               </button>
             ))}
@@ -129,62 +248,189 @@ const Welcome = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center max-w-sm">
-        {/* Logo with glow effect */}
-        <div className="relative mb-10">
-          <div className="absolute inset-0 w-32 h-32 mx-auto bg-violet-400/40 rounded-3xl blur-2xl" />
-          <div className="relative w-32 h-32 mx-auto rounded-3xl bg-gradient-to-br from-violet-500 via-purple-500 to-violet-600 flex items-center justify-center shadow-2xl shadow-violet-500/30">
-            <span className="text-6xl drop-shadow-lg">☁️</span>
+      <div className="sc-container" style={{ textAlign: 'center', maxWidth: '380px', position: 'relative', zIndex: 10 }}>
+        {/* Logo */}
+        <div style={{ position: 'relative', marginBottom: '40px' }}>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '120px',
+              height: '120px',
+              margin: '0 auto',
+              background: 'var(--sc-gradient-primary)',
+              borderRadius: '32px',
+              filter: 'blur(30px)',
+              opacity: 0.5,
+            }}
+          />
+          <div
+            style={{
+              position: 'relative',
+              width: '120px',
+              height: '120px',
+              margin: '0 auto',
+              borderRadius: '32px',
+              background: 'var(--sc-gradient-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: 'var(--sc-shadow-glow)',
+            }}
+          >
+            <span style={{ fontSize: '60px', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }}>☁️</span>
           </div>
         </div>
 
         {/* Brand Name */}
-        <h1 className="font-display text-6xl font-bold mb-3 tracking-tight">
-          <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-violet-700 bg-clip-text text-transparent">
-            synclulu
-          </span>
+        <h1
+          style={{
+            fontSize: '52px',
+            fontWeight: 700,
+            marginBottom: '12px',
+            letterSpacing: '-0.02em',
+            background: 'var(--sc-gradient-primary)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          synclulu
         </h1>
 
         {/* Tagline */}
-        <p className="text-gray-800 text-xl font-display font-semibold mb-3">
+        <p
+          style={{
+            fontSize: '20px',
+            fontWeight: 600,
+            color: 'var(--sc-text-primary)',
+            marginBottom: '8px',
+          }}
+        >
           {text.tagline}
         </p>
 
-        <p className="text-gray-500 mb-10 leading-relaxed">
-          {text.subtitle}<br />
-          <span className="font-semibold text-gray-700">{text.highlight}</span>
+        <p
+          style={{
+            fontSize: '15px',
+            color: 'var(--sc-text-secondary)',
+            marginBottom: '8px',
+            lineHeight: 1.5,
+          }}
+        >
+          {text.subtitle}
+        </p>
+        <p
+          style={{
+            fontSize: '14px',
+            fontWeight: 600,
+            color: 'var(--sc-violet-light)',
+            marginBottom: '40px',
+          }}
+        >
+          {text.highlight}
         </p>
 
         {/* CTA Buttons */}
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
           <Link
             to="/register"
-            className="block w-full py-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-display font-bold text-center rounded-2xl shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 transition-all transform hover:scale-[1.02]"
+            className="sc-btn sc-btn-primary sc-btn-full sc-btn-lg"
+            style={{ fontSize: '16px' }}
           >
             {text.start}
           </Link>
 
           <Link
             to="/login"
-            className="block w-full py-4 text-violet-600 font-display font-semibold text-center border-2 border-violet-200 rounded-2xl hover:border-violet-400 hover:bg-violet-50 transition-all"
+            className="sc-btn sc-btn-secondary sc-btn-full sc-btn-lg"
+            style={{ fontSize: '16px' }}
           >
             {text.login}
           </Link>
         </div>
 
         {/* Features */}
-        <div className="mt-12 grid grid-cols-3 gap-3">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-gray-100">
-            <div className="text-2xl mb-2">📍</div>
-            <p className="text-[11px] text-gray-600 font-medium leading-tight">{text.radius}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+          <div
+            style={{
+              background: 'var(--sc-bg-card)',
+              borderRadius: '16px',
+              padding: '16px 12px',
+              border: '1px solid var(--sc-border)',
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                margin: '0 auto 8px',
+                borderRadius: '10px',
+                background: 'var(--sc-violet-alpha)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <MapPin size={18} style={{ color: 'var(--sc-violet)' }} />
+            </div>
+            <p style={{ fontSize: '11px', color: 'var(--sc-text-secondary)', fontWeight: 500 }}>
+              {text.radius}
+            </p>
           </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-gray-100">
-            <div className="text-2xl mb-2">🎭</div>
-            <p className="text-[11px] text-gray-600 font-medium leading-tight">{text.mode}</p>
+
+          <div
+            style={{
+              background: 'var(--sc-bg-card)',
+              borderRadius: '16px',
+              padding: '16px 12px',
+              border: '1px solid var(--sc-border)',
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                margin: '0 auto 8px',
+                borderRadius: '10px',
+                background: 'var(--sc-violet-alpha)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Users size={18} style={{ color: 'var(--sc-violet)' }} />
+            </div>
+            <p style={{ fontSize: '11px', color: 'var(--sc-text-secondary)', fontWeight: 500 }}>
+              {text.mode}
+            </p>
           </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-gray-100">
-            <div className="text-2xl mb-2">🔒</div>
-            <p className="text-[11px] text-gray-600 font-medium leading-tight">{text.privacy}</p>
+
+          <div
+            style={{
+              background: 'var(--sc-bg-card)',
+              borderRadius: '16px',
+              padding: '16px 12px',
+              border: '1px solid var(--sc-border)',
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                margin: '0 auto 8px',
+                borderRadius: '10px',
+                background: 'var(--sc-violet-alpha)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Shield size={18} style={{ color: 'var(--sc-violet)' }} />
+            </div>
+            <p style={{ fontSize: '11px', color: 'var(--sc-text-secondary)', fontWeight: 500 }}>
+              {text.privacy}
+            </p>
           </div>
         </div>
       </div>
@@ -192,12 +438,18 @@ const Welcome = () => {
       {/* Click outside to close language menu */}
       {showLanguageMenu && (
         <div
-          className="fixed inset-0 z-10"
+          style={{ position: 'fixed', inset: 0, zIndex: 10 }}
           onClick={() => setShowLanguageMenu(false)}
         />
       )}
+
+      {/* Floating cloud animation keyframes */}
+      <style>{`
+        @keyframes sc-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
+        }
+      `}</style>
     </div>
   );
-};
-
-export default Welcome;
+}
