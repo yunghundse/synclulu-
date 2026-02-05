@@ -5,10 +5,10 @@
  * Features:
  * - Benachrichtigungen für neue Nachrichten
  * - Benachrichtigungen für Freundschaftsanfragen
- * - Benachrichtigungen für neue Wölkchen in der Nähe
+ * - Benachrichtigungen für neue Rooms in der Nähe
  * - Service Worker Integration
  *
- * @version 1.0.0
+ * @version 1.1.0 - Rooms Edition
  */
 
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
@@ -208,7 +208,7 @@ export const notifyNearbyCloud = async (
   cloudId: string
 ): Promise<void> => {
   await showLocalNotification({
-    title: '☁️ Wölkchen in der Nähe',
+    title: '🎙️ Room in der Nähe',
     body: `${cloudName} • ${userCount} Personen • ${distance} entfernt`,
     tag: `cloud-${cloudId}`,
     data: { type: 'nearbyCloud', cloudId },

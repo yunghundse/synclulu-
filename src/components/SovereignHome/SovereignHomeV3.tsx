@@ -215,7 +215,7 @@ const QuickStats = memo(function QuickStats({
         <div className="flex items-center gap-2">
           <Users size={14} className="text-violet-400" />
           <span className="text-xs text-white/60">
-            <span className="text-white font-medium">{activeRooms}</span> aktive Wölkchen
+            <span className="text-white font-medium">{activeRooms}</span> aktive Rooms
           </span>
         </div>
       </div>

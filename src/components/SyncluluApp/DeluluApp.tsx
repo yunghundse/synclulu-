@@ -175,7 +175,7 @@ const HomeView: React.FC<{
         transition={{ delay: 0.4 }}
         className="mt-4 text-xs text-white/30 text-center max-w-xs"
       >
-        Tippe auf die Wolke, um Wölkchen in deiner Nähe zu entdecken
+        Tippe auf die Wolke, um Rooms in deiner Nähe zu entdecken
       </motion.p>
 
       {/* Profile Button */}
@@ -234,14 +234,14 @@ const LobbyView: React.FC<{
       <div className="space-y-4 flex-1 overflow-y-auto no-scrollbar pb-24">
         {loading ? (
           <div className="sovereign-empty">
-            <div className="text-2xl mb-4">☁️</div>
-            <div>Suche Wölkchen...</div>
+            <div className="text-2xl mb-4">🎙️</div>
+            <div>Suche Rooms...</div>
           </div>
         ) : rooms.length === 0 ? (
           <div className="sovereign-empty">
             <div className="text-2xl mb-4">🌙</div>
-            <div>Keine Wölkchen in der Nähe</div>
-            <div className="mt-2 text-white/30">Starte das erste!</div>
+            <div>Keine Rooms in der Nähe</div>
+            <div className="mt-2 text-white/30">Starte den ersten!</div>
           </div>
         ) : (
           rooms.map((room, index) => (

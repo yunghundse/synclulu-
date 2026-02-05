@@ -487,10 +487,10 @@ export const CrystalCloudGrid = memo(function CrystalCloudGrid({
           <Sparkles size={32} className="text-violet-400/50" />
         </motion.div>
         <p className="text-white/40 text-sm text-center">
-          Keine Wölkchen in der Nähe
+          Keine Rooms in der Nähe
         </p>
         <p className="text-white/25 text-xs text-center mt-1">
-          Erstelle das erste Wölkchen!
+          Erstelle den ersten Room!
         </p>
       </div>
     );

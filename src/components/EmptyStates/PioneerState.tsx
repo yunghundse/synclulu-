@@ -45,10 +45,10 @@ const stateConfig: Record<
   no_hotspots: {
     icon: MapPin,
     title: 'Pionier-Zone',
-    message: 'Noch keine Wölkchen in deiner Nähe.',
-    submessage: 'Sei der Erste! Erstelle einen Hotspot und lass andere zu dir kommen.',
+    message: 'Noch keine Rooms in deiner Nähe.',
+    submessage: 'Sei der Erste! Erstelle einen Room und lass andere zu dir kommen.',
     gradient: 'from-violet-500 to-purple-600',
-    actionLabel: 'Hotspot erstellen',
+    actionLabel: 'Room erstellen',
   },
   no_creators: {
     icon: Crown,

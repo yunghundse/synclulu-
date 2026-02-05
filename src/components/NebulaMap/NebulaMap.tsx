@@ -629,7 +629,7 @@ export const NebulaMap = memo(function NebulaMap({
           <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
             <Zap size={32} className="text-white/20 mb-2" />
             <p className="text-xs text-white/30 text-center">
-              Keine Wölkchen in deiner Nähe
+              Keine aktiven Rooms in deiner Nähe
             </p>
           </div>
         )}
