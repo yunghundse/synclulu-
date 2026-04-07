@@ -1,0 +1,87 @@
+name: "Security Scan"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 8 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          deny-licenses: GPL-3.0, AGPL-3.0
+
+  npm-audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for secrets
+        run: |
+          echo "Scanning for potential secrets..."
+          FOUND=false
+          for pattern in 'AIza[0-9A-Za-z_-]\{35\}' 'sk-[a-zA-Z0-9]\{20,\}' 'ghp_[a-zA-Z0-9]\{36\}'; do
+            MATCHES=$(grep -rn "$pattern" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist --exclude="*.lock" --exclude="package-lock.json" --exclude=".env.example" . 2>/dev/null || true)
+            if [ -n "$MATCHES" ]; then
+              echo "::warning::Potential secret pattern found:"
+              echo "$MATCHES" | head -5
+              FOUND=true
+            fi
+          done
+          FIREBASE_KEYS=$(grep -rn 'apiKey[[:space:]]*[:=]' --include="*.ts" --include="*.tsx" --include="*.js" --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist --exclude=".env.example" . 2>/dev/null || true)
+          if [ -n "$FIREBASE_KEYS" ]; then
+            echo "::warning::Hardcoded API keys found (consider using env vars):"
+            echo "$FIREBASE_KEYS" | head -5
+          fi
+          if [ "$FOUND" = true ]; then
+            echo "::warning::Potential secrets detected. Review the findings above."
+          else
+            echo "No obvious secret patterns found."
+          fi
+
+      - name: Security summary
+        if: always()
+        run: |
+          echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- NPM Audit: Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret Detection: Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- Scan Date: $(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,72 @@
+name: "Guardian Bot: Lulu Guard Check"
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  guard-check:
+    name: PR Guard Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit --pretty
+
+      - name: Build verification
+        run: npm run build
+
+      - name: Check for .env file leaks
+        run: |
+          echo "Checking for leaked secrets..."
+          LEAKED=false
+          for file in $(git diff --name-only origin/main...HEAD 2>/dev/null || git diff --name-only HEAD~1); do
+            if echo "$file" | grep -qE '\.env$|\.env\.local$|\.env\.production$'; then
+              if ! echo "$file" | grep -q '\.example'; then
+                echo "::error file=$file::Potential secret leak detected: $file"
+                LEAKED=true
+              fi
+            fi
+          done
+          if [ "$LEAKED" = true ]; then
+            exit 1
+          fi
+          echo "No secret leaks detected."
+
+      - name: Check for large files
+        run: |
+          echo "Checking for oversized files (>5MB)..."
+          LARGE_FILES=$(find . -not -path './.git/*' -not -path './node_modules/*' -not -path './dist/*' -type f -size +5M 2>/dev/null)
+          if [ -n "$LARGE_FILES" ]; then
+            echo "::warning::Large files detected:"
+            echo "$LARGE_FILES"
+          else
+            echo "No oversized files found."
+          fi
+
+      - name: Guard summary
+        if: always()
+        run: |
+          echo "## Guardian Bot Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript: Checked" >> $GITHUB_STEP_SUMMARY
+          echo "- Build: Verified" >> $GITHUB_STEP_SUMMARY
+          echo "- Secrets: Scanned" >> $GITHUB_STEP_SUMMARY
+          echo "- Large files: Checked" >> $GITHUB_STEP_SUMMARY
