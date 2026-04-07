@@ -14,6 +14,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 // Pages - MINIMAL CORE ONLY
+import Maintenance from "@/pages/Maintenance";
 import Welcome from '@/pages/Welcome';
 import Login from '@/pages/Login';
 import Onboarding from '@/pages/Onboarding';
@@ -146,6 +147,14 @@ function App() {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MAINTENANCE MODE — blocks ALL access (public + authenticated)
+  // Admins can bypass to access NexusDashboard
+  // ═══════════════════════════════════════════════════════════════════════════
+  if (isMaintenanceMode && !isAdmin) {
+    return <Maintenance message={maintenanceMessage} estimatedEnd={maintenanceEstimatedEnd} />;
+  }
+
   // PUBLIC ROUTES (Not Authenticated)
   // ═══════════════════════════════════════════════════════════════════════════
   if (!isAuthenticated) {
