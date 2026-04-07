@@ -151,8 +151,8 @@ function App() {
   // MAINTENANCE MODE — blocks ALL access (public + authenticated)
   // Admins can bypass to access NexusDashboard
   // ═══════════════════════════════════════════════════════════════════════════
-  if (isMaintenanceMode && !isAdmin) {
-    return <Maintenance message={maintenanceMessage} estimatedEnd={maintenanceEstimatedEnd} />;
+  if (true /* MAINTENANCE FORCED */ && !isAdmin) {
+    return <Maintenance message={maintenanceMessage || "Wartungsarbeiten — Wir sind bald zurück!"} estimatedEnd={maintenanceEstimatedEnd} />;
   }
 
   // PUBLIC ROUTES (Not Authenticated)
